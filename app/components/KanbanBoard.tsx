@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { STATUS_ORDER, type TaskStatus } from "@/lib/statusConfig";
 import { compareByDueDateUrgentFirst } from "@/lib/dateHelpers";
 import type { Task, MasterData } from "@/lib/clientTypes";
 import KanbanColumn from "./KanbanColumn";
+import RawTextModal from "./RawTextModal";
 import type { DateField } from "./TaskCard";
 
 export default function KanbanBoard({
@@ -33,6 +35,7 @@ export default function KanbanBoard({
   onSubtasksChanged?: () => void;
 }) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const [rawTextTask, setRawTextTask] = useState<Task | null>(null);
 
   function handleDragEnd(event: DragEndEvent) {
     const taskId = event.active.id as string;
@@ -68,9 +71,17 @@ export default function KanbanBoard({
             onCreateFollowUp={onCreateFollowUp}
             onJumpToTask={onJumpToTask}
             onSubtasksChanged={onSubtasksChanged}
+            onOpenRawText={setRawTextTask}
           />
         ))}
       </div>
+      {rawTextTask && rawTextTask.rawExtractedText && (
+        <RawTextModal
+          fileName={rawTextTask.sourceFileName}
+          rawText={rawTextTask.rawExtractedText}
+          onClose={() => setRawTextTask(null)}
+        />
+      )}
     </DndContext>
   );
 }

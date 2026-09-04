@@ -134,10 +134,19 @@ async function extractFromWorkbook(fileName: string, workbook: XLSX.WorkBook, bu
 
   const drawingTextsBySheet = await extractDrawingTextsBySheetIndex(buffer, workbook.SheetNames.length);
 
+  // 숨김(1)/매우 숨김(2) 시트는 엑셀 탭에 아예 안 보이는 채로 남아있는 경우가 많다 — 보통
+  // 이전 요청 건을 지우지 않고 숨겨둔 것이라 현재 작업과 무관한 내용이다. 원문 추출에서 제외한다.
+  const hiddenSheetNames = new Set(
+    (workbook.Workbook?.Sheets ?? [])
+      .filter((s) => (s.Hidden ?? 0) !== 0)
+      .map((s) => s.name)
+  );
+
   const sheetBlocks: string[] = [];
   const allRows: string[][] = [];
 
   workbook.SheetNames.forEach((sheetName, sheetIndex) => {
+    if (hiddenSheetNames.has(sheetName)) return;
     const sheet = workbook.Sheets[sheetName];
     const rawRows = XLSX.utils.sheet_to_json<unknown[]>(sheet, {
       header: 1,

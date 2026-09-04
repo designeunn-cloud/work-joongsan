@@ -17,6 +17,7 @@ export default function KanbanCard({
   onCreateFollowUp,
   onJumpToTask,
   onSubtasksChanged,
+  onOpenRawText,
 }: {
   task: Task;
   master: MasterData;
@@ -29,6 +30,7 @@ export default function KanbanCard({
   onCreateFollowUp?: (task: Task) => void;
   onJumpToTask?: (taskId: string) => void;
   onSubtasksChanged?: () => void;
+  onOpenRawText?: (task: Task) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id });
   const style = transform
@@ -60,6 +62,7 @@ export default function KanbanCard({
           onCreateFollowUp={onCreateFollowUp}
           onJumpToTask={onJumpToTask}
           onSubtasksChanged={onSubtasksChanged}
+          onOpenRawText={onOpenRawText}
         />
       </ul>
     </div>

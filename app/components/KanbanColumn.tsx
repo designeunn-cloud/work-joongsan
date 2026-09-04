@@ -19,6 +19,7 @@ export default function KanbanColumn({
   onCreateFollowUp,
   onJumpToTask,
   onSubtasksChanged,
+  onOpenRawText,
 }: {
   status: TaskStatus;
   tasks: Task[];
@@ -32,6 +33,7 @@ export default function KanbanColumn({
   onCreateFollowUp?: (task: Task) => void;
   onJumpToTask?: (taskId: string) => void;
   onSubtasksChanged?: () => void;
+  onOpenRawText?: (task: Task) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const colors = STATUS_COLORS[status];
@@ -63,6 +65,7 @@ export default function KanbanColumn({
             onCreateFollowUp={onCreateFollowUp}
             onJumpToTask={onJumpToTask}
             onSubtasksChanged={onSubtasksChanged}
+            onOpenRawText={onOpenRawText}
           />
         ))}
         {tasks.length === 0 && (

@@ -64,6 +64,16 @@ function FollowUpIcon() {
   );
 }
 
+function DocTextIcon() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9Z" />
+      <path d="M14 3v6h6" />
+      <path d="M8 12h8M8 15h8M8 18h5" />
+    </svg>
+  );
+}
+
 export default function TaskCard({
   task,
   master,
@@ -77,6 +87,7 @@ export default function TaskCard({
   onCreateFollowUp,
   onJumpToTask,
   onSubtasksChanged,
+  onOpenRawText,
 }: {
   task: Task;
   master: MasterData;
@@ -90,6 +101,7 @@ export default function TaskCard({
   onCreateFollowUp?: (task: Task) => void;
   onJumpToTask?: (taskId: string) => void;
   onSubtasksChanged?: () => void;
+  onOpenRawText?: (task: Task) => void;
 }) {
   const [openDateField, setOpenDateField] = useState<DateField | null>(null);
   const [editingContent, setEditingContent] = useState(false);
@@ -149,6 +161,16 @@ export default function TaskCard({
           >
             <EditIcon />
           </button>
+          {onOpenRawText && task.rawExtractedText && (
+            <button
+              onClick={() => onOpenRawText(task)}
+              title="요청서 원문 보기"
+              aria-label="요청서 원문 보기"
+              className="p-2 rounded-lg border border-neutral-300 text-neutral-600 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200"
+            >
+              <DocTextIcon />
+            </button>
+          )}
           {onCreateFollowUp && (
             <button
               onClick={() => onCreateFollowUp(task)}

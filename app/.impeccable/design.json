@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-01T00:00:00.000Z",
+  "title": "Design System: 업무 관리 프로그램",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Confident Indigo",
+        "canonical": "#4f46e5",
+        "tonalRamp": ["#eef2ff", "#e0e7ff", "#c7d2fe", "#a5b4fc", "#818cf8", "#6366f1", "#4f46e5", "#4338ca", "#3730a3", "#312e81"]
+      },
+      "neutral-surface": {
+        "role": "neutral",
+        "displayName": "Surface White / Canvas Gray",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#fafafa", "#f5f5f5", "#e5e5e5", "#d4d4d4", "#a3a3a3", "#737373", "#525252", "#404040", "#262626", "#171717"]
+      },
+      "status-progress": {
+        "role": "semantic",
+        "displayName": "Progress Blue",
+        "canonical": "#3b82f6",
+        "tonalRamp": ["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8", "#1e40af", "#1e3a8a"]
+      },
+      "status-review": {
+        "role": "semantic",
+        "displayName": "Review Orange",
+        "canonical": "#f97316",
+        "tonalRamp": ["#fff7ed", "#ffedd5", "#fed7aa", "#fdba74", "#fb923c", "#f97316", "#ea580c", "#c2410c", "#9a3412", "#7c2d12"]
+      },
+      "status-done": {
+        "role": "semantic",
+        "displayName": "Done Emerald",
+        "canonical": "#10b981",
+        "tonalRamp": ["#ecfdf5", "#d1fae5", "#a7f3d0", "#6ee7b7", "#34d399", "#10b981", "#059669", "#047857", "#065f46", "#064e3b"]
+      },
+      "status-overdue": {
+        "role": "semantic",
+        "displayName": "Overdue Red",
+        "canonical": "#ef4444",
+        "tonalRamp": ["#fef2f2", "#fee2e2", "#fecaca", "#fca5a5", "#f87171", "#ef4444", "#dc2626", "#b91c1c", "#991b1b", "#7f1d1d"]
+      }
+    },
+    "typographyMeta": {
+      "body": { "displayName": "Body / UI", "purpose": "버튼·인풋·기본 UI 텍스트. 실제 렌더링 폰트는 시스템 산세리프(Arial/Helvetica)이며 Geist는 로드만 되어 있고 body에는 적용되지 않는다." },
+      "title": { "displayName": "Card Title", "purpose": "업무 카드 제목(업무요청내용)에만 사용." },
+      "label": { "displayName": "Label", "purpose": "필드 라벨, 칩/뱃지, 보조 타임스탬프." },
+      "stat": { "displayName": "Stat Number", "purpose": "대시보드 통계 카드의 큰 숫자 전용." }
+    },
+    "shadows": [
+      { "name": "rest", "value": "none", "purpose": "카드/인풋의 기본 정지 상태 — 그림자 없음, 1px 뉴트럴 보더만." },
+      { "name": "hover-lift", "value": "0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05)", "purpose": "미완료 업무 카드에 마우스를 올렸을 때 (Tailwind shadow-md)." },
+      { "name": "overlay", "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", "purpose": "모달/오버레이 레이어 (Tailwind shadow-lg)." }
+    ],
+    "motion": [
+      { "name": "colors-transition", "value": "color, background-color, border-color 150ms ease", "purpose": "버튼·내비게이션 항목의 hover/active 색 전환 (Tailwind transition-colors)." },
+      { "name": "shadow-transition", "value": "box-shadow 150ms ease", "purpose": "업무 카드 hover 시 그림자 전환 (Tailwind transition-shadow)." },
+      { "name": "width-transition", "value": "width 150ms ease", "purpose": "사이드바 접기/펼치기 너비 전환." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "task-card-2col", "value": "680px (container query, @[680px]: on TaskCard's own width, not viewport)" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "폼의 주요 제출 액션(저장/추가)에 쓰는 채워진 인디고 버튼.",
+      "html": "<button class=\"ds-btn-primary\">저장</button>",
+      "css": ".ds-btn-primary { background: #4f46e5; color: #ffffff; padding: 6px 12px; font-size: 14px; font-weight: 500; border: none; border-radius: 8px; transition: background-color 150ms ease, opacity 150ms ease; } .ds-btn-primary:hover { background: #6366f1; } .ds-btn-primary:disabled { opacity: 0.5; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "취소/보조 액션에 쓰는 아웃라인 버튼.",
+      "html": "<button class=\"ds-btn-secondary\">취소</button>",
+      "css": ".ds-btn-secondary { background: #ffffff; color: #525252; padding: 6px 12px; font-size: 14px; font-weight: 500; border: 1px solid #d4d4d4; border-radius: 8px; transition: background-color 150ms ease; } .ds-btn-secondary:hover { background: #f5f5f5; }"
+    },
+    {
+      "name": "Task Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "업무 목록/칸반의 기본 단위. 좌측 4px 상태 보더(Status Spine)로 진행중/검토/완료/지연을 표시.",
+      "html": "<li class=\"ds-task-card\"><div class=\"ds-task-card-title\">업무요청내용 예시</div><div class=\"ds-task-card-meta\">담당자 · 제품명</div></li>",
+      "css": ".ds-task-card { list-style: none; background: #ffffff; border: 1px solid #e5e5e5; border-left: 4px solid #93c5fd; border-radius: 12px; padding: 12px 16px; box-shadow: none; transition: box-shadow 150ms ease; } .ds-task-card:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05); } .ds-task-card-title { font-size: 15px; font-weight: 600; color: #171717; } .ds-task-card-meta { font-size: 14px; color: #a3a3a3; margin-top: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "폼 텍스트 필드의 기본 스타일.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"입력\" />",
+      "css": ".ds-input { width: 100%; background: #ffffff; color: #171717; border: 1px solid #d4d4d4; border-radius: 8px; padding: 6px 12px; font-size: 14px; outline: none; } .ds-input:focus { border-color: #a5b4fc; }"
+    },
+    {
+      "name": "Nav Item",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "사이드바 메뉴 항목 — 기본/hover/활성 3가지 상태.",
+      "html": "<a class=\"ds-nav-item ds-nav-item-active\">업무</a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #525252; transition: background-color 150ms ease, color 150ms ease; } .ds-nav-item:hover { background: #f5f5f5; color: #171717; } .ds-nav-item-active { background: #eef2ff; color: #4338ca; }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": null,
+      "description": "상태/뱃지 표시용 알약형 칩. 상태별 배경+텍스트 색 쌍을 그대로 따른다 (예: 지연=red).",
+      "html": "<span class=\"ds-pill ds-pill-overdue\"><span class=\"ds-pill-dot\"></span>D+2</span>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 2px 8px; border-radius: 9999px; } .ds-pill-dot { width: 6px; height: 6px; border-radius: 9999px; background: currentColor; } .ds-pill-overdue { background: #fef2f2; color: #b91c1c; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Practical Baseline",
+    "overview": "이 시스템은 의도적으로 화려하지 않다. 디자인팀 담당자 1인이 매일 반복해서 훑어보는 내부 업무 도구이기 때문에, 표현보다 스캔 속도와 신뢰감을 우선한다 — 확인 결과 아직 브랜드 정체성이 확정되지 않은 상태이고, 이번 문서화에서도 '지금 그대로(기본 Tailwind 느낌) 유지'를 선택했다. 즉 이것은 미완성이 아니라 확정된 선택이다: 장식이 없는 것 자체가 이 시스템의 성격이다. 톤앤매너는 차분하고 절제됨으로 확정됐다 — 색은 상태(진행중/검토/완료/지연)를 알려줄 때만 등장하고, 그 외에는 여백·정렬·1px 뉴트럴 보더로 구조를 표현한다. 인디고(#4f46e5)는 유일한 브랜드성 강조색으로, 내비게이션 활성 상태와 기본 액션 버튼에만 예약되어 있다.",
+    "keyCharacteristics": [
+      "장식 없는 실용주의 — 그림자·그라데이션·장식적 아이콘이 거의 없음",
+      "상태 색상(파랑/주황/에메랄드/빨강)은 오직 의미 전달 용도로만 사용",
+      "인디고 강조색은 '지금 이대로 유지'가 확정된 결정",
+      "타이포그래피는 시스템 산세리프 스택 하나만 사용 (표현보다 판독성)"
+    ],
+    "rules": [
+      { "name": "The Semantic-Only Color Rule", "body": "파랑·주황·에메랄드·빨강은 오직 업무 상태(진행중/검토/완료/지연)를 뜻할 때만 쓴다. 장식이나 강조 목적으로 상태색을 재사용하지 않는다 — 강조가 필요하면 인디고를 쓴다.", "section": "colors" },
+      { "name": "The Rest-Is-Flat Rule", "body": "그림자는 상태 변화(hover)나 레이어 분리(모달)에 대한 응답으로만 등장한다. 정지 상태의 표면에 그림자를 얹지 않는다.", "section": "elevation" },
+      { "name": "The Status Spine Rule", "body": "업무 카드 왼쪽의 4px 컬러 보더가 상태를 알려주는 1차 신호다 — 텍스트를 읽지 않고도 목록을 훑을 수 있어야 한다는 원칙을 지키는 장치이므로, 새 상태 아이콘이나 배지를 별도로 추가하지 않는다.", "section": "typography" }
+    ],
+    "dos": [
+      "Do 인디고(#4f46e5)를 내비게이션 활성 상태와 Primary 버튼에만 예약해서 쓴다.",
+      "Do 업무/작업 카드에는 4px 좌측 보더로 상태를 표시한다(Status Spine Rule) — 별도 상태 아이콘을 새로 만들지 않는다.",
+      "Do 표면은 정지 상태에서 그림자 없이 1px 뉴트럴 보더만 쓰고, hover(카드)·오버레이(모달)에서만 그림자를 준다(Rest-Is-Flat Rule).",
+      "Do 컨트롤(버튼/인풋/내비)은 8px, 컨테이너(카드/모달)는 12px로 라운드 반경을 일관되게 유지한다.",
+      "Do 현재 시스템 산세리프 스택(Arial, Helvetica, sans-serif)을 그대로 유지한다 — 이번 문서화에서 별도 디스플레이 폰트를 도입하지 않기로 확정했다."
+    ],
+    "donts": [
+      "Don't 파랑·주황·에메랄드·빨강을 상태 의미 없이 장식용으로 쓰지 않는다 — 이미 진행중/검토/완료/지연의 의미로 예약되어 있다.",
+      "Don't 정지 상태의 카드나 인풋에 그림자를 추가하지 않는다 — 이 시스템의 기본은 완전히 평면이다.",
+      "Don't 라운드 반경을 8px/12px 두 단계 밖으로 임의로 바꾸지 않는다.",
+      "Don't Geist Sans/Mono를 실제로 적용하지 않은 채(현재는 body 규칙에 가려짐) 새 컴포넌트에서만 부분적으로 켜지 않는다 — 폰트를 바꾸려면 globals.css의 body 규칙부터 명시적으로 바꿔야 한다."
+    ]
+  }
+}

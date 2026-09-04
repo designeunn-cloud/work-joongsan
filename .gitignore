@@ -1,0 +1,51 @@
+# OS / editor
+.DS_Store
+.vscode/
+.playwright-mcp/
+
+# work files (client deliverables, not source code)
+작업/
+
+# external reference clones (not this project's own work)
+deep-research-skills/
+
+# --- app (Next.js) ---
+app/node_modules/
+app/.pnp
+app/.pnp.*
+app/.yarn/*
+!app/.yarn/patches
+!app/.yarn/plugins
+!app/.yarn/releases
+!app/.yarn/versions
+
+app/coverage/
+
+app/.next/
+app/out/
+
+app/build/
+
+*.pem
+
+app/npm-debug.log*
+app/yarn-debug.log*
+app/yarn-error.log*
+app/.pnpm-debug.log*
+
+app/.env*
+!app/.env.example
+
+app/.vercel
+
+app/*.tsbuildinfo
+app/next-env.d.ts
+
+app/prisma/dev.db
+app/prisma/dev.db-journal
+app/prisma/dev.db.bak-*
+
+app/.claude/settings.local.json
+app/.impeccable/*.local.json
+app/.impeccable/hook.cache.json
+app/_t6.json

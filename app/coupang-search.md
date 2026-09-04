@@ -1,0 +1,1542 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3031]:
+    - link [ref=e3032] [cursor=pointer]:
+      - /url: /np/campaigns/82?adType=DA&eventId=ar1ChLAVoYPqIaXc
+    - link [ref=e3033] [cursor=pointer]:
+      - /url: https://shop.coupang.com/wellife/94008?source=brandstore_display_ads&adType=DA&eventId=PDAmw4lhC0MkKona
+  - generic [ref=e3034]:
+    - generic [ref=e3036]:
+      - list [ref=e3037]:
+        - listitem [ref=e3038]:
+          - link "판매자 가입" [ref=e3039] [cursor=pointer]:
+            - /url: https://wing.coupang.com/tenants/vendor-signup/signup?utm_source=button_pc_coupang_top_right_cta&utm_medium=non_paid&utm_campaign=seller_registration
+        - listitem [ref=e3040]:
+          - link "고객센터" [ref=e3041] [cursor=pointer]:
+            - /url: https://mc.coupang.com/ssr/desktop/contact/faq
+        - listitem [ref=e3042]:
+          - link "회원가입" [ref=e3043] [cursor=pointer]:
+            - /url: https://login.coupang.com/login/memberJoinFrm.pang
+        - listitem [ref=e3044]:
+          - link "로그인" [ref=e3045] [cursor=pointer]:
+            - /url: https://login.coupang.com/login/login.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogin%3Fr%3Dhttp%253A%252F%252Fwww.coupang.com%252Fnp%252Fsearch%253Fq%253D%2525EC%2525A0%252580%2525EC%2525A3%2525BC%2525ED%25258C%25258C%252B%2525EB%2525B0%25259C%2525EB%2525A7%252588%2525EC%252582%2525AC%2525EC%2525A7%252580%2525EA%2525B8%2525B0
+      - list [ref=e3046]:
+        - listitem [ref=e3047]: 즐겨찾기
+        - listitem [ref=e3048]:
+          - generic [ref=e3049] [cursor=pointer]: 입점신청
+    - generic [ref=e3051]:
+      - generic [ref=e3052]:
+        - generic [ref=e3053] [cursor=pointer]
+        - generic [ref=e3059]:
+          - link [ref=e3060] [cursor=pointer]:
+            - /url: https://www.coupang.com
+            - img "Coupang" [ref=e3061]
+          - list [ref=e3062]:
+            - listitem [ref=e3063]:
+              - link [ref=e3064] [cursor=pointer]:
+                - /url: https://mc.coupang.com/ssr/desktop/order/list
+            - listitem [ref=e3065]:
+              - link [ref=e3066] [cursor=pointer]:
+                - /url: //cart.coupang.com/cartView.pang
+                - emphasis [ref=e3067]: "0"
+      - generic [ref=e3069]:
+        - link "전체" [ref=e3072] [cursor=pointer]:
+          - /url: "#"
+        - textbox "쿠팡 상품 검색" [ref=e3074]:
+          - /placeholder: 찾고 싶은 상품을 검색해보세요!
+          - text: 저주파 발마사지기
+        - generic [ref=e3075] [cursor=pointer]
+        - button "검색" [ref=e3076] [cursor=pointer]
+      - generic [ref=e3078]:
+        - list [ref=e3081]:
+          - listitem [ref=e3082]:
+            - link "쿠팡플레이 쿠팡플레이" [ref=e3083] [cursor=pointer]:
+              - /url: https://www.coupangplay.com/catalog
+              - img "쿠팡플레이" [ref=e3084]
+              - generic [ref=e3085]: 쿠팡플레이
+          - listitem [ref=e3086]:
+            - link "로켓배송 로켓배송" [ref=e3087] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/campaigns/82
+              - img "로켓배송" [ref=e3088]
+              - generic [ref=e3089]: 로켓배송
+          - listitem [ref=e3090]:
+            - link "로켓프레시 로켓프레시" [ref=e3091] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/categories/393760
+              - img "로켓프레시" [ref=e3092]
+              - generic [ref=e3093]: 로켓프레시
+          - listitem [ref=e3094]:
+            - link "2026 추석 2026 추석" [ref=e3095] [cursor=pointer]:
+              - /url: https://www.coupang.com/mlp/web/mlp-landing-page?landingId=4800
+              - img "2026 추석" [ref=e3096]
+              - generic [ref=e3097]: 2026 추석
+          - listitem [ref=e3099]:
+            - link "다시 구매 다시 구매" [ref=e3100] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/fbi?sourceType=home_section_fbi
+              - img "다시 구매" [ref=e3101]
+              - generic [ref=e3102]: 다시 구매
+          - listitem [ref=e3104]:
+            - link "쿠팡비즈 쿠팡비즈" [ref=e3105] [cursor=pointer]:
+              - /url: https://login.coupang.com/corporation/member/landing-page
+              - img "쿠팡비즈" [ref=e3106]
+              - generic [ref=e3107]: 쿠팡비즈
+          - listitem [ref=e3108]:
+            - link "로켓직구 로켓직구" [ref=e3109] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/coupangglobal
+              - img "로켓직구" [ref=e3110]
+              - generic [ref=e3111]: 로켓직구
+          - listitem [ref=e3112]:
+            - link "골드박스 골드박스" [ref=e3113] [cursor=pointer]:
+              - /url: https://www.coupang.com/mlp/web/mlp-landing-page?landingId=3712&sourceType=gm_crm_goldbox&subSourceType=gm_crm_gwsrtcut
+              - img "골드박스" [ref=e3114]
+              - generic [ref=e3115]: 골드박스
+          - listitem [ref=e3116]:
+            - link "이달의신상 이달의신상" [ref=e3117] [cursor=pointer]:
+              - /url: https://pages.coupang.com/p/136938
+              - img "이달의신상" [ref=e3118]
+              - generic [ref=e3119]: 이달의신상
+          - listitem [ref=e3120]:
+            - link "입점신청 입점신청" [ref=e3121] [cursor=pointer]:
+              - /url: https://wing.coupang.com/tenants/vendor-signup/signup?utm_source=button_pc_coupang_shortcut_1&utm_medium=non_paid&utm_id=onsite_ca&utm_content=202411
+              - img "입점신청" [ref=e3122]
+              - generic [ref=e3123]: 입점신청
+          - listitem [ref=e3124]:
+            - link "판매자특가 판매자특가" [ref=e3125] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/omp
+              - img "판매자특가" [ref=e3126]
+              - generic [ref=e3127]: 판매자특가
+          - listitem [ref=e3128]:
+            - link "와우회원할인 와우회원할인" [ref=e3129] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/campaigns/83
+              - img "와우회원할인" [ref=e3130]
+              - generic [ref=e3131]: 와우회원할인
+          - listitem [ref=e3132]:
+            - link "이벤트/쿠폰 이벤트/쿠폰" [ref=e3133] [cursor=pointer]:
+              - /url: https://www.coupang.com/np/coupangbenefit
+              - img "이벤트/쿠폰" [ref=e3134]
+              - generic [ref=e3135]: 이벤트/쿠폰
+          - listitem [ref=e3136]:
+            - link "반품마켓 반품마켓" [ref=e3137] [cursor=pointer]:
+              - /url: https://pages.coupang.com/p/54908
+              - img "반품마켓" [ref=e3138]
+              - generic [ref=e3139]: 반품마켓
+          - listitem [ref=e3140]:
+            - link "착한상점 착한상점" [ref=e3141] [cursor=pointer]:
+              - /url: https://pages.coupang.com/p/63240
+              - img "착한상점" [ref=e3142]
+              - generic [ref=e3143]: 착한상점
+          - listitem [ref=e3145]:
+            - link "기획전 기획전" [ref=e3146] [cursor=pointer]:
+              - /url: https://pages.coupang.com/p/bep?sourceType=gm_crm_oms&subSourceType=gm_crm_gwsrtcut
+              - img "기획전" [ref=e3147]
+              - generic [ref=e3148]: 기획전
+          - listitem [ref=e3149]:
+            - link "쿠팡트래블 쿠팡트래블" [ref=e3150] [cursor=pointer]:
+              - /url: https://trip.coupang.com/?channel=gnb
+              - img "쿠팡트래블" [ref=e3151]
+              - generic [ref=e3152]: 쿠팡트래블
+        - generic [ref=e3154] [cursor=pointer]
+  - generic [ref=e3157]:
+    - generic [ref=e3160]:
+      - list [ref=e3161]:
+        - listitem [ref=e3162]:
+          - link "전체" [ref=e3163] [cursor=pointer]:
+            - /url: /np/search?q=%EC%A0%80%EC%A3%BC%ED%8C%8C+%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0
+      - strong [ref=e3167]: "'저주파 발마사지기'"
+    - generic [ref=e3169]:
+      - generic [ref=e3170]:
+        - generic [ref=e3171]:
+          - generic [ref=e3174]:
+            - heading "필터" [level=4] [ref=e3176]
+            - list [ref=e3179]:
+              - listitem [ref=e3180]:
+                - img "rocket_luxury,rocket,coupang_global" [ref=e3184] [cursor=pointer]
+                - list [ref=e3186]:
+                  - listitem [ref=e3187]:
+                    - generic
+                  - listitem [ref=e3188]:
+                    - generic [ref=e3189] [cursor=pointer]
+                  - listitem [ref=e3193]:
+                    - generic [ref=e3194] [cursor=pointer]
+              - listitem [ref=e3198]:
+                - generic:
+                  - generic:
+                    - img "top_brand"
+              - listitem [ref=e3199]:
+                - generic [ref=e3200] [cursor=pointer]: 무료배송
+            - separator [ref=e3202]
+            - generic [ref=e3203]:
+              - heading "카테고리" [level=5] [ref=e3204]
+              - generic [ref=e3205]:
+                - list [ref=e3206]:
+                  - listitem [ref=e3207]:
+                    - link "전체" [ref=e3209] [cursor=pointer]:
+                      - /url: https://www.coupang.com
+                  - listitem [ref=e3210]:
+                    - link "쿠팡수입" [ref=e3212] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/510691
+                  - listitem [ref=e3213]:
+                    - link "로켓직구" [ref=e3215] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/coupangglobal
+                  - listitem [ref=e3216]:
+                    - link "실버스토어" [ref=e3218] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/383370
+                  - listitem [ref=e3219]:
+                    - link "헬스/건강식품" [ref=e3221] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/305798
+                  - listitem:
+                    - link "가전디지털" [ref=e3223] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/178255
+                  - listitem:
+                    - link "홈인테리어" [ref=e3225] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/184555
+                  - listitem:
+                    - link "결혼준비" [ref=e3227] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/416130
+                  - listitem:
+                    - link "생활용품" [ref=e3229] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/115673
+                  - listitem:
+                    - link "식품" [ref=e3231] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/194276
+                  - listitem:
+                    - link "뷰티" [ref=e3233] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/176522
+                  - listitem:
+                    - link "도서/음반/DVD" [ref=e3235] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/317777
+                  - listitem:
+                    - link "문구/오피스" [ref=e3237] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/177295
+                  - listitem:
+                    - link "R.LUX" [ref=e3239] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/campaigns/18530
+                  - listitem:
+                    - link "반려동물용품" [ref=e3241] [cursor=pointer]:
+                      - /url: https://www.coupang.com/np/categories/115674
+                - generic [ref=e3242] [cursor=pointer]: + 더보기
+            - separator [ref=e3243]
+            - generic [ref=e3244]:
+              - heading "브랜드" [level=5] [ref=e3245]
+              - generic [ref=e3246]:
+                - list [ref=e3247]:
+                  - listitem [ref=e3248]:
+                    - generic [ref=e3249] [cursor=pointer]: SOVI
+                  - listitem [ref=e3251]:
+                    - generic [ref=e3252] [cursor=pointer]: Murray
+                  - listitem [ref=e3254]:
+                    - generic [ref=e3255] [cursor=pointer]: KORELAN
+                  - listitem [ref=e3257]:
+                    - generic [ref=e3258] [cursor=pointer]: 아나파
+                  - listitem [ref=e3260]:
+                    - generic [ref=e3261] [cursor=pointer]: 에이프
+                  - listitem:
+                    - generic [ref=e3263] [cursor=pointer]: 슬룸
+                  - listitem:
+                    - generic [ref=e3265] [cursor=pointer]: 디디제제
+                  - listitem:
+                    - generic [ref=e3267] [cursor=pointer]: 코지템프
+                  - listitem:
+                    - generic [ref=e3269] [cursor=pointer]: 카프
+                  - listitem:
+                    - generic [ref=e3271] [cursor=pointer]: 니민
+                  - listitem:
+                    - generic [ref=e3273] [cursor=pointer]: 프리라이프
+                  - listitem:
+                    - generic [ref=e3275] [cursor=pointer]: 라이프엠디
+                  - listitem:
+                    - generic [ref=e3277] [cursor=pointer]: 셀프리쉬
+                  - listitem:
+                    - generic [ref=e3279] [cursor=pointer]: 포커스
+                  - listitem:
+                    - generic [ref=e3281] [cursor=pointer]: Garrl
+                  - listitem:
+                    - generic [ref=e3283] [cursor=pointer]: 발락
+                  - listitem:
+                    - generic [ref=e3285] [cursor=pointer]: Mochae
+                  - listitem:
+                    - generic [ref=e3287] [cursor=pointer]: 바디앤
+                  - listitem:
+                    - generic [ref=e3289] [cursor=pointer]: PYHO
+                  - listitem:
+                    - generic [ref=e3291] [cursor=pointer]: 오렌지앨리스
+                - generic [ref=e3293] [cursor=pointer]: + 더보기
+            - separator [ref=e3294]
+            - generic [ref=e3295]:
+              - heading "상품 상태" [level=5] [ref=e3296]
+              - list [ref=e3298]:
+                - listitem [ref=e3299]:
+                  - generic [ref=e3300] [cursor=pointer]: 새 상품
+                - listitem [ref=e3302]:
+                  - generic [ref=e3303] [cursor=pointer]: 박스 훼손
+                - listitem [ref=e3305]:
+                  - generic [ref=e3306] [cursor=pointer]: 재포장
+                - listitem [ref=e3308]:
+                  - generic [ref=e3309] [cursor=pointer]: 반품
+                - listitem [ref=e3311]:
+                  - generic [ref=e3312] [cursor=pointer]: 중고
+            - separator [ref=e3314]
+            - generic [ref=e3315]:
+              - heading "낱개상품 여부" [level=5] [ref=e3316]
+              - list [ref=e3318]:
+                - listitem [ref=e3319]:
+                  - generic [ref=e3320] [cursor=pointer]: 낱개상품
+            - separator [ref=e3322]
+            - generic [ref=e3323]:
+              - heading "소비전력" [level=5] [ref=e3324]
+              - list [ref=e3326]:
+                - listitem [ref=e3327]:
+                  - generic [ref=e3328] [cursor=pointer]: 500W 이하
+                - listitem [ref=e3330]:
+                  - generic [ref=e3331] [cursor=pointer]: 500~1,000W
+                - listitem [ref=e3333]:
+                  - generic: 1,000W 이상
+            - separator [ref=e3334]
+            - generic [ref=e3335]:
+              - heading "안마기 종류" [level=5] [ref=e3336]
+              - generic [ref=e3337]:
+                - list [ref=e3338]:
+                  - listitem [ref=e3339]:
+                    - generic [ref=e3340] [cursor=pointer]: 어깨/목 안마기
+                  - listitem [ref=e3342]:
+                    - generic [ref=e3343] [cursor=pointer]: 발/다리 안마기
+                  - listitem [ref=e3345]:
+                    - generic [ref=e3346] [cursor=pointer]: 핸디형
+                  - listitem [ref=e3348]:
+                    - generic [ref=e3349] [cursor=pointer]: 쿠션형
+                  - listitem [ref=e3351]:
+                    - generic [ref=e3352] [cursor=pointer]: 시트형
+                  - listitem:
+                    - generic [ref=e3354] [cursor=pointer]: 매트형
+                  - listitem:
+                    - generic [ref=e3356] [cursor=pointer]: 눈안마기
+                  - listitem:
+                    - generic [ref=e3358] [cursor=pointer]: 저주파마사지기
+                - generic [ref=e3360] [cursor=pointer]: + 더보기
+            - separator [ref=e3361]
+            - generic [ref=e3362]:
+              - heading "색상" [level=5] [ref=e3363]
+              - generic [ref=e3364]:
+                - list [ref=e3365]:
+                  - listitem [ref=e3366]:
+                    - generic [ref=e3367] [cursor=pointer]: 블랙
+                  - listitem [ref=e3369]:
+                    - generic [ref=e3370] [cursor=pointer]: 네이비
+                  - listitem [ref=e3372]:
+                    - generic [ref=e3373] [cursor=pointer]: 그레이
+                  - listitem [ref=e3375]:
+                    - generic [ref=e3376] [cursor=pointer]: 실버
+                  - listitem [ref=e3378]:
+                    - generic [ref=e3379] [cursor=pointer]: 레드
+                  - listitem:
+                    - generic [ref=e3381] [cursor=pointer]: 오렌지
+                  - listitem:
+                    - generic [ref=e3383] [cursor=pointer]: 옐로우
+                  - listitem:
+                    - generic [ref=e3385] [cursor=pointer]: 그린
+                  - listitem:
+                    - generic [ref=e3387] [cursor=pointer]: 블루
+                  - listitem:
+                    - generic [ref=e3389] [cursor=pointer]: 퍼플
+                  - listitem:
+                    - generic [ref=e3391] [cursor=pointer]: 핑크
+                  - listitem:
+                    - generic [ref=e3393] [cursor=pointer]: 화이트
+                  - listitem:
+                    - generic [ref=e3395] [cursor=pointer]: 브라운
+                  - listitem:
+                    - generic [ref=e3397] [cursor=pointer]: 골드
+                  - listitem:
+                    - generic [ref=e3399] [cursor=pointer]: 베이지
+                  - listitem:
+                    - generic [ref=e3401] [cursor=pointer]: 혼합
+                - generic [ref=e3403] [cursor=pointer]: + 더보기
+            - separator [ref=e3404]
+            - generic [ref=e3405]:
+              - heading "강도조절 가능 여부" [level=5] [ref=e3406]
+              - list [ref=e3408]:
+                - listitem [ref=e3409]:
+                  - generic [ref=e3410] [cursor=pointer]: 강도조절
+            - separator [ref=e3412]
+            - generic [ref=e3413]:
+              - heading "사용부위" [level=5] [ref=e3414]
+              - generic [ref=e3415]:
+                - list [ref=e3416]:
+                  - listitem [ref=e3417]:
+                    - generic [ref=e3418] [cursor=pointer]: 다용도
+                  - listitem [ref=e3420]:
+                    - generic [ref=e3421] [cursor=pointer]: 어깨/목
+                  - listitem [ref=e3423]:
+                    - generic [ref=e3424] [cursor=pointer]: 발/종아리/다리
+                  - listitem [ref=e3426]:
+                    - generic [ref=e3427] [cursor=pointer]: 손/손목
+                  - listitem [ref=e3429]:
+                    - generic [ref=e3430] [cursor=pointer]: 눈
+                  - listitem:
+                    - generic [ref=e3432] [cursor=pointer]: 복부/허리
+                  - listitem:
+                    - generic [ref=e3434] [cursor=pointer]: 등
+                  - listitem:
+                    - generic [ref=e3436] [cursor=pointer]: 기타
+                - generic [ref=e3438] [cursor=pointer]: + 더보기
+            - separator [ref=e3439]
+            - generic [ref=e3440]:
+              - heading "유무선 여부" [level=5] [ref=e3441]
+              - list [ref=e3443]:
+                - listitem [ref=e3444]:
+                  - generic [ref=e3445] [cursor=pointer]: 무선
+                - listitem [ref=e3447]:
+                  - generic [ref=e3448] [cursor=pointer]: 유선
+            - separator [ref=e3450]
+            - generic [ref=e3451]:
+              - heading "전원공급방식" [level=5] [ref=e3452]
+              - list [ref=e3454]:
+                - listitem [ref=e3455]:
+                  - generic [ref=e3456] [cursor=pointer]: 전기코드/USB
+                - listitem [ref=e3458]:
+                  - generic [ref=e3459] [cursor=pointer]: USB 충전식
+                - listitem [ref=e3461]:
+                  - generic [ref=e3462] [cursor=pointer]: 코드 충전식
+                - listitem [ref=e3464]:
+                  - generic [ref=e3465] [cursor=pointer]: 건전지
+            - separator [ref=e3467]
+            - generic [ref=e3468]:
+              - heading "온열기능 유무" [level=5] [ref=e3469]
+              - list [ref=e3471]:
+                - listitem [ref=e3472]:
+                  - generic [ref=e3473] [cursor=pointer]: 온열 가능
+            - separator [ref=e3475]
+            - generic [ref=e3476]:
+              - heading "타이머 유무" [level=5] [ref=e3477]
+              - list [ref=e3479]:
+                - listitem [ref=e3480]:
+                  - generic [ref=e3481] [cursor=pointer]: 타이머
+            - separator [ref=e3483]
+            - generic [ref=e3484]:
+              - heading "디스플레이 표시 여부" [level=5] [ref=e3485]
+              - list [ref=e3487]:
+                - listitem [ref=e3488]:
+                  - generic [ref=e3489] [cursor=pointer]: 디스플레이 표시 가능
+            - separator [ref=e3491]
+            - generic [ref=e3492]:
+              - heading "안마기 형태" [level=5] [ref=e3493]
+              - generic [ref=e3494]:
+                - list [ref=e3495]:
+                  - listitem [ref=e3496]:
+                    - generic [ref=e3497] [cursor=pointer]: 핸디형
+                  - listitem [ref=e3499]:
+                    - generic [ref=e3500] [cursor=pointer]: 쿠션형
+                  - listitem [ref=e3502]:
+                    - generic [ref=e3503] [cursor=pointer]: 시트형
+                  - listitem [ref=e3505]:
+                    - generic [ref=e3506] [cursor=pointer]: 매트형
+                  - listitem [ref=e3508]:
+                    - generic [ref=e3509] [cursor=pointer]: 부착형
+                  - listitem:
+                    - generic [ref=e3511] [cursor=pointer]: 안대형
+                  - listitem:
+                    - generic [ref=e3513] [cursor=pointer]: 헬멧형
+                  - listitem:
+                    - generic [ref=e3515] [cursor=pointer]: 팔걸이형
+                  - listitem:
+                    - generic [ref=e3517] [cursor=pointer]: 전면개방형
+                  - listitem:
+                    - generic [ref=e3519] [cursor=pointer]: 전면차단형
+                - generic [ref=e3521] [cursor=pointer]: + 더보기
+            - separator [ref=e3522]
+            - generic [ref=e3523]:
+              - heading "설치지원방식" [level=5] [ref=e3524]
+              - list [ref=e3526]:
+                - listitem [ref=e3527]:
+                  - generic [ref=e3528] [cursor=pointer]: 방문설치
+                - listitem [ref=e3530]:
+                  - generic: 사전답사
+                - listitem [ref=e3531]:
+                  - generic [ref=e3532] [cursor=pointer]: 고객직접설치
+            - separator [ref=e3534]
+            - generic [ref=e3535]:
+              - heading "리모컨 포함 여부" [level=5] [ref=e3536]
+              - list [ref=e3538]:
+                - listitem [ref=e3539]:
+                  - generic [ref=e3540] [cursor=pointer]: 리모컨 포함
+            - separator [ref=e3542]
+            - generic [ref=e3543]:
+              - heading "자동 코스" [level=5] [ref=e3544]
+              - list [ref=e3546]:
+                - listitem [ref=e3547]:
+                  - generic [ref=e3548] [cursor=pointer]: 6종류 이하
+                - listitem [ref=e3550]:
+                  - generic [ref=e3551] [cursor=pointer]: 6~12종류
+                - listitem [ref=e3553]:
+                  - generic [ref=e3554] [cursor=pointer]: 12~18종류
+                - listitem [ref=e3556]:
+                  - generic [ref=e3557] [cursor=pointer]: 18종류 이상
+            - separator [ref=e3559]
+            - generic [ref=e3560]:
+              - heading "별점" [level=5] [ref=e3561]
+              - list [ref=e3563]:
+                - listitem [ref=e3564]:
+                  - generic "전체" [ref=e3565]: 별점전체
+                - listitem [ref=e3566]:
+                  - generic "4점 이상" [ref=e3567]:
+                    - generic [ref=e3568] [cursor=pointer]
+                    - text: 4점 이상
+                - listitem [ref=e3569]:
+                  - generic "3점 이상" [ref=e3570]:
+                    - generic [ref=e3571] [cursor=pointer]
+                    - text: 3점 이상
+                - listitem [ref=e3572]:
+                  - generic "2점 이상" [ref=e3573]:
+                    - generic [ref=e3574] [cursor=pointer]
+                    - text: 2점 이상
+                - listitem [ref=e3575]:
+                  - generic "1점 이상" [ref=e3576]:
+                    - generic [ref=e3577] [cursor=pointer]
+                    - text: 1점 이상
+            - separator [ref=e3578]
+            - generic [ref=e3579]:
+              - heading "가격" [level=5] [ref=e3580]
+              - list [ref=e3582]:
+                - listitem [ref=e3583]:
+                  - generic "priceFilter" [ref=e3584]: 가격 전체
+                - listitem [ref=e3585]:
+                  - generic "priceFilter" [ref=e3586]: 3만원 이하
+                - listitem [ref=e3587]:
+                  - generic "priceFilter" [ref=e3588]: 3만원~6만원
+                - listitem [ref=e3589]:
+                  - generic "priceFilter" [ref=e3590]: 6만원~9만원
+                - listitem [ref=e3591]:
+                  - generic "priceFilter" [ref=e3592]: 9만원~12만원
+                - listitem [ref=e3593]:
+                  - generic "priceFilter" [ref=e3594]: 12만원 이상
+              - generic [ref=e3595]:
+                - generic [ref=e3596]:
+                  - textbox "minPrice" [ref=e3597]
+                  - generic [ref=e3598]: ~
+                  - textbox "maxPrice" [ref=e3599]
+                  - text: 원
+                - generic "priceFilter" [ref=e3600]: 검색
+            - separator [ref=e3601]
+          - generic [ref=e3604]:
+            - generic [ref=e3605]: 현재 검색 결과에 만족하셨나요?
+            - button [ref=e3606] [cursor=pointer]
+            - button [ref=e3607] [cursor=pointer]
+            - generic [ref=e3608]:
+              - paragraph [ref=e3609]: 어떤 문제가 있었나요?
+              - list [ref=e3610]:
+                - listitem [ref=e3611] [cursor=pointer]: 추천해준 검색어가 도움이 안 돼요
+                - listitem [ref=e3612] [cursor=pointer]: 관련 없는 상품이 있어요
+                - listitem [ref=e3613] [cursor=pointer]: 이미지나 정보가 부정확해요
+                - listitem [ref=e3614] [cursor=pointer]: 필터가 도움이 안 돼요
+                - listitem [ref=e3615] [cursor=pointer]: 기타 원하는 옵션이 없어요
+        - generic [ref=e3616]:
+          - generic [ref=e3617]:
+            - heading [level=1] [ref=e3618]:
+              - strong [ref=e3619]: "'저주파 발마사지기'"
+              - text: 에 대한 검색결과
+            - generic [ref=e3620]:
+              - generic [ref=e3621]: "연관검색어:"
+              - link "저주파발마사지기" [ref=e3622] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=%EC%A0%80%EC%A3%BC%ED%8C%8C%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&channel=relate
+              - link "ems발마사지기" [ref=e3623] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=ems%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&channel=relate
+              - link "발마사지기" [ref=e3624] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&channel=relate
+              - link "ems발매트" [ref=e3625] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=ems%EB%B0%9C%EB%A7%A4%ED%8A%B8&channel=relate
+              - link "인포벨발마사지기" [ref=e3626] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=%EC%9D%B8%ED%8F%AC%EB%B2%A8%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&channel=relate
+              - link "발바닥마사지기" [ref=e3627] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=%EB%B0%9C%EB%B0%94%EB%8B%A5%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0&channel=relate
+              - link "발마사지패드" [ref=e3628] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%ED%8C%A8%EB%93%9C&channel=relate
+              - link "ems발" [ref=e3629] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=ems%EB%B0%9C&channel=relate
+              - link "ems" [ref=e3630] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=ems&channel=relate
+              - link "Ems" [ref=e3631] [cursor=pointer]:
+                - /url: https://www.coupang.com/np/search?q=Ems&channel=relate
+            - generic [ref=e3632]:
+              - generic [ref=e3635]:
+                - checkbox "배송비 포함" [ref=e3636] [cursor=pointer]
+                - generic [ref=e3639]: 배송비 포함
+              - list [ref=e3643]:
+                - listitem [ref=e3644]:
+                  - radio "쿠팡 랭킹순" [checked] [ref=e3645]
+                  - generic [ref=e3646] [cursor=pointer]: 쿠팡 랭킹순
+                  - generic [ref=e3647]: 설명
+                - listitem [ref=e3648]:
+                  - radio "낮은가격순" [ref=e3649]
+                  - generic [ref=e3650] [cursor=pointer]: 낮은가격순
+                - listitem [ref=e3651]:
+                  - radio "높은가격순" [ref=e3652]
+                  - generic [ref=e3653] [cursor=pointer]: 높은가격순
+                - listitem [ref=e3654]:
+                  - radio "판매량순" [ref=e3655]
+                  - generic [ref=e3656] [cursor=pointer]: 판매량순
+                - listitem [ref=e3657]:
+                  - radio "최신순" [ref=e3658]
+                  - generic [ref=e3659] [cursor=pointer]: 최신순
+          - generic [ref=e3661]:
+            - list [ref=e3663]:
+              - listitem [ref=e3664] [cursor=pointer]:
+                - link "리바이티브 EMS 마사지기 저주파 종아리, ACTEGY LV, 화이트 할인 · 5일 남음 500,000원 64% 178,580원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 4.5 (206) 최대 8,840원 적립 최대 8,840원 적립 광고 Ad information" [ref=e3665]:
+                  - /url: /vp/products/8283722438?itemId=23883798328&vendorItemId=91046025811&sourceType=srp_product_ads&clickEventId=e972d150-a5ac-11f1-a7bf-ba4a8e27aa9d&korePlacement=15&koreSubPlacement=1&clickEventId=e972d150-a5ac-11f1-a7bf-ba4a8e27aa9d&korePlacement=15&koreSubPlacement=1
+                  - figure [ref=e3666]:
+                    - img "리바이티브 EMS 마사지기 저주파 종아리, ACTEGY LV, 화이트" [ref=e3667]
+                  - generic [ref=e3668]:
+                    - generic [ref=e3670]: 리바이티브 EMS 마사지기 저주파 종아리, ACTEGY LV, 화이트
+                    - generic [ref=e3671]
+                    - generic [ref=e3684]
+                    - generic [ref=e3691]
+                    - generic [ref=e3694]
+                    - generic [ref=e3704]
+                    - generic [ref=e3708]
+              - listitem [ref=e3713] [cursor=pointer]:
+                - link "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개) 쿠폰할인 · 5일 남음 165,000원 46% 89,000원 모레(목) 도착 예정 무료배송 4.5 (199) 최대 4,450원 적립 최대 4,450원 적립 광고 Ad information" [ref=e3714]:
+                  - /url: /vp/products/9570313173?itemId=28563836906&vendorItemId=93426998580&sourceType=srp_product_ads&clickEventId=e972d150-a5ac-11f1-9466-c38a2896f6cb&korePlacement=15&koreSubPlacement=5&clickEventId=e972d150-a5ac-11f1-9466-c38a2896f6cb&korePlacement=15&koreSubPlacement=5
+                  - figure [ref=e3715]:
+                    - img "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개)" [ref=e3716]
+                  - generic [ref=e3717]:
+                    - generic [ref=e3719]: "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개)"
+                    - generic [ref=e3720]
+                    - generic [ref=e3733]
+                    - generic [ref=e3738]
+                    - generic [ref=e3748]
+                    - generic [ref=e3752]
+              - listitem [ref=e3757] [cursor=pointer]:
+                - link "써마드 PLX 발 마사지기 Thermard PLX, 1개 228,000원 38% 139,650원 내일(수) 도착 보장 무료배송 4.5 (4,729) 최대 6,983원 적립 최대 6,983원 적립 1" [ref=e3758]:
+                  - /url: /vp/products/8780264811?itemId=25546821454&vendorItemId=93894162211&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=2&rank=2
+                  - figure [ref=e3759]:
+                    - img "써마드 PLX 발 마사지기 Thermard PLX, 1개" [ref=e3760]
+                  - generic [ref=e3761]:
+                    - generic [ref=e3763]: 써마드 PLX 발 마사지기 Thermard PLX, 1개
+                    - generic [ref=e3764]
+                    - generic [ref=e3771]
+                    - generic [ref=e3778]
+                    - generic [ref=e3788]
+                    - generic [ref=e3791]: "1"
+              - listitem [ref=e3792] [cursor=pointer]:
+                - link "에이프 발톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기 73,750원 43% 41,900원 내일(수) 도착 보장 무료배송 4.5 (823) 최대 2,095원 적립 최대 2,095원 적립 2" [ref=e3793]:
+                  - /url: /vp/products/8376705080?itemId=24203743540&vendorItemId=92167051343&pickType=COU_PICK&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=3&rank=3
+                  - figure [ref=e3794]:
+                    - img "에이프 발톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기" [ref=e3795]
+                  - generic [ref=e3796]:
+                    - generic [ref=e3802]
+                    - generic [ref=e3804]
+                    - generic [ref=e3811]
+                    - generic [ref=e3816]
+                    - generic [ref=e3826]
+                    - generic [ref=e3829]: "2"
+              - listitem [ref=e3830] [cursor=pointer]:
+                - link "KORELAN 저주파 미세전류 발마사지기 안마기 족저 마사지, 갈색, 35cm 할인 39,900원 50% 19,900원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 4.5 (2,999) 최대 995원 적립 최대 995원 적립 3" [ref=e3831]:
+                  - /url: /vp/products/7635114684?itemId=20272626728&vendorItemId=95873118482&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=4&rank=4
+                  - figure [ref=e3832]:
+                    - img "KORELAN 저주파 미세전류 발마사지기 안마기 족저 마사지, 갈색, 35cm" [ref=e3833]
+                  - generic [ref=e3834]:
+                    - generic [ref=e3837]
+                    - generic [ref=e3840]
+                    - generic [ref=e3852]
+                    - generic [ref=e3859]
+                    - generic [ref=e3862]
+                    - generic [ref=e3872]
+                    - generic [ref=e3875]: "3"
+              - listitem [ref=e3876] [cursor=pointer]:
+                - link "리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트 할인 · 5일 남음 799,000원 66% 264,710원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 4.5 (96) 최대 13,103원 적립 최대 13,103원 적립 광고 Ad information" [ref=e3877]:
+                  - /url: /vp/products/8286702755?itemId=23895787740&vendorItemId=91046038699&sourceType=srp_product_ads&clickEventId=e972d150-a5ac-11f1-bb9c-b3745cd9504f&korePlacement=15&koreSubPlacement=6&clickEventId=e972d150-a5ac-11f1-bb9c-b3745cd9504f&korePlacement=15&koreSubPlacement=6
+                  - figure [ref=e3878]:
+                    - img "리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트" [ref=e3879]
+                  - generic [ref=e3880]:
+                    - generic [ref=e3882]: 리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트
+                    - generic [ref=e3883]
+                    - generic [ref=e3896]
+                    - generic [ref=e3903]
+                    - generic [ref=e3906]
+                    - generic [ref=e3916]
+                    - generic [ref=e3920]
+              - listitem [ref=e3925] [cursor=pointer]:
+                - link "에이프 발톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기 73,750원 43% 41,900원 내일(수) 도착 보장 무료배송 4.5 (823) 최대 2,095원 적립 최대 2,095원 적립 광고 Ad information" [ref=e3926]:
+                  - /url: /vp/products/8376705080?itemId=24203743540&vendorItemId=92167051343&pickType=COU_PICK&sourceType=srp_product_ads&clickEventId=e972d150-a5ac-11f1-aa36-e58ccf242d6e&korePlacement=15&koreSubPlacement=9&clickEventId=e972d150-a5ac-11f1-aa36-e58ccf242d6e&korePlacement=15&koreSubPlacement=9
+                  - figure [ref=e3927]:
+                    - img "에이프 발톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기" [ref=e3928]
+                  - generic [ref=e3929]:
+                    - generic [ref=e3935]
+                    - generic [ref=e3937]
+                    - generic [ref=e3944]
+                    - generic [ref=e3949]
+                    - generic [ref=e3959]
+                    - generic [ref=e3963]
+              - listitem [ref=e3968] [cursor=pointer]:
+                - link "[EMS 저주파] 블링크 저주파 발 마사지기 무선 충전식 발바닥 종아리 마사지기 족저근막, 베이지, FMA 109,000원 69% 32,900원 내일(수) 도착 보장 무료배송 5 (91) 최대 1,645원 적립 최대 1,645원 적립 4" [ref=e3969]:
+                  - /url: /vp/products/9675015829?itemId=28928821665&vendorItemId=95516278150&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=7&rank=7
+                  - figure [ref=e3970]:
+                    - img "[EMS 저주파] 블링크 저주파 발 마사지기 무선 충전식 발바닥 종아리 마사지기 족저근막, 베이지, FMA" [ref=e3971]
+                  - generic [ref=e3972]:
+                    - generic [ref=e3974]: "[EMS 저주파] 블링크 저주파 발 마사지기 무선 충전식 발바닥 종아리 마사지기 족저근막, 베이지, FMA"
+                    - generic [ref=e3975]
+                    - generic [ref=e3982]
+                    - generic [ref=e3989]
+                    - generic [ref=e3999]
+                    - generic [ref=e4002]: "4"
+              - listitem [ref=e4003] [cursor=pointer]:
+                - link "써마드 PLX 발 마사지기 Thermard PLX, 2개 248,260원 3% 238,500원 내일(수) 도착 보장 무료배송 새 상품, 반품 (4) 4.5 (4,729) 최대 11,925원 적립 최대 11,925원 적립 5" [ref=e4004]:
+                  - /url: /vp/products/8780264811?itemId=25546821456&vendorItemId=93894162209&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=8&rank=8
+                  - figure [ref=e4005]:
+                    - img "써마드 PLX 발 마사지기 Thermard PLX, 2개" [ref=e4006]
+                  - generic [ref=e4007]:
+                    - generic [ref=e4009]: 써마드 PLX 발 마사지기 Thermard PLX, 2개
+                    - generic [ref=e4010]
+                    - generic [ref=e4017]
+                    - generic [ref=e4024]
+                    - generic [ref=e4027]
+                    - generic [ref=e4037]
+                    - generic [ref=e4040]: "5"
+              - listitem [ref=e4041] [cursor=pointer]:
+                - link "아나파 미세전류 저주파 발바닥 발목 발등 마사지기, ANAPA-MT01 할인 77,510원 16% 64,880원 내일(수) 도착 보장 무료배송 새 상품, 반품 (5) 4.5 (533) 최대 3,211원 적립 최대 3,211원 적립 광고 Ad information" [ref=e4042]:
+                  - /url: /vp/products/8247737848?itemId=23740575435&vendorItemId=90934285079&sourceType=srp_product_ads&clickEventId=e972f860-a5ac-11f1-909a-4846b1dd582e&korePlacement=15&koreSubPlacement=11&clickEventId=e972f860-a5ac-11f1-909a-4846b1dd582e&korePlacement=15&koreSubPlacement=11
+                  - figure [ref=e4043]:
+                    - img "아나파 미세전류 저주파 발바닥 발목 발등 마사지기, ANAPA-MT01" [ref=e4044]
+                  - generic [ref=e4045]:
+                    - generic [ref=e4047]: 아나파 미세전류 저주파 발바닥 발목 발등 마사지기, ANAPA-MT01
+                    - generic [ref=e4048]
+                    - generic [ref=e4060]
+                    - generic [ref=e4067]
+                    - generic [ref=e4070]
+                    - generic [ref=e4080]
+                    - generic [ref=e4084]
+              - listitem [ref=e4089] [cursor=pointer]:
+                - link "발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번 28,610원 9/18 도착 예정 무료배송 5 (28) 최대 1,430원 적립 최대 1,430원 적립 6" [ref=e4090]:
+                  - /url: /vp/products/9231269283?itemId=27288024307&vendorItemId=95908299960&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=10&rank=10
+                  - figure [ref=e4091]:
+                    - img "발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번" [ref=e4092]
+                  - generic [ref=e4093]:
+                    - generic [ref=e4095]: 발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번
+                    - generic [ref=e4096]: 28,610원
+                    - generic [ref=e4100]
+                    - generic [ref=e4105]
+                    - generic [ref=e4115]
+                    - generic [ref=e4118]: "6"
+              - listitem [ref=e4119] [cursor=pointer]:
+                - link "큐케어 EMS 저주파 슬리퍼 다리마사지 발바닥 종아리 발 마사지기, 검정, 큐케어발마사지기 할인 109,000원 39% 66,400원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 5 (58) 최대 3,286원 적립 최대 3,286원 적립 광고 Ad information" [ref=e4120]:
+                  - /url: /vp/products/9305238644?itemId=27568028092&vendorItemId=94480380660&sourceType=srp_product_ads&clickEventId=e972f860-a5ac-11f1-b54a-e9c4657ed69f&korePlacement=15&koreSubPlacement=12&clickEventId=e972f860-a5ac-11f1-b54a-e9c4657ed69f&korePlacement=15&koreSubPlacement=12
+                  - figure [ref=e4121]:
+                    - img "큐케어 EMS 저주파 슬리퍼 다리마사지 발바닥 종아리 발 마사지기, 검정, 큐케어발마사지기" [ref=e4122]
+                  - generic [ref=e4123]:
+                    - generic [ref=e4126]
+                    - generic [ref=e4129]
+                    - generic [ref=e4141]
+                    - generic [ref=e4148]
+                    - generic [ref=e4151]
+                    - generic [ref=e4161]
+                    - generic [ref=e4165]
+              - listitem [ref=e4170] [cursor=pointer]:
+                - link "파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A 할인 159,900원 75% 38,700원 내일(수) 도착 보장 무료배송 5 (316) 최대 1,915원 적립 최대 1,915원 적립 광고 Ad information" [ref=e4171]:
+                  - /url: /vp/products/9593901123?itemId=28639741269&vendorItemId=95582732147&sourceType=srp_product_ads&clickEventId=e972f860-a5ac-11f1-beb0-d8f219cbad6c&korePlacement=15&koreSubPlacement=21&clickEventId=e972f860-a5ac-11f1-beb0-d8f219cbad6c&korePlacement=15&koreSubPlacement=21
+                  - figure [ref=e4172]:
+                    - img "파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A" [ref=e4173]
+                  - generic [ref=e4174]:
+                    - generic [ref=e4176]: 파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A
+                    - generic [ref=e4177]
+                    - generic [ref=e4189]
+                    - generic [ref=e4196]
+                    - generic [ref=e4206]
+                    - generic [ref=e4210]
+              - listitem [ref=e4215] [cursor=pointer]:
+                - link "SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A 할인 60,000원 83% 9,990원 내일(수) 도착 보장 4.5 (316) 최대 500원 적립 최대 500원 적립 7" [ref=e4216]:
+                  - /url: /vp/products/9587402759?itemId=28619490654&vendorItemId=95562732786&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=13&rank=13
+                  - figure [ref=e4217]:
+                    - img "SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A" [ref=e4218]
+                  - generic [ref=e4219]:
+                    - generic [ref=e4221]: SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A
+                    - generic [ref=e4222]
+                    - generic [ref=e4234]: 내일(수) 도착 보장
+                    - generic [ref=e4240]
+                    - generic [ref=e4250]
+                    - generic [ref=e4253]: "7"
+              - listitem [ref=e4254] [cursor=pointer]:
+                - link "CozyTemp 저주파 발마사지기 패드 EMS 발바닥 안마기 발바닥 자극기, 그레이, ST-1202A 할인 39,800원 25% 29,800원 내일(수) 도착 보장 무료배송 새 상품, 반품 (2) 5 (85) 최대 1,490원 적립 최대 1,490원 적립 8" [ref=e4255]:
+                  - /url: /vp/products/9181523179?itemId=27077540726&vendorItemId=94045827068&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=14&rank=14
+                  - figure [ref=e4256]:
+                    - img "CozyTemp 저주파 발마사지기 패드 EMS 발바닥 안마기 발바닥 자극기, 그레이, ST-1202A" [ref=e4257]
+                  - generic [ref=e4258]:
+                    - generic [ref=e4261]
+                    - generic [ref=e4264]
+                    - generic [ref=e4276]
+                    - generic [ref=e4283]
+                    - generic [ref=e4286]
+                    - generic [ref=e4296]
+                    - generic [ref=e4299]: "8"
+              - listitem [ref=e4300] [cursor=pointer]:
+                - link "Gaayou 저주파 발마사지기 ems 발목찜질기 저주파 발 발목 발바닥 자극기 온열 안마기, 블랙, KJH-X9HW 100,000원 60% 39,900원 내일(수) 도착 보장 무료배송 새 상품, 반품 (2) 4.5 (297) 최대 1,995원 적립 최대 1,995원 적립 9" [ref=e4301]:
+                  - /url: /vp/products/9146215879?itemId=26926875618&vendorItemId=93896569667&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=15&rank=15
+                  - figure [ref=e4302]:
+                    - img "Gaayou 저주파 발마사지기 ems 발목찜질기 저주파 발 발목 발바닥 자극기 온열 안마기, 블랙, KJH-X9HW" [ref=e4303]
+                  - generic [ref=e4304]:
+                    - generic [ref=e4307]
+                    - generic [ref=e4311]
+                    - generic [ref=e4318]
+                    - generic [ref=e4325]
+                    - generic [ref=e4328]
+                    - generic [ref=e4338]
+                    - generic [ref=e4341]: "9"
+              - listitem [ref=e4342] [cursor=pointer]:
+                - link "EMS 저주파 무선 스마트 발 마사지기 + 리모컨 세트, 블랙(마사지기) 20,000원 53% 9,400원 내일(수) 도착 보장 와우는 무료배송 ∙ 무료반품 4.5 (11) 최대 470원 적립 최대 470원 적립 10" [ref=e4343]:
+                  - /url: /vp/products/9664399074?itemId=28893118496&vendorItemId=95825634797&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=16&rank=16
+                  - figure [ref=e4344]:
+                    - img "EMS 저주파 무선 스마트 발 마사지기 + 리모컨 세트, 블랙(마사지기)" [ref=e4345]
+                  - generic [ref=e4346]:
+                    - generic [ref=e4348]: EMS 저주파 무선 스마트 발 마사지기 + 리모컨 세트, 블랙(마사지기)
+                    - generic [ref=e4349]
+                    - generic [ref=e4356]
+                    - generic [ref=e4363]
+                    - generic [ref=e4373]
+                    - generic [ref=e4376]: "10"
+              - listitem [ref=e4377] [cursor=pointer]:
+                - link "EMS 온열 발바닥 마사지 종아리기, 국내 사용 가능, 한국형 플러그 지원 109,000원 63% 39,800원 9/11 도착 예정 무료배송 4.5 (45) 최대 1,990원 적립 최대 1,990원 적립" [ref=e4378]:
+                  - /url: /vp/products/9500026240?itemId=28301213976&vendorItemId=95918130681&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=17&rank=17
+                  - figure [ref=e4379]:
+                    - img "EMS 온열 발바닥 마사지 종아리기, 국내 사용 가능, 한국형 플러그 지원" [ref=e4380]
+                  - generic [ref=e4381]:
+                    - generic [ref=e4383]: EMS 온열 발바닥 마사지 종아리기, 국내 사용 가능, 한국형 플러그 지원
+                    - generic [ref=e4384]
+                    - generic [ref=e4391]
+                    - generic [ref=e4396]
+                    - generic [ref=e4406]
+              - listitem [ref=e4409] [cursor=pointer]:
+                - link "DDJJ 저주파 발마사지기 ems 무선 슬리퍼형 충전식 1세트, 블랙, 블랙 139,000원 67% 44,900원 내일(수) 도착 보장 무료배송 4.5 (483) 최대 2,245원 적립 최대 2,245원 적립" [ref=e4410]:
+                  - /url: /vp/products/8686475143?itemId=25217367562&vendorItemId=92213937298&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=18&rank=18
+                  - figure [ref=e4411]:
+                    - img "DDJJ 저주파 발마사지기 ems 무선 슬리퍼형 충전식 1세트, 블랙, 블랙" [ref=e4412]
+                  - generic [ref=e4413]:
+                    - generic [ref=e4416]
+                    - generic [ref=e4419]
+                    - generic [ref=e4426]
+                    - generic [ref=e4433]
+                    - generic [ref=e4443]
+              - listitem [ref=e4446] [cursor=pointer]:
+                - link "아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01 89,000원 11% 79,000원 내일(수) 도착 보장 무료배송 새 상품, 반품 (5) 5 (230) 최대 3,950원 적립 최대 3,950원 적립" [ref=e4447]:
+                  - /url: /vp/products/9501236053?itemId=28305638014&vendorItemId=95461694436&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=19&rank=19
+                  - figure [ref=e4448]:
+                    - img "아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01" [ref=e4449]
+                  - generic [ref=e4450]:
+                    - generic [ref=e4452]: 아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01
+                    - generic [ref=e4453]
+                    - generic [ref=e4460]
+                    - generic [ref=e4467]
+                    - generic [ref=e4470]
+                    - generic [ref=e4480]
+              - listitem [ref=e4483] [cursor=pointer]:
+                - link "KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375 할인 113,900원 21% 89,900원 내일(수) 도착 보장 무료배송 5 (275) 최대 4,316원 적립 최대 4,316원 적립" [ref=e4484]:
+                  - /url: /vp/products/8619476577?itemId=25006208098&vendorItemId=92011264677&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=20&rank=20
+                  - figure [ref=e4485]:
+                    - img "KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375" [ref=e4486]
+                  - generic [ref=e4487]:
+                    - generic [ref=e4489]: KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375
+                    - generic [ref=e4490]
+                    - generic [ref=e4502]
+                    - generic [ref=e4509]
+                    - generic [ref=e4519]
+              - listitem [ref=e4522] [cursor=pointer]:
+                - link "빅스파 발 마사지기 발바닥 지압기 롤러 안마기, 화이트, 1개 할인 43,000원 77% 9,500원 (1개당 9,500원) 내일(수) 도착 보장 5 (128) 최대 475원 적립 최대 475원 적립 광고 Ad information" [ref=e4523]:
+                  - /url: /vp/products/9635654027?itemId=28786478742&vendorItemId=95747898301&sourceType=srp_product_ads&clickEventId=e972f860-a5ac-11f1-b1cd-bfe4c2a669b4&korePlacement=15&koreSubPlacement=22&clickEventId=e972f860-a5ac-11f1-b1cd-bfe4c2a669b4&korePlacement=15&koreSubPlacement=22
+                  - figure [ref=e4524]:
+                    - img "빅스파 발 마사지기 발바닥 지압기 롤러 안마기, 화이트, 1개" [ref=e4525]
+                  - generic [ref=e4526]:
+                    - generic [ref=e4528]: 빅스파 발 마사지기 발바닥 지압기 롤러 안마기, 화이트, 1개
+                    - generic [ref=e4529]
+                    - generic [ref=e4542]: 내일(수) 도착 보장
+                    - generic [ref=e4548]
+                    - generic [ref=e4558]
+                    - generic [ref=e4562]
+              - listitem [ref=e4567] [cursor=pointer]:
+                - link "아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01 89,000원 11% 79,000원 내일(수) 도착 보장 무료배송 새 상품, 반품 (5) 5 (230) 최대 3,950원 적립 최대 3,950원 적립 광고 Ad information" [ref=e4568]:
+                  - /url: /vp/products/9501236053?itemId=28305638014&vendorItemId=95461694436&sourceType=srp_product_ads&clickEventId=e972f860-a5ac-11f1-8be6-4df9353dffe3&korePlacement=15&koreSubPlacement=24&clickEventId=e972f860-a5ac-11f1-8be6-4df9353dffe3&korePlacement=15&koreSubPlacement=24
+                  - figure [ref=e4569]:
+                    - img "아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01" [ref=e4570]
+                  - generic [ref=e4571]:
+                    - generic [ref=e4573]: 아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01
+                    - generic [ref=e4574]
+                    - generic [ref=e4581]
+                    - generic [ref=e4588]
+                    - generic [ref=e4591]
+                    - generic [ref=e4601]
+                    - generic [ref=e4605]
+              - listitem [ref=e4610] [cursor=pointer]:
+                - link "파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A 할인 159,900원 75% 38,700원 내일(수) 도착 보장 무료배송 5 (316) 최대 1,915원 적립 최대 1,915원 적립" [ref=e4611]:
+                  - /url: /vp/products/9593901123?itemId=28639741269&vendorItemId=95582732147&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=23&rank=23
+                  - figure [ref=e4612]:
+                    - img "파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A" [ref=e4613]
+                  - generic [ref=e4614]:
+                    - generic [ref=e4616]: 파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A
+                    - generic [ref=e4617]
+                    - generic [ref=e4629]
+                    - generic [ref=e4636]
+                    - generic [ref=e4646]
+              - listitem [ref=e4649] [cursor=pointer]:
+                - link "EMS 발마사지기 저주파 발바닥 케어 발관리기 풋마사지기, 화이트, EMS-F01 109,000원 61% 41,900원 내일(수) 도착 예정 무료배송 ∙ 오늘출발 4 (13) 최대 2,095원 적립 최대 2,095원 적립" [ref=e4650]:
+                  - /url: /vp/products/9611962867?itemId=28697385554&vendorItemId=95638495657&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=24&rank=24
+                  - figure [ref=e4651]:
+                    - img "EMS 발마사지기 저주파 발바닥 케어 발관리기 풋마사지기, 화이트, EMS-F01" [ref=e4652]
+                  - generic [ref=e4653]:
+                    - generic [ref=e4656]
+                    - generic [ref=e4659]
+                    - generic [ref=e4666]
+                    - generic [ref=e4671]
+                    - generic [ref=e4681]
+              - listitem [ref=e4684] [cursor=pointer]:
+                - link "JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형 32,870원 9/11 도착 예정 무료배송 4.5 (158) 최대 1,644원 적립 최대 1,644원 적립" [ref=e4685]:
+                  - /url: /vp/products/9650348632?itemId=28843427042&vendorItemId=94726974367&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=25&rank=25
+                  - figure [ref=e4686]:
+                    - img "JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형" [ref=e4687]
+                  - generic [ref=e4688]:
+                    - generic [ref=e4690]: JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형
+                    - generic [ref=e4691]: 32,870원
+                    - generic [ref=e4695]
+                    - generic [ref=e4700]
+                    - generic [ref=e4710]
+              - listitem [ref=e4713] [cursor=pointer]:
+                - link "발바닥 EMS 마사지기 전기자극 완전세트 중국어, 컨트롤러+펄스스티커 미포함 중국어, 컨트롤러+펄스스티커 미포함 중국어 25,200원 8% 23,000원 9/17 도착 예정 무료배송 최대 1,150원 적립 최대 1,150원 적립" [ref=e4714]:
+                  - /url: /vp/products/9619994674?itemId=28726372965&vendorItemId=95666655250&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=26&rank=26
+                  - figure [ref=e4715]:
+                    - img "발바닥 EMS 마사지기 전기자극 완전세트 중국어, 컨트롤러+펄스스티커 미포함 중국어, 컨트롤러+펄스스티커 미포함 중국어" [ref=e4716]
+                  - generic [ref=e4717]:
+                    - generic [ref=e4719]: 발바닥 EMS 마사지기 전기자극 완전세트 중국어, 컨트롤러+펄스스티커 미포함 중국어, 컨트롤러+펄스스티커 미포함 중국어
+                    - generic [ref=e4720]
+                    - generic [ref=e4727]
+                    - generic [ref=e4732]
+              - listitem [ref=e4735] [cursor=pointer]:
+                - link "EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01 쿠폰할인 398,000원 73% 107,000원 내일(수) 도착 보장 무료배송 새 상품, 반품 (5) 5 (131) 최대 5,350원 적립 최대 5,350원 적립" [ref=e4736]:
+                  - /url: /vp/products/9628133022?itemId=28755849205&vendorItemId=95694597518&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=27&rank=27
+                  - figure [ref=e4737]:
+                    - img "EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01" [ref=e4738]
+                  - generic [ref=e4739]:
+                    - generic [ref=e4741]: EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01
+                    - generic [ref=e4742]
+                    - generic [ref=e4754]
+                    - generic [ref=e4761]
+                    - generic [ref=e4764]
+                    - generic [ref=e4774]
+              - listitem [ref=e4777] [cursor=pointer]:
+                - link "위브젠 EMS 엄지발가락 발마사지기 저주파 발바닥 케어, 블랙, 왼발 할인 42,200원 53% 19,700원 9/4(금) 도착 예정 무료배송 5 (8) 최대 985원 적립 최대 985원 적립" [ref=e4778]:
+                  - /url: /vp/products/9697656975?itemId=29007921039&vendorItemId=95936211084&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=28&rank=28
+                  - figure [ref=e4779]:
+                    - img "위브젠 EMS 엄지발가락 발마사지기 저주파 발바닥 케어, 블랙, 왼발" [ref=e4780]
+                  - generic [ref=e4781]:
+                    - generic [ref=e4784]
+                    - generic [ref=e4787]
+                    - generic [ref=e4799]
+                    - generic [ref=e4804]
+                    - generic [ref=e4814]
+              - listitem [ref=e4817] [cursor=pointer]:
+                - link "코어힐 온열 발 진동 마사지기 족저 지압 마사지 발바닥 종아리 덜덜이 진동기, 그레이 할인 160,000원 20% 128,000원 내일(수) 도착 보장 무료배송 새 상품, 반품 (5) 4.5 (134) 최대 6,400원 적립 최대 6,400원 적립" [ref=e4818]:
+                  - /url: /vp/products/8784059771?itemId=25560121490&vendorItemId=92920861447&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=29&rank=29
+                  - figure [ref=e4819]:
+                    - img "코어힐 온열 발 진동 마사지기 족저 지압 마사지 발바닥 종아리 덜덜이 진동기, 그레이" [ref=e4820]
+                  - generic [ref=e4821]:
+                    - generic [ref=e4823]: 코어힐 온열 발 진동 마사지기 족저 지압 마사지 발바닥 종아리 덜덜이 진동기, 그레이
+                    - generic [ref=e4824]
+                    - generic [ref=e4832]
+                    - generic [ref=e4839]
+                    - generic [ref=e4842]
+                    - generic [ref=e4852]
+              - listitem [ref=e4855] [cursor=pointer]:
+                - link "SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색+전극 패드, H802A 할인 60,000원 61% 22,990원 내일(수) 도착 보장 무료배송 새 상품, 반품 (2) 4.5 (316) 최대 1,150원 적립 최대 1,150원 적립" [ref=e4856]:
+                  - /url: /vp/products/9587402759?itemId=28755645791&vendorItemId=95694404623&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=30&rank=30
+                  - figure [ref=e4857]:
+                    - img "SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색+전극 패드, H802A" [ref=e4858]
+                  - generic [ref=e4859]:
+                    - generic [ref=e4861]: SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색+전극 패드, H802A
+                    - generic [ref=e4862]
+                    - generic [ref=e4874]
+                    - generic [ref=e4881]
+                    - generic [ref=e4884]
+                    - generic [ref=e4894]
+              - listitem [ref=e4897] [cursor=pointer]:
+                - link "커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001 98,000원 내일(수) 도착 보장 무료배송 4 (73) 최대 4,900원 적립 최대 4,900원 적립" [ref=e4898]:
+                  - /url: /vp/products/8518650443?itemId=24663143624&vendorItemId=91768726922&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=31&rank=31
+                  - figure [ref=e4899]:
+                    - img "커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001" [ref=e4900]
+                  - generic [ref=e4901]:
+                    - generic [ref=e4903]: 커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001
+                    - generic [ref=e4904]: 98,000원
+                    - generic [ref=e4908]
+                    - generic [ref=e4915]
+                    - generic [ref=e4925]
+              - listitem [ref=e4928] [cursor=pointer]:
+                - link "카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01 29,900원 33% 19,800원 내일(수) 도착 보장 무료배송 5 (298) 최대 990원 적립 최대 990원 적립" [ref=e4929]:
+                  - /url: /vp/products/9404489731?itemId=27937358772&vendorItemId=94895693287&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=32&rank=32
+                  - figure [ref=e4930]:
+                    - img "카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01" [ref=e4931]
+                  - generic [ref=e4932]:
+                    - generic [ref=e4934]: 카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01
+                    - generic [ref=e4935]
+                    - generic [ref=e4942]
+                    - generic [ref=e4949]
+                    - generic [ref=e4959]
+              - listitem [ref=e4962] [cursor=pointer]:
+                - link "[EMS 저주파] 블링크 저주파 발 마사지기 무선 충전식 발바닥 종아리 마사지기 족저근막, 딥블랙, FMA 109,000원 69% 32,900원 내일(수) 도착 보장 무료배송 5 (91) 최대 1,645원 적립 최대 1,645원 적립" [ref=e4963]:
+                  - /url: /vp/products/9675015829?itemId=28928821668&vendorItemId=95516278151&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=33&rank=33
+                  - figure [ref=e4964]:
+                    - img "[EMS 저주파] 블링크 저주파 발 마사지기 무선 충전식 발바닥 종아리 마사지기 족저근막, 딥블랙, FMA" [ref=e4965]
+                  - generic [ref=e4966]:
+                    - generic [ref=e4968]: "[EMS 저주파] 블링크 저주파 발 마사지기 무선 충전식 발바닥 종아리 마사지기 족저근막, 딥블랙, FMA"
+                    - generic [ref=e4969]
+                    - generic [ref=e4976]
+                    - generic [ref=e4983]
+                    - generic [ref=e4993]
+              - listitem [ref=e4996] [cursor=pointer]:
+                - link "EMS 저주파 발마사지기 패치를 통한 통증 완화 간편 충전 타입 다부위 사용, 검정색, EMS-9-30 할인 21,320원 55% 9,560원 내일(수) 도착 보장 4.5 (34) 최대 478원 적립 최대 478원 적립 단 4개 남음 빨리 주문하세요!" [ref=e4997]:
+                  - /url: /vp/products/9246995732?itemId=27347812814&vendorItemId=94314016249&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=34&rank=34
+                  - figure [ref=e4998]:
+                    - img "EMS 저주파 발마사지기 패치를 통한 통증 완화 간편 충전 타입 다부위 사용, 검정색, EMS-9-30" [ref=e4999]
+                  - generic [ref=e5000]:
+                    - generic [ref=e5003]
+                    - generic [ref=e5006]
+                    - generic [ref=e5018]: 내일(수) 도착 보장
+                    - generic [ref=e5024]
+                    - generic [ref=e5034]
+                    - generic [ref=e5037]
+              - listitem [ref=e5040] [cursor=pointer]:
+                - link "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개) 쿠폰할인 · 5일 남음 165,000원 46% 89,000원 모레(목) 도착 예정 무료배송 4.5 (199) 최대 4,450원 적립 최대 4,450원 적립" [ref=e5041]:
+                  - /url: /vp/products/9570313173?itemId=28563836906&vendorItemId=93426998580&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=35&rank=35
+                  - figure [ref=e5042]:
+                    - img "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개)" [ref=e5043]
+                  - generic [ref=e5044]:
+                    - generic [ref=e5046]: "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개)"
+                    - generic [ref=e5047]
+                    - generic [ref=e5060]
+                    - generic [ref=e5065]
+                    - generic [ref=e5075]
+              - listitem [ref=e5078] [cursor=pointer]:
+                - link "메디풀 저주파 습식 발 족욕기 국산, 화이트, 1개 279,000원 35% 179,000원 (1개당 179,000원) 내일(수) 도착 예정 무료배송 ∙ 오늘출발 4.5 (35) 최대 8,950원 적립 최대 8,950원 적립 광고 Ad information" [ref=e5079]:
+                  - /url: /vp/products/8543441728?itemId=24735937822&vendorItemId=91744724213&sourceType=srp_product_ads&clickEventId=e972f860-a5ac-11f1-9784-70f6b94178de&korePlacement=15&koreSubPlacement=25&clickEventId=e972f860-a5ac-11f1-9784-70f6b94178de&korePlacement=15&koreSubPlacement=25
+                  - figure [ref=e5080]:
+                    - img "메디풀 저주파 습식 발 족욕기 국산, 화이트, 1개" [ref=e5081]
+                  - generic [ref=e5082]:
+                    - generic [ref=e5084]: 메디풀 저주파 습식 발 족욕기 국산, 화이트, 1개
+                    - generic [ref=e5085]
+                    - generic [ref=e5093]
+                    - generic [ref=e5098]
+                    - generic [ref=e5108]
+                    - generic [ref=e5112]
+              - listitem [ref=e5117] [cursor=pointer]:
+                - link "모타모타 에프톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기, 민트 42,980원 30% 29,900원 내일(수) 도착 보장 무료배송 5 (91) 최대 1,495원 적립 최대 1,495원 적립" [ref=e5118]:
+                  - /url: /vp/products/9481139684?itemId=28229126115&vendorItemId=95182910416&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=37&rank=37
+                  - figure [ref=e5119]:
+                    - img "모타모타 에프톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기, 민트" [ref=e5120]
+                  - generic [ref=e5121]:
+                    - generic [ref=e5124]
+                    - generic [ref=e5126]
+                    - generic [ref=e5133]
+                    - generic [ref=e5140]
+                    - generic [ref=e5150]
+              - listitem [ref=e5153] [cursor=pointer]:
+                - link "발락 EMS 저주파 발/종아리 미니 마사지기 휴대용 충전식 반영구 보호대 안마기 치료기, 발락 발/종아리 미니 마사지기 세트 79,000원 5% 74,800원 내일(수) 도착 보장 무료배송 5 (78) 최대 3,740원 적립 최대 3,740원 적립" [ref=e5154]:
+                  - /url: /vp/products/6176804454?itemId=12096442367&vendorItemId=91096897588&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=38&rank=38
+                  - figure [ref=e5155]:
+                    - img "발락 EMS 저주파 발/종아리 미니 마사지기 휴대용 충전식 반영구 보호대 안마기 치료기, 발락 발/종아리 미니 마사지기 세트" [ref=e5156]
+                  - generic [ref=e5157]:
+                    - generic [ref=e5159]: 발락 EMS 저주파 발/종아리 미니 마사지기 휴대용 충전식 반영구 보호대 안마기 치료기, 발락 발/종아리 미니 마사지기 세트
+                    - generic [ref=e5160]
+                    - generic [ref=e5167]
+                    - generic [ref=e5174]
+                    - generic [ref=e5184]
+              - listitem [ref=e5187] [cursor=pointer]:
+                - link "위브젠 EMS 엄지발가락 발마사지기 저주파 발바닥 케어, 블랙, 오른발 할인 42,200원 53% 19,800원 내일(수) 도착 보장 무료배송 5 (8) 최대 990원 적립 최대 990원 적립" [ref=e5188]:
+                  - /url: /vp/products/9697656975?itemId=29007921037&vendorItemId=95936460102&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=39&rank=39
+                  - figure [ref=e5189]:
+                    - img "위브젠 EMS 엄지발가락 발마사지기 저주파 발바닥 케어, 블랙, 오른발" [ref=e5190]
+                  - generic [ref=e5191]:
+                    - generic [ref=e5194]
+                    - generic [ref=e5197]
+                    - generic [ref=e5209]
+                    - generic [ref=e5216]
+                    - generic [ref=e5226]
+              - listitem [ref=e5229] [cursor=pointer]:
+                - link "리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트 할인 · 5일 남음 799,000원 66% 264,710원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 4.5 (96) 최대 13,103원 적립 최대 13,103원 적립" [ref=e5230]:
+                  - /url: /vp/products/8286702755?itemId=23895787740&vendorItemId=91046038699&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=40&rank=40
+                  - figure [ref=e5231]:
+                    - img "리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트" [ref=e5232]
+                  - generic [ref=e5233]:
+                    - generic [ref=e5235]: 리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트
+                    - generic [ref=e5236]
+                    - generic [ref=e5249]
+                    - generic [ref=e5256]
+                    - generic [ref=e5259]
+                    - generic [ref=e5269]
+              - listitem [ref=e5272] [cursor=pointer]:
+                - link "아나파 미세전류 저주파 발바닥 발목 발등 마사지기, ANAPA-MT01 할인 77,510원 16% 64,880원 내일(수) 도착 보장 무료배송 새 상품, 반품 (5) 4.5 (533) 최대 3,211원 적립 최대 3,211원 적립" [ref=e5273]:
+                  - /url: /vp/products/8247737848?itemId=23740575435&vendorItemId=90934285079&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=41&rank=41
+                  - figure [ref=e5274]:
+                    - img "아나파 미세전류 저주파 발바닥 발목 발등 마사지기, ANAPA-MT01" [ref=e5275]
+                  - generic [ref=e5276]:
+                    - generic [ref=e5278]: 아나파 미세전류 저주파 발바닥 발목 발등 마사지기, ANAPA-MT01
+                    - generic [ref=e5279]
+                    - generic [ref=e5291]
+                    - generic [ref=e5298]
+                    - generic [ref=e5301]
+                    - generic [ref=e5311]
+              - listitem [ref=e5314] [cursor=pointer]:
+                - link "에이프 발톡스슈즈 EMS 저주파 발마사지기 슬리퍼형 초경량 할인 111,250원 41% 65,030원 내일(수) 도착 보장 무료배송 5 (129) 최대 3,219원 적립 최대 3,219원 적립" [ref=e5315]:
+                  - /url: /vp/products/9167371181?itemId=27012450276&vendorItemId=95025429286&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=42&rank=42
+                  - figure [ref=e5316]:
+                    - img "에이프 발톡스슈즈 EMS 저주파 발마사지기 슬리퍼형 초경량" [ref=e5317]
+                  - generic [ref=e5318]:
+                    - generic [ref=e5321]
+                    - generic [ref=e5324]
+                    - generic [ref=e5336]
+                    - generic [ref=e5343]
+                    - generic [ref=e5353]
+              - listitem [ref=e5356] [cursor=pointer]:
+                - link "LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 오렌지 할인 37,900원 52% 17,900원 내일(수) 도착 보장 4.5 (556) 최대 895원 적립 최대 895원 적립" [ref=e5357]:
+                  - /url: /vp/products/9162421409?itemId=26990880326&vendorItemId=91416845567&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=43&rank=43
+                  - figure [ref=e5358]:
+                    - img "LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 오렌지" [ref=e5359]
+                  - generic [ref=e5360]:
+                    - generic [ref=e5362]: LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 오렌지
+                    - generic [ref=e5363]
+                    - generic [ref=e5375]: 내일(수) 도착 보장
+                    - generic [ref=e5381]
+                    - generic [ref=e5391]
+              - listitem [ref=e5394] [cursor=pointer]:
+                - link "SOVI저주파 발마사지기, 사이즈, 230mm-235mm 할인 140,000원 85% 19,990원 내일(수) 도착 보장 무료배송 새 상품, 반품 (2) 5 (20) 최대 1,000원 적립 최대 1,000원 적립" [ref=e5395]:
+                  - /url: /vp/products/9597369760?itemId=28650411180&vendorItemId=95592884481&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=44&rank=44
+                  - figure [ref=e5396]:
+                    - img "SOVI저주파 발마사지기, 사이즈, 230mm-235mm" [ref=e5397]
+                  - generic [ref=e5398]:
+                    - generic [ref=e5401]
+                    - generic [ref=e5404]
+                    - generic [ref=e5416]
+                    - generic [ref=e5423]
+                    - generic [ref=e5426]
+                    - generic [ref=e5436]
+              - listitem [ref=e5439] [cursor=pointer]:
+                - link "발목 발바닥 공기압 온열 마사지기 4가지 모드 3단 진동 온열 조절 휴대 간편, 블랙*1, 630 45,900원 13% 39,900원 내일(수) 도착 보장 무료배송 5 (12) 최대 1,995원 적립 최대 1,995원 적립" [ref=e5440]:
+                  - /url: /vp/products/9674893092?itemId=28928437140&vendorItemId=95859854674&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=45&rank=45
+                  - figure [ref=e5441]:
+                    - img "발목 발바닥 공기압 온열 마사지기 4가지 모드 3단 진동 온열 조절 휴대 간편, 블랙*1, 630" [ref=e5442]
+                  - generic [ref=e5443]:
+                    - generic [ref=e5445]: 발목 발바닥 공기압 온열 마사지기 4가지 모드 3단 진동 온열 조절 휴대 간편, 블랙*1, 630
+                    - generic [ref=e5446]
+                    - generic [ref=e5453]
+                    - generic [ref=e5460]
+                    - generic [ref=e5470]
+              - listitem [ref=e5473] [cursor=pointer]:
+                - link "LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 블랙 할인 37,900원 39% 22,900원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 최저20,610원 4.5 (556) 최대 1,145원 적립 최대 1,145원 적립" [ref=e5474]:
+                  - /url: /vp/products/9162421409?itemId=26990880328&vendorItemId=91416845572&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=46&rank=46
+                  - figure [ref=e5475]:
+                    - img "LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 블랙" [ref=e5476]
+                  - generic [ref=e5477]:
+                    - generic [ref=e5479]: LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 블랙
+                    - generic [ref=e5480]
+                    - generic [ref=e5492]
+                    - generic [ref=e5498]
+                    - generic [ref=e5504]
+                    - generic [ref=e5514]
+              - listitem [ref=e5517] [cursor=pointer]:
+                - link "프리라이프 저주파 발바닥 마사지기 EMS 발마사지기 발판 USB 충전식 발 안마기, 믹스, ZD001 39,000원 75% 9,390원 중국 9/4(금) 도착 예정 무료배송 4 (137) 최대 470원 적립 최대 470원 적립" [ref=e5518]:
+                  - /url: /vp/products/9395886547?itemId=27904704755&vendorItemId=95815886312&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=47&rank=47
+                  - figure [ref=e5519]:
+                    - img "프리라이프 저주파 발바닥 마사지기 EMS 발마사지기 발판 USB 충전식 발 안마기, 믹스, ZD001" [ref=e5520]
+                  - generic [ref=e5521]:
+                    - generic [ref=e5524]
+                    - generic [ref=e5527]
+                    - generic [ref=e5534]
+                    - generic [ref=e5542]
+                    - generic [ref=e5552]
+              - listitem [ref=e5555] [cursor=pointer]:
+                - link "TV홈쇼핑 이용식의 풋조아 무선 저주파 마사지패드 맨발걷기 어싱패드 EMS 발마사지, 1세트 40,000원 25% 29,900원 (1개당 29,900원) 배송비 4,000원 모레(목) 도착 예정 4 (41) 최대 1,495원 적립 최대 1,495원 적립" [ref=e5556]:
+                  - /url: /vp/products/8705927131?itemId=25282457380&vendorItemId=92278012108&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=48&rank=48
+                  - figure [ref=e5557]:
+                    - img "TV홈쇼핑 이용식의 풋조아 무선 저주파 마사지패드 맨발걷기 어싱패드 EMS 발마사지, 1세트" [ref=e5558]
+                  - generic [ref=e5559]:
+                    - generic [ref=e5561]: TV홈쇼핑 이용식의 풋조아 무선 저주파 마사지패드 맨발걷기 어싱패드 EMS 발마사지, 1세트
+                    - generic [ref=e5562]
+                    - generic [ref=e5571]: 모레(목) 도착 예정
+                    - generic [ref=e5575]
+                    - generic [ref=e5585]
+              - listitem [ref=e5588] [cursor=pointer]:
+                - link "DDJJ 저주파 미니 마사지기 무선 안마기 EMS/TENS마사지 본체2개+젤 패드4개+리모컨1세트 어깨 목 등 허리 팔 손목 허벅지 종아리 발목 발바닥, 2개 할인 67,900원 63% 24,900원 (1개당 12,450원) 내일(수) 도착 보장 무료배송 5 (124) 최대 1,245원 적립 최대 1,245원 적립" [ref=e5589]:
+                  - /url: /vp/products/9617740218?itemId=28718275864&vendorItemId=95647983911&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=49&rank=49
+                  - figure [ref=e5590]:
+                    - img "DDJJ 저주파 미니 마사지기 무선 안마기 EMS/TENS마사지 본체2개+젤 패드4개+리모컨1세트 어깨 목 등 허리 팔 손목 허벅지 종아리 발목 발바닥, 2개" [ref=e5591]
+                  - generic [ref=e5592]:
+                    - generic [ref=e5594]: DDJJ 저주파 미니 마사지기 무선 안마기 EMS/TENS마사지 본체2개+젤 패드4개+리모컨1세트 어깨 목 등 허리 팔 손목 허벅지 종아리 발목 발바닥, 2개
+                    - generic [ref=e5595]
+                    - generic [ref=e5608]
+                    - generic [ref=e5615]
+                    - generic [ref=e5625]
+              - listitem [ref=e5628] [cursor=pointer]:
+                - link "휴비딕 웨이브펄스 어드밴스 개인용 저주파 마사지기 + 중형패드 4장, 화이트, HMB-1000A + 중형패드 4장 59,800원 34% 38,900원 내일(수) 도착 예정 무료배송 ∙ 오늘출발 5 (56) 최대 1,945원 적립 최대 1,945원 적립" [ref=e5629]:
+                  - /url: /vp/products/9701078204?itemId=29020040694&vendorItemId=95979428360&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=50&rank=50
+                  - figure [ref=e5630]:
+                    - img "휴비딕 웨이브펄스 어드밴스 개인용 저주파 마사지기 + 중형패드 4장, 화이트, HMB-1000A + 중형패드 4장" [ref=e5631]
+                  - generic [ref=e5632]:
+                    - generic [ref=e5634]: 휴비딕 웨이브펄스 어드밴스 개인용 저주파 마사지기 + 중형패드 4장, 화이트, HMB-1000A + 중형패드 4장
+                    - generic [ref=e5635]
+                    - generic [ref=e5642]
+                    - generic [ref=e5647]
+                    - generic [ref=e5657]
+              - listitem [ref=e5660] [cursor=pointer]:
+                - link "발바닥 EMS 마사지기 펄스 온열 안마기 패드 전기 발마사지기, 완전세트 영어 B, 기본 모델명/품번 33,330원 4% 31,760원 9/18 도착 예정 무료배송 4 (23) 최대 1,588원 적립 최대 1,588원 적립" [ref=e5661]:
+                  - /url: /vp/products/9136327759?itemId=26889381277&vendorItemId=95917566421&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=51&rank=51
+                  - figure [ref=e5662]:
+                    - img "발바닥 EMS 마사지기 펄스 온열 안마기 패드 전기 발마사지기, 완전세트 영어 B, 기본 모델명/품번" [ref=e5663]
+                  - generic [ref=e5664]:
+                    - generic [ref=e5666]: 발바닥 EMS 마사지기 펄스 온열 안마기 패드 전기 발마사지기, 완전세트 영어 B, 기본 모델명/품번
+                    - generic [ref=e5667]
+                    - generic [ref=e5674]
+                    - generic [ref=e5679]
+                    - generic [ref=e5689]
+              - listitem [ref=e5692] [cursor=pointer]:
+                - link "인사이디 무선 전동 미니 마사지건, IMG-300 66,400원 70% 19,900원 내일(수) 도착 보장 무료배송 새 상품, 반품 (2) 4.5 (10,521) 최대 995원 적립 최대 995원 적립" [ref=e5693]:
+                  - /url: /vp/products/7937124717?itemId=21849951719&vendorItemId=86420134711&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=52&rank=52
+                  - figure [ref=e5694]:
+                    - img "인사이디 무선 전동 미니 마사지건, IMG-300" [ref=e5695]
+                  - generic [ref=e5696]:
+                    - generic [ref=e5698]: 인사이디 무선 전동 미니 마사지건, IMG-300
+                    - generic [ref=e5699]
+                    - generic [ref=e5706]
+                    - generic [ref=e5713]
+                    - generic [ref=e5716]
+                    - generic [ref=e5726]
+              - listitem [ref=e5729] [cursor=pointer]:
+                - link "LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 퍼플 할인 37,900원 52% 17,900원 내일(수) 도착 보장 4.5 (556) 최대 895원 적립 최대 895원 적립" [ref=e5730]:
+                  - /url: /vp/products/9162421409?itemId=26990880327&vendorItemId=93228712553&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=53&rank=53
+                  - figure [ref=e5731]:
+                    - img "LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 퍼플" [ref=e5732]
+                  - generic [ref=e5733]:
+                    - generic [ref=e5735]: LOMESO EMS 발 마사지기 저주파 무선 충전식 발바닥마사지기 겔패드 패키지, 퍼플
+                    - generic [ref=e5736]
+                    - generic [ref=e5748]: 내일(수) 도착 보장
+                    - generic [ref=e5754]
+                    - generic [ref=e5764]
+              - listitem [ref=e5767] [cursor=pointer]:
+                - link "메이크앤 EMS 발마사지기 발매트 종아리 다리 저주파 마사지 기계, 화이트, MAKE-E-001 쿠폰할인 49,800원 36% 31,800원 내일(수) 도착 보장 무료배송 새 상품, 반품 (4) 최저31,320원 5 (34) 최대 1,590원 적립 최대 1,590원 적립" [ref=e5768]:
+                  - /url: /vp/products/9648179258?itemId=28835198881&vendorItemId=95780074527&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=54&rank=54
+                  - figure [ref=e5769]:
+                    - img "메이크앤 EMS 발마사지기 발매트 종아리 다리 저주파 마사지 기계, 화이트, MAKE-E-001" [ref=e5770]
+                  - generic [ref=e5771]:
+                    - generic [ref=e5774]
+                    - generic [ref=e5777]
+                    - generic [ref=e5785]
+                    - generic [ref=e5791]
+                    - generic [ref=e5797]
+                    - generic [ref=e5807]
+              - listitem [ref=e5810] [cursor=pointer]:
+                - link "라이프엠디 1+1 EMS 발바닥 마사지기 보호대 미세전류 안마 마사지 무선 충전식 휴대용, 혼합색상, LMD058A, 2개 할인 47,630원 58% 19,800원 내일(수) 도착 보장 무료배송 새 상품, 반품 (4) 4 (137) 최대 990원 적립 최대 990원 적립" [ref=e5811]:
+                  - /url: /vp/products/8778234149?itemId=25539425418&vendorItemId=92531009286&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=55&rank=55
+                  - figure [ref=e5812]:
+                    - img "라이프엠디 1+1 EMS 발바닥 마사지기 보호대 미세전류 안마 마사지 무선 충전식 휴대용, 혼합색상, LMD058A, 2개" [ref=e5813]
+                  - generic [ref=e5814]:
+                    - generic [ref=e5816]: 라이프엠디 1+1 EMS 발바닥 마사지기 보호대 미세전류 안마 마사지 무선 충전식 휴대용, 혼합색상, LMD058A, 2개
+                    - generic [ref=e5817]
+                    - generic [ref=e5829]
+                    - generic [ref=e5836]
+                    - generic [ref=e5839]
+                    - generic [ref=e5849]
+              - listitem [ref=e5852] [cursor=pointer]:
+                - link "CozyTemp EMS 저주파 발마사지기 슬리퍼형 무선 발 안마기, 아이보리, ST-1202A 할인 58,000원 48% 29,980원 내일(수) 도착 보장 무료배송 새 상품, 반품 (2) 4.5 (39) 최대 1,499원 적립 최대 1,499원 적립" [ref=e5853]:
+                  - /url: /vp/products/9175945791?itemId=27051680860&vendorItemId=94020093457&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=56&rank=56
+                  - figure [ref=e5854]:
+                    - img "CozyTemp EMS 저주파 발마사지기 슬리퍼형 무선 발 안마기, 아이보리, ST-1202A" [ref=e5855]
+                  - generic [ref=e5856]:
+                    - generic [ref=e5859]
+                    - generic [ref=e5862]
+                    - generic [ref=e5874]
+                    - generic [ref=e5881]
+                    - generic [ref=e5884]
+                    - generic [ref=e5894]
+              - listitem [ref=e5897] [cursor=pointer]:
+                - link "발바닥 발마사지기 충전식 무선 저주파 안마기 지압기, 스탭EMS발마사지기, 1 29,000원 18% 23,500원 배송비 3,000원 조건부 무료배송 9/4(금) 도착 예정 최대 1,175원 적립 최대 1,175원 적립" [ref=e5898]:
+                  - /url: /vp/products/9714314498?itemId=29066907008&vendorItemId=95993236143&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=57&rank=57
+                  - figure [ref=e5899]:
+                    - img "발바닥 발마사지기 충전식 무선 저주파 안마기 지압기, 스탭EMS발마사지기, 1" [ref=e5900]
+                  - generic [ref=e5901]:
+                    - generic [ref=e5904]
+                    - generic [ref=e5908]
+                    - generic [ref=e5916]: 9/4(금) 도착 예정
+                    - generic [ref=e5920]
+              - listitem [ref=e5923] [cursor=pointer]:
+                - link "nimin 저주파 발마사지기 EMS TENS 발바닥 마사지기 안마기 무선 마사지 슬리퍼 1세트, 네이비, 1세트(2개), KJH-X7HW 할인 139,000원 67% 44,900원 내일(수) 도착 보장 무료배송 새 상품, 반품 (3) 4.5 (156) 최대 2,245원 적립 최대 2,245원 적립" [ref=e5924]:
+                  - /url: /vp/products/9066170815?itemId=26623387712&vendorItemId=93660005245&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=58&rank=58
+                  - figure [ref=e5925]:
+                    - img "nimin 저주파 발마사지기 EMS TENS 발바닥 마사지기 안마기 무선 마사지 슬리퍼 1세트, 네이비, 1세트(2개), KJH-X7HW" [ref=e5926]
+                  - generic [ref=e5927]:
+                    - generic [ref=e5930]
+                    - generic [ref=e5933]
+                    - generic [ref=e5945]
+                    - generic [ref=e5952]
+                    - generic [ref=e5955]
+                    - generic [ref=e5965]
+              - listitem [ref=e5968] [cursor=pointer]:
+                - link "르보아 무선 초강력 저주파 미니 마사지기 EMS/TENS 본체 2개 +젤패드 4개 목 어깨 등 허리 팔 팔꿈치 허벅지 무릎 종아리 발바닥, 블루 블랙, YU10770-18001F 할인 60,000원 59% 24,500원 내일(수) 도착 보장 무료배송 5 (3) 최대 1,225원 적립 최대 1,225원 적립 단 1개 남음 빨리 주문하세요!" [ref=e5969]:
+                  - /url: /vp/products/9706432567?itemId=29039050044&vendorItemId=95966271317&q=저주파 발마사지기&searchId=ec35e02f3726417&sourceType=search&itemsCount=60&searchRank=59&rank=59
+                  - figure [ref=e5970]:
+                    - img "르보아 무선 초강력 저주파 미니 마사지기 EMS/TENS 본체 2개 +젤패드 4개 목 어깨 등 허리 팔 팔꿈치 허벅지 무릎 종아리 발바닥, 블루 블랙, YU10770-18001F" [ref=e5971]
+                  - generic [ref=e5972]:
+                    - generic [ref=e5974]: 르보아 무선 초강력 저주파 미니 마사지기 EMS/TENS 본체 2개 +젤패드 4개 목 어깨 등 허리 팔 팔꿈치 허벅지 무릎 종아리 발바닥, 블루 블랙, YU10770-18001F
+                    - generic [ref=e5975]
+                    - generic [ref=e5987]
+                    - generic [ref=e5994]
+                    - generic [ref=e6004]
+                    - generic [ref=e6007]
+            - generic [ref=e6011]:
+              - button "next" [ref=e6012] [cursor=pointer]
+              - generic [ref=e6015]:
+                - generic [ref=e6016]:
+                  - generic [ref=e6017]: 같이 보면 좋은 상품
+                  - generic [ref=e6018]: 광고
+                - generic [ref=e6022]:
+                  - generic [ref=e6024] [cursor=pointer]:
+                    - generic [ref=e6028]: 리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트
+                    - generic [ref=e6029]
+                    - generic [ref=e6047]: 내일(수) 도착 보장
+                    - generic [ref=e6048]
+                  - generic [ref=e6054] [cursor=pointer]:
+                    - generic [ref=e6058]: 리바이티브 EMS 마사지기 저주파 종아리, ACTEGY LV, 화이트
+                    - generic [ref=e6059]
+                    - generic [ref=e6077]: 내일(수) 도착 보장
+                    - generic [ref=e6078]
+                  - generic [ref=e6084] [cursor=pointer]:
+                    - generic [ref=e6088]: 에이프 발톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기
+                    - generic [ref=e6089]
+                    - generic [ref=e6097]: 내일(수) 도착 보장
+                    - generic [ref=e6098]
+                  - generic [ref=e6104] [cursor=pointer]:
+                    - generic [ref=e6108]: KORELAN 저주파 미세전류 발마사지기 안마기 족저 마사지, 갈색, 35cm
+                    - generic [ref=e6109]
+                    - generic [ref=e6127]: 내일(수) 도착 보장
+                    - generic [ref=e6128]
+                  - generic [ref=e6134] [cursor=pointer]:
+                    - generic [ref=e6138]: 빅스파 발 마사지기 발바닥 지압기 롤러 안마기, 화이트, 1개
+                    - generic [ref=e6139]
+                    - generic [ref=e6157]: 내일(수) 도착 보장
+                    - generic [ref=e6158]
+                  - generic [ref=e6164] [cursor=pointer]:
+                    - generic [ref=e6168]: 파라이프 EMS 저주파 발 마사지기 발바닥 종아리 안마기 다리 발목, 보라색, PL-HD-FM010A
+                    - generic [ref=e6169]
+                    - generic [ref=e6187]: 내일(수) 도착 보장
+                    - generic [ref=e6188]
+                  - generic [ref=e6194] [cursor=pointer]:
+                    - generic [ref=e6198]: "[슬룸 정품] 슬룸 발편한케어 EMS 저주파 발 발바닥 마사지기 안마기 족저근막염, 네이비, SL25EQ02(L사이즈*1개)"
+                    - generic [ref=e6199]
+                    - generic [ref=e6212]: 무료배송
+                    - generic [ref=e6215]: 모레(목) 도착 예정
+                    - generic [ref=e6216]
+                  - generic [ref=e6222] [cursor=pointer]:
+                    - generic [ref=e6226]: 리바이티브 저주파 마사지기 충전식 발바닥 자극기, ACTEGY 73AQ
+                    - generic [ref=e6227]
+                    - generic [ref=e6240]: 무료배송
+                    - generic [ref=e6243]: 모레(목) 도착 예정
+                    - generic [ref=e6244]
+            - region "찾는 상품이 없나요?" [ref=e6249]:
+              - generic [ref=e6250]:
+                - heading "찾는 상품이 없나요?" [level=2] [ref=e6251]
+                - paragraph [ref=e6252]: 로그인하고 더 많은 상품을 확인해보세요
+              - button "로그인" [ref=e6253] [cursor=pointer]
+      - generic [ref=e6256]:
+        - heading "이 상품을 검색한 다른 분들이 함께 본 상품" [level=2] [ref=e6257]
+        - generic [ref=e6259]:
+          - list [ref=e6261]:
+            - listitem [ref=e6262]:
+              - link "SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A 9,990원 4.5 (316)" [ref=e6263] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9587402759?vendorItemId=95562732786&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9587402759
+                - img "SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A"
+                - generic [ref=e6265]: SOVI ems 저주파 발 마사지기 발목 종아리 다리 족저 미세전류 근막염 발바닥 마사지기, 검정색, H802A
+                - strong [ref=e6268]: 9,990원
+                - generic [ref=e6272]:
+                  - generic "4.5" [ref=e6273]
+                  - generic [ref=e6279]: (316)
+            - listitem [ref=e6281]:
+              - link "커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001 커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001 98,000원 4 (73)" [ref=e6282] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/8518650443?vendorItemId=91768726922&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p8518650443
+                - img "커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001"
+                - generic [ref=e6284]: 커레스 프리미엄 저주파 발 마사지기 아치관리기, CA-001
+                - strong [ref=e6287]: 98,000원
+                - generic [ref=e6291]:
+                  - generic "4" [ref=e6292]
+                  - generic [ref=e6298]: (73)
+            - listitem [ref=e6300]:
+              - link "발 마사지기 발바닥 마사지기 종아리 발 다리 안마기 주무름 온열, 그린, smabat-7304 발 마사지기 발바닥 마사지기 종아리 발 다리 안마기 주무름 온열, 그린, smabat-7304 39,900원 4.5 (300)" [ref=e6301] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/8161612684?vendorItemId=90303001746&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p8161612684
+                - img "발 마사지기 발바닥 마사지기 종아리 발 다리 안마기 주무름 온열, 그린, smabat-7304"
+                - generic [ref=e6303]: 발 마사지기 발바닥 마사지기 종아리 발 다리 안마기 주무름 온열, 그린, smabat-7304
+                - strong [ref=e6306]: 39,900원
+                - generic [ref=e6310]:
+                  - generic "4.5" [ref=e6311]
+                  - generic [ref=e6317]: (300)
+            - listitem [ref=e6319]:
+              - link "모타모타 에프톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기, 민트 모타모타 에프톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기, 민트 29,900원 5 (91)" [ref=e6320] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9481139684?vendorItemId=95182910416&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9481139684
+                - img "모타모타 에프톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기, 민트"
+                - generic [ref=e6322]: 모타모타 에프톡스 EMS발마사지기 EMS발매트 발마사지기계 발바닥마사지기 종아리발마사지기 저주파발마사지기, 민트
+                - strong [ref=e6325]: 29,900원
+                - generic [ref=e6329]:
+                  - generic "5" [ref=e6330]
+                  - generic [ref=e6336]: (91)
+            - listitem [ref=e6338]:
+              - link "리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트 리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트 264,710원 4.5 (96)" [ref=e6339] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/8286702755?vendorItemId=91046038699&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p8286702755
+                - img "리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트"
+                - generic [ref=e6341]: 리바이티브 저주파 마사지기 발 발바닥, ACTEGY 37AB, 화이트
+                - strong [ref=e6344]: 264,710원
+                - generic [ref=e6348]:
+                  - generic "4.5" [ref=e6349]
+                  - generic [ref=e6355]: (96)
+            - listitem [ref=e6357]:
+              - link "KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375 KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375 89,900원 5 (275)" [ref=e6358] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/8619476577?vendorItemId=92011264677&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p8619476577
+                - img "KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375"
+                - generic [ref=e6360]: KC인증 발바닥 마사지기 무선 EMS 펄스 적외선 발바닥 마사지기, 하얀색, WY-375
+                - strong [ref=e6363]: 89,900원
+                - generic [ref=e6367]:
+                  - generic "5" [ref=e6368]
+                  - generic [ref=e6374]: (275)
+            - listitem [ref=e6376]:
+              - link "비아찰리 발바닥 마사지 롤러 지압기, 어반그레이, 1개 비아찰리 발바닥 마사지 롤러 지압기, 어반그레이, 1개 4,900원 (1개당 4,900원) 4.5 (519)" [ref=e6377] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9460173442?vendorItemId=95857905878&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9460173442
+                - img "비아찰리 발바닥 마사지 롤러 지압기, 어반그레이, 1개"
+                - generic [ref=e6379]: 비아찰리 발바닥 마사지 롤러 지압기, 어반그레이, 1개
+                - generic [ref=e6380]:
+                  - strong [ref=e6382]: 4,900원
+                  - generic [ref=e6383]: (1개당 4,900원)
+                - generic [ref=e6387]:
+                  - generic "4.5" [ref=e6388]
+                  - generic [ref=e6394]: (519)
+            - listitem [ref=e6396]:
+              - link "발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번 발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번 28,610원 5 (28)" [ref=e6397] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9231269283?vendorItemId=95908299960&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9231269283
+                - img "발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번"
+                - generic [ref=e6399]: 발바닥 EMS 마사지기 스마트 전기 다리 발마사지, 완전세트 영어 D, 기본 모델명/품번
+                - strong [ref=e6402]: 28,610원
+                - generic [ref=e6405]:
+                  - generic "5" [ref=e6406]
+                  - generic [ref=e6412]: (28)
+            - listitem [ref=e6414]:
+              - link "아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01 아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01 79,000원 5 (230)" [ref=e6415] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9501236053?vendorItemId=95461694436&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9501236053
+                - img "아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01"
+                - generic [ref=e6417]: 아나파 미세전류 저주파 발 발바닥 다리 종아리 마사지기, 네이비, ANAPA-MT01
+                - strong [ref=e6420]: 79,000원
+                - generic [ref=e6424]:
+                  - generic "5" [ref=e6425]
+                  - generic [ref=e6431]: (230)
+            - listitem [ref=e6433]:
+              - link "Nicoliley 바운스번 발바닥 지압매트 안마기/2026 업그레이드, 자주색, 1개 Nicoliley 바운스번 발바닥 지압매트 안마기/2026 업그레이드, 자주색, 1개 13,900원 (1개당 13,900원) 4.5 (525)" [ref=e6434] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9264182996?vendorItemId=94379303618&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9264182996
+                - img "Nicoliley 바운스번 발바닥 지압매트 안마기/2026 업그레이드, 자주색, 1개"
+                - generic [ref=e6436]: Nicoliley 바운스번 발바닥 지압매트 안마기/2026 업그레이드, 자주색, 1개
+                - generic [ref=e6437]:
+                  - strong [ref=e6439]: 13,900원
+                  - generic [ref=e6440]: (1개당 13,900원)
+                - generic [ref=e6444]:
+                  - generic "4.5" [ref=e6445]
+                  - generic [ref=e6451]: (525)
+            - listitem [ref=e6453]:
+              - link "카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01 카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01 19,800원 5 (298)" [ref=e6454] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9404489731?vendorItemId=94895693287&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9404489731
+                - img "카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01"
+                - generic [ref=e6456]: 카프 EMS 저주파 무선 발 마사지기, 아이보리, KF-EMS01
+                - strong [ref=e6459]: 19,800원
+                - generic [ref=e6463]:
+                  - generic "5" [ref=e6464]
+                  - generic [ref=e6470]: (298)
+            - listitem [ref=e6472]:
+              - link "EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01 EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01 107,000원 5 (131)" [ref=e6473] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9628133022?vendorItemId=95694597518&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9628133022
+                - img "EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01"
+                - generic [ref=e6475]: EXTEDRG EMS 발 마사지기 무선충전식 온열 저주파 종아리 다리 마사지기 발부종 혈액순환 효도선물 직장인, 화이트, ZD01
+                - strong [ref=e6478]: 107,000원
+                - generic [ref=e6482]:
+                  - generic "5" [ref=e6483]
+                  - generic [ref=e6489]: (131)
+            - listitem [ref=e6491]:
+              - link "릴렉서리 레그힐링 종아리 발마사지기, 화이트계열, ING-01 릴렉서리 레그힐링 종아리 발마사지기, 화이트계열, ING-01 229,000원 4.5 (450)" [ref=e6492] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/8351212417?vendorItemId=91145925976&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p8351212417
+                - img "릴렉서리 레그힐링 종아리 발마사지기, 화이트계열, ING-01"
+                - generic [ref=e6494]: 릴렉서리 레그힐링 종아리 발마사지기, 화이트계열, ING-01
+                - strong [ref=e6497]: 229,000원
+                - generic [ref=e6501]:
+                  - generic "4.5" [ref=e6502]
+                  - generic [ref=e6508]: (450)
+            - listitem [ref=e6510]:
+              - link "JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형 JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형 32,870원 4.5 (158)" [ref=e6511] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9650348632?vendorItemId=94726974367&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9650348632
+                - img "JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형"
+                - generic [ref=e6513]: JK 발바닥 EMS 마사지기 안마기 전기 다리, 본품+패드, JK 유럽형
+                - strong [ref=e6516]: 32,870원
+                - generic [ref=e6519]:
+                  - generic "4.5" [ref=e6520]
+                  - generic [ref=e6526]: (158)
+            - listitem [ref=e6528]:
+              - link "바디앤 EMS 트위핏 종아리 온열 족저 트위스트 발마사지기, 13155149406, 트위핏 발마사지기 바디앤 EMS 트위핏 종아리 온열 족저 트위스트 발마사지기, 13155149406, 트위핏 발마사지기 169,000원 4.5 (64)" [ref=e6529] [cursor=pointer]:
+                - /url: //www.coupang.com/vp/products/9636825118?vendorItemId=95032139759&sourceType=srp_also_viewed_item&rmdId=3a5c756664644a3cba1a828b94bb3595&eventLabel=recommendation_widget_pc_srp_001&platform=web&rmdABTestInfo=88611_A,14554_C,106722_A,88610_B,106751_A&rmdValue=p8283722438:vt-1.0.0:p9636825118
+                - img "바디앤 EMS 트위핏 종아리 온열 족저 트위스트 발마사지기, 13155149406, 트위핏 발마사지기"
+                - generic [ref=e6531]: 바디앤 EMS 트위핏 종아리 온열 족저 트위스트 발마사지기, 13155149406, 트위핏 발마사지기
+                - strong [ref=e6534]: 169,000원
+                - generic [ref=e6537]:
+                  - generic "4.5" [ref=e6538]
+                  - generic [ref=e6544]: (64)
+          - button "다음 상품 보기" [ref=e6546] [cursor=pointer]
+  - contentinfo [ref=e6547]:
+    - generic [ref=e6548]:
+      - generic [ref=e6549]:
+        - link "회사소개" [ref=e6550] [cursor=pointer]:
+          - /url: https://news.coupang.com/
+        - link "Investor Relations" [ref=e6551] [cursor=pointer]:
+          - /url: https://ir.aboutcoupang.com/overview/default.aspx
+        - link "인재채용" [ref=e6552] [cursor=pointer]:
+          - /url: https://rocketyourcareer.kr.coupang.com
+        - link "입점/제휴문의" [ref=e6553] [cursor=pointer]:
+          - /url: https://marketplace.coupangcorp.com/s/?utm_source=button_pc&utm_medium=non_paid&utm_campaign=onsite_ca&utm_id=coupang_app?inflow=WEB_FOOTER_B
+        - link "공지사항" [ref=e6554] [cursor=pointer]:
+          - /url: https://mc.coupang.com/ssr/desktop/contact/notice
+        - link "고객의 소리" [ref=e6555] [cursor=pointer]:
+          - /url: https://mc.coupang.com/ssr/desktop/contact/voc
+        - link "이용약관" [ref=e6556] [cursor=pointer]:
+          - /url: https://www.coupang.com/np/policies/terms
+        - link [ref=e6557] [cursor=pointer]:
+          - /url: https://privacy.coupang.com/ko/center/coupang
+          - strong [ref=e6558]: 개인정보 처리방침
+        - link "정보보호/개인정보보호 인증" [ref=e6559] [cursor=pointer]:
+          - /url: https://privacy.coupang.com/ko/security/status
+        - link "쿠팡페이 이용약관" [ref=e6560] [cursor=pointer]:
+          - /url: https://rocketpay.coupang.com/rocketpay/operationTerms/coupangPcFooter
+        - link "신뢰관리센터" [ref=e6561] [cursor=pointer]:
+          - /url: https://www.coupang.com/np/safety
+        - link "제휴마케팅" [ref=e6562] [cursor=pointer]:
+          - /url: https://partners.coupang.com/
+        - link "광고안내" [ref=e6563] [cursor=pointer]:
+          - /url: https://ads.coupang.com
+      - paragraph [ref=e6567] [cursor=pointer]: Global Site
+    - generic [ref=e6569]:
+      - generic [ref=e6570]:
+        - link "COUPANG" [ref=e6571] [cursor=pointer]:
+          - /url: https://www.coupang.com/
+        - generic [ref=e6572]:
+          - text: "상호명 및 호스팅 서비스 제공 : 쿠팡(주) 대표이사 : 로저스 해롤드 린(Rogers Harold Lynn) (05050) 서울시 광진구 아차산로 412, 2층 사업자 등록번호 : 120-88-00767 통신판매업신고 : 2026-서울광진-1253"
+          - link "사업자정보 확인 >" [ref=e6573] [cursor=pointer]:
+            - /url: http://www.ftc.go.kr/info/bizinfo/communicationViewPopup.jsp?wrkr_no=1208800767
+      - link [ref=e6575] [cursor=pointer]:
+        - /url: https://mc.coupang.com/ssr/desktop/contact/inquiry
+        - strong [ref=e6576]: 365고객센터
+        - text: "| 전자금융거래분쟁처리담당"
+        - emphasis [ref=e6577]: 1577-7011 (유료)
+        - text: "(05050) 서울시 광진구 아차산로 412, 2층 email : help@coupang.com"
+      - paragraph [ref=e6578]:
+        - strong [ref=e6579]: 채무지급보증 안내
+        - generic [ref=e6580]: 당사는 고객님이 현금 결제한 금액에 대해 채무지급보증 계약을 체결하여 안전거래를 보장하고 있습니다.
+        - link "서비스 가입사실 확인 >" [ref=e6581] [cursor=pointer]:
+          - /url: https://www.coupang.com/np/etc/popWooriService
+    - generic [ref=e6587]:
+      - paragraph [ref=e6588]: 사이버몰 내 판매되는 상품 중에는 쿠팡에 등록한 개별 판매자가 판매하는 마켓플레이스(오픈마켓) 상품이 포함되어 있습니다. 마켓플레이스(오픈마켓) 상품의 경우 쿠팡은 통신판매중개자이며 통신판매의 당사자가 아닙니다. 쿠팡은 마켓플레이스(오픈마켓) 상품, 거래정보 및 거래 등에 대하여 책임을 지지 않습니다. 쿠팡은 소비자 보호와 안전거래를 위해 신뢰관리센터(CM112@coupang.com)를 운영하고 있으며, 관련 분쟁이 발생할 경우 별도의 분쟁 처리절차에 의거 분쟁이 처리됩니다. Copyright © Coupang Corp. 2010-2025 All Rights Reserved.
+      - list [ref=e6589]:
+        - listitem [ref=e6590]:
+          - link [ref=e6591] [cursor=pointer]:
+            - /url: https://www.facebook.com/Coupang.korea
+        - listitem [ref=e6592]:
+          - link [ref=e6593] [cursor=pointer]:
+            - /url: https://news.coupang.com/
+        - listitem [ref=e6594]:
+          - link [ref=e6595] [cursor=pointer]:
+            - /url: https://www.instagram.com/coupang
+  - alert [ref=e6596]

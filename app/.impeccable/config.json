@@ -1,0 +1,62 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gray-on-color",
+        "value": "text-neutral-600 on bg-red-50",
+        "files": [
+          "components/TaskCard.tsx"
+        ],
+        "createdAt": "2026-09-01T00:52:40.998Z",
+        "reason": "verified false positive: neutral-600 applies at rest (white bg), red-50 only appears together with red-600 text on hover - they never co-occur (audit verification)"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "text-neutral-600 on bg-red-50",
+        "files": [
+          "app/projects/page.tsx"
+        ],
+        "createdAt": "2026-09-01T00:52:41.107Z",
+        "reason": "verified false positive: same hover-pairing mismatch as TaskCard.tsx delete button (audit verification)"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "text-neutral-500 on bg-indigo-50",
+        "files": [
+          "app/leaves/page.tsx"
+        ],
+        "createdAt": "2026-09-01T00:52:41.211Z",
+        "reason": "verified false positive: neutral-500 applies at rest (white bg), indigo-50 only appears together with indigo-600 text on hover (audit verification)"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "text-neutral-500 on bg-red-50",
+        "files": [
+          "app/leaves/page.tsx"
+        ],
+        "createdAt": "2026-09-01T00:52:41.309Z",
+        "reason": "verified false positive: same hover-pairing mismatch, red-50 only appears together with red-600 text on hover (audit verification)"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "text-neutral-600 on bg-indigo-50",
+        "files": [
+          "components/Primitives.tsx"
+        ],
+        "createdAt": "2026-09-01T00:52:41.410Z",
+        "reason": "verified false positive: ternary branch mismatch - active state pairs indigo-600 on indigo-50, inactive state pairs neutral-600 on neutral-100; the two never combine (audit verification)"
+      },
+      {
+        "rule": "side-tab",
+        "value": "border-l-4",
+        "files": [
+          "components/TaskCard.tsx"
+        ],
+        "createdAt": "2026-09-01T00:53:26.183Z",
+        "reason": "sanctioned exception: documented as the 'Status Spine Rule' in DESIGN.md after user confirmed keeping the left-border status accent during /impeccable document"
+      }
+    ]
+  }
+}

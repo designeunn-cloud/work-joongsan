@@ -1,0 +1,144 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id               String    @id @default(cuid())
+  source           String    @default("excel") // excel | manual
+  sourceFileName   String    @default("")
+  folderPath       String
+  folderName       String
+  assignee         String
+  department       String?
+  brand            String?
+  productName      String?
+  platform         String?
+  tags             String?
+  memo             String?
+  projectId        String?
+  project          Project?  @relation(fields: [projectId], references: [id])
+  requestContent   String
+  requestDate      DateTime
+  dueDate          DateTime?
+  startDate        DateTime  @default(now())
+  reviewDate       DateTime?
+  endDate          DateTime?
+  status           String    @default("in_progress") // in_progress | review | done
+  statusChangedAt  DateTime?
+  completedAt      DateTime?
+  rawExtractedText String    @default("")
+  aiConfidenceNote String?
+  notionPageId     String?
+  relatedTaskId    String?
+  relatedTask      Task?     @relation("TaskFollowUp", fields: [relatedTaskId], references: [id])
+  followUps        Task[]    @relation("TaskFollowUp")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  subtasks         Subtask[]
+  dailyJournalEntries DailyJournalEntry[]
+}
+
+model DailyJournal {
+  id        String              @id @default(cuid())
+  dateISO   String              @unique // 이 스냅샷이 나타내는 날짜, "2026-09-01"
+  createdAt DateTime            @default(now())
+  entries   DailyJournalEntry[]
+}
+
+model DailyJournalEntry {
+  id             String       @id @default(cuid())
+  dailyJournalId String
+  dailyJournal   DailyJournal @relation(fields: [dailyJournalId], references: [id], onDelete: Cascade)
+  taskId         String
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id         String   @id @default(cuid())
+  name       String
+  department String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tasks      Task[]
+}
+
+model Subtask {
+  id        String    @id @default(cuid())
+  taskId    String
+  task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  content     String
+  assignee    String?
+  dueDate     DateTime?
+  done        Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  taskId    String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model UnprocessedLog {
+  id               String   @id @default(cuid())
+  sourceFileName   String
+  reason           String
+  rawExtractedText String
+  createdAt        DateTime @default(now())
+  resolved         Boolean  @default(false)
+}
+
+model AssigneeCache {
+  id         String   @id @default(cuid())
+  name       String
+  department String?
+  notionUrl  String?
+  syncedAt   DateTime @default(now())
+}
+
+model ProductCache {
+  id         String   @id @default(cuid())
+  code       String
+  brand      String?
+  category1  String?
+  category2  String?
+  notionUrl  String?
+  syncedAt   DateTime @default(now())
+}
+
+model PlatformCache {
+  id        String   @id @default(cuid())
+  name      String
+  notionUrl String?
+  syncedAt  DateTime @default(now())
+}
+
+model SyncState {
+  id          String   @id @default(cuid())
+  target      String   @unique // "assignee" | "product"
+  lastSyncedAt DateTime
+}
+
+model Leave {
+  id        String   @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime // 반차는 startDate와 동일한 날짜
+  type      String   // "연차" | "오전반차" | "오후반차"
+  days      Float    // 이 건이 차감하는 연차 일수(연차: 기간 일수, 반차: 0.5)
+  memo      String?
+  createdAt DateTime @default(now())
+}
+
+model LeaveQuota {
+  id        String @id @default(cuid())
+  year      Int    @unique
+  totalDays Float
+}

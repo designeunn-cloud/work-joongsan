@@ -94,7 +94,7 @@ const COLUMN_DEFS: ColumnDef[] = [
   { key: "dueDate", label: "요청일", sortable: true, toggleable: true, defaultWidth: 110 },
   { key: "createdAt", label: "등록일", sortable: true, toggleable: true, defaultWidth: 110 },
   { key: "tags", label: "태그", sortable: false, toggleable: true, defaultWidth: 140 },
-  { key: "workHours", label: "소요시간 (오늘)", sortable: false, toggleable: true, defaultWidth: 115 },
+  { key: "workHours", label: "소요시간", sortable: false, toggleable: true, defaultWidth: 115 },
   { key: "memo", label: "비고", sortable: false, toggleable: true, defaultWidth: 180 },
   { key: "referenceMemo", label: "메모", sortable: false, toggleable: true, defaultWidth: 220 },
   { key: "outputLocation", label: "결과물 폴더 위치/파일명", sortable: false, toggleable: true, defaultWidth: 280 },

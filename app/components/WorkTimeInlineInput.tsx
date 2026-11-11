@@ -58,9 +58,9 @@ export default function WorkTimeInlineInput({ taskName, hours, disabled, active,
   function begin() { if (editing) { void commit(); return; } cancelled.current = false; setValue(hours == null ? "" : String(hours)); setDirty(false); setError(""); setEditing(true); }
   return <div className={card ? "inline-flex" : "w-full min-w-0"} data-card-interactive>
     <button ref={trigger} type="button" disabled={disabled || active || !ready} aria-label={`${taskName} 소요시간 입력`} aria-haspopup="dialog" aria-expanded={editing} aria-controls={editing ? id : undefined} onClick={event => { setPortalTarget(event.currentTarget.closest('[role="dialog"][aria-modal="true"]') ?? document.body); begin(); }}
-      title={active ? "측정을 종료한 뒤 시간을 수정해주세요" : "클릭해 빠른 선택 또는 시간(h) 입력"}
+      title={active ? "측정을 종료한 뒤 시간을 수정해주세요" : automatic ? "자동 계산된 시간 · 클릭하여 수정" : "클릭해 빠른 선택 또는 시간(h) 입력"}
       className={`${card ? "py-1 text-xs underline decoration-dotted underline-offset-4" : "min-h-8 w-full rounded-md border border-neutral-200 bg-white px-1 py-1 text-center font-semibold hover:bg-neutral-50"} tabular-nums ${automatic ? "text-indigo-700" : hours == null ? "text-red-700" : "text-neutral-700"} focus-visible:outline-2 focus-visible:outline-indigo-600 disabled:opacity-60`}>
-      {card ? "소요시간 " : ""}{automatic ? "자동 " : ""}{hours == null ? card ? "" : "미입력" : `${hours}h`}
+      {hours == null ? card ? "소요시간" : "미입력" : `${hours}h`}
     </button>
     {editing && createPortal(<div ref={popup} id={id} role="dialog" aria-label={`${taskName} 소요시간 빠른 입력`} data-card-interactive
       onClick={event => event.stopPropagation()} onKeyDown={event => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); cancelled.current = true; setEditing(false); trigger.current?.focus(); } }}

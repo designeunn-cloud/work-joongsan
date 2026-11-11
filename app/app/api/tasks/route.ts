@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "@/lib/prisma";
+import { getProductIssues } from "@/lib/productPolicy";
 import { buildFolderName, resolveUniqueFolderPath } from "@/lib/folderNaming";
 import { computeDefaultEndDate } from "@/lib/dateHelpers";
 import { buildManualRequestFileContent } from "@/lib/manualRequestFile";
@@ -18,7 +19,8 @@ export async function GET() {
       subtasks: true,
     },
   });
-  return NextResponse.json(tasks);
+  const products = await prisma.productCache.findMany({ select: { code: true } });
+  return NextResponse.json(tasks.map((task) => ({ ...task, productIssues: getProductIssues(task, products) })));
 }
 
 export async function POST(request: Request) {

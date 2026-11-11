@@ -4,9 +4,9 @@ import { createPortal } from "react-dom";
 import { splitProducts } from "@/lib/productPolicy";
 import MultiCombobox, { type MultiComboboxHandle } from "./MultiCombobox";
 
-export default function TaskProductEditor({ taskId, taskName, value, options, onSaved, onChange }: {
+export default function TaskProductEditor({ taskId, taskName, value, options, onSaved, onChange, needsReview = false }: {
   taskId: string; taskName: string; value: string | null;
-  options: string[]; onSaved?: () => void; onChange?: (value: string) => void;
+  options: string[]; onSaved?: () => void; onChange?: (value: string) => void; needsReview?: boolean;
 }) {
   const label = "품명";
   const [open, setOpen] = useState(false), [draft, setDraft] = useState(value ?? ""), [error, setError] = useState("");
@@ -67,7 +67,7 @@ export default function TaskProductEditor({ taskId, taskName, value, options, on
   return <span className="inline-flex min-w-0 max-w-full flex-wrap items-center" data-card-interactive>
     <button ref={trigger} type="button" disabled={busy} title={products.length ? products.join(", ") : undefined} aria-label={`${taskName} ${label} 변경${products.length ? ` · ${products.join(", ")}` : ""}`} aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? id : undefined}
       onClick={event => { setPortalTarget(event.currentTarget.closest('[role="dialog"][aria-modal="true"]') ?? document.body); if (open) { void saveDraft(); return; } draftRef.current = current; setDraft(current); setError(""); setPosition(null); setOpen(true); }}
-      className={`min-h-8 max-w-full break-words rounded-md py-1 text-left text-xs underline decoration-dotted underline-offset-4 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-indigo-600 ${current ? "text-neutral-600" : "text-red-700"}`}>
+      className={`min-h-8 max-w-full break-words rounded-md py-1 text-left text-xs underline decoration-dotted underline-offset-4 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-indigo-600 ${needsReview || !products.length ? "text-red-700" : "text-neutral-600"}`}>
       {productSummary}
     </button>
     {folderWarning && <span role="status" title={folderWarning} className="ml-1 text-[10px] text-amber-800">폴더명 정리 보류<span className="sr-only"> · {folderWarning}</span></span>}

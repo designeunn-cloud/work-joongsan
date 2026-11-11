@@ -8,6 +8,7 @@ import SubtaskSection from "./SubtaskSection";
 import StatusSegment from "./StatusSegment";
 import { Pill } from "./Primitives";
 import TaskProductEditor from "./TaskProductEditor";
+import { getProductIssues } from "@/lib/productPolicy";
 import TaskMemo from "./TaskMemo";
 import TaskOutputLocation from "./TaskOutputLocation";
 
@@ -112,6 +113,8 @@ export default function TaskCard({
     setEditingContent(false);
   }
   const done = task.status === "done";
+  const productIssues = getProductIssues(task, master.products);
+  const productNeedsReview = productIssues.mismatch || productIssues.unregistered.length > 0;
   const late = showOverdueBadge && !done ? daysLate(task.startDate) : 0;
   const STATUS_ACCENT: Record<TaskStatus, string> = {
     in_progress: "border-l-blue-300",
@@ -213,7 +216,7 @@ export default function TaskCard({
             </span>
           )}
           <span className="text-sm text-neutral-400 shrink-0">
-            <TaskProductEditor taskId={task.id} taskName={task.requestContent} value={task.productName} options={master.products.map(item => item.code)} onSaved={onSubtasksChanged}/>
+            <TaskProductEditor taskId={task.id} taskName={task.requestContent} value={task.productName} options={master.products.map(item => item.code)} needsReview={productNeedsReview} onSaved={onSubtasksChanged}/>
             {" · "}
             {baseName(task.assignee)}
           </span>

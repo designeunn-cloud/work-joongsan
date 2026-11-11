@@ -763,7 +763,7 @@ function TaskTableRow({
       case "platform":
         return task.platform ? <span className="block truncate">{task.platform}</span> : <span className="text-neutral-300">-</span>;
       case "productName":
-        return task.productName ? <span className="block truncate">{task.productName}</span> : <span className="text-neutral-300">-</span>;
+        return <span className={`block truncate ${!task.productName?.trim() || task.productIssues?.mismatch || task.productIssues?.unregistered.length ? "text-red-700" : ""}`}>{task.productName || "-"}</span>;
       case "folderName":
         return (
           <span className="block truncate text-neutral-500" title={task.folderName}>

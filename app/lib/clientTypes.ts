@@ -1,4 +1,5 @@
 import type { TaskStatus } from "@/lib/statusConfig";
+import type { ProductIssues } from "@/lib/productPolicy";
 
 export interface Task {
   id: string;
@@ -12,6 +13,7 @@ export interface Task {
   department: string | null;
   brand: string | null;
   productName: string | null;
+  productIssues?: ProductIssues;
   platform: string | null;
   tags: string | null;
   memo: string | null;

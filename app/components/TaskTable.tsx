@@ -15,6 +15,7 @@ import Modal from "./Modal";
 import type { DateField } from "./TaskCard";
 import { buildTaskCopyText, getSeoulDateParts, getTaskPeriodDate, matchesTaskPeriod, type TableDateBasis, type TablePeriodMode, type TaskCopyFormat } from "@/lib/taskTableCopy";
 import { getTaskWorkCategory } from "@/lib/workCategories";
+import { compareCompletedNewest } from "@/lib/taskCompletionSort";
 import ProductionTypeEditor from "./ProductionTypeEditor";
 import TaskIdentityEditor from "./TaskIdentityEditor";
 import TaskProductEditor from "./TaskProductEditor";
@@ -559,6 +560,7 @@ export default function TaskTable({
         .toLowerCase();
       return hay.includes(q);
     });
+    if (statusFilter === "done" && sortKey === "endDate" && sortDir === -1) return [...filtered].sort(compareCompletedNewest);
     return [...filtered].sort((a, b) => sortDir * compareValues(sortValueFor(a, sortKey), sortValueFor(b, sortKey)));
   }, [tasks, query, statusFilter, effectiveYear, effectiveMonth, effectiveQuarter, dateBasis, periodMode, assigneeFilter, projectFilter, sortKey, sortDir]);
 
@@ -578,7 +580,9 @@ export default function TaskTable({
       if (!bKey) return -1;
       return aKey.localeCompare(bKey, "ko");
     });
-    return entries.map(([key, v]) => ({ key, label: v.label as string | null, rows: v.rows }));
+    return entries.map(([key, v]) => ({ key, label: v.label as string | null,
+      rows: groupBy === "status" && key === "done" ? [...v.rows].sort(compareCompletedNewest) : v.rows,
+    }));
   }, [rows, groupBy]);
 
   const totalWidth = visibleColumns.reduce((sum, c) => sum + (colWidths[c.key] ?? c.defaultWidth), 0);
@@ -803,6 +807,7 @@ export default function TaskTable({
                 <tr className="bg-neutral-50/70">
                   <td colSpan={visibleColumns.length} className="px-3 py-1.5 text-xs font-semibold text-neutral-600 border-b border-neutral-200">
                     {group.label} <span className="text-neutral-400 font-normal">{group.rows.length}건</span>
+                    {groupBy === "status" && group.key === "done" && <span className="ml-2 font-normal text-neutral-500">최근 완료순</span>}
                   </td>
                 </tr>
               )}

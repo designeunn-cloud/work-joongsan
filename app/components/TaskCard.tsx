@@ -7,17 +7,9 @@ import DateEditor from "./DateEditor";
 import SubtaskSection from "./SubtaskSection";
 import StatusSegment from "./StatusSegment";
 import { Pill } from "./Primitives";
+import TaskProductEditor from "./TaskProductEditor";
 
 export type DateField = "startDate" | "reviewDate" | "endDate" | "dueDate";
-
-/** 품목이 콤마로 여러 개 들어있으면(DB엔 전부 저장돼있음) 카드엔 2개까지만, 3개부터는 "N종"으로 줄인다. */
-function formatProductNames(productName: string | null): string | null {
-  if (!productName) return null;
-  const items = productName.split(",").map((s) => s.trim()).filter(Boolean);
-  if (items.length === 0) return null;
-  if (items.length <= 2) return items.join(", ");
-  return `${items.length}종`;
-}
 
 const ICON_PROPS = {
   width: 15,
@@ -119,7 +111,6 @@ export default function TaskCard({
   }
   const done = task.status === "done";
   const late = showOverdueBadge && !done ? daysLate(task.startDate) : 0;
-  const productNamesLabel = formatProductNames(task.productName);
   const STATUS_ACCENT: Record<TaskStatus, string> = {
     in_progress: "border-l-blue-300",
     review: "border-l-orange-300",
@@ -220,8 +211,8 @@ export default function TaskCard({
             </span>
           )}
           <span className="text-sm text-neutral-400 shrink-0">
-            {productNamesLabel && <span title={task.productName ?? undefined}>{productNamesLabel}</span>}
-            {productNamesLabel && " · "}
+            <TaskProductEditor taskId={task.id} taskName={task.requestContent} value={task.productName} options={master.products.map(item => item.code)} onSaved={onSubtasksChanged}/>
+            {" · "}
             {baseName(task.assignee)}
           </span>
         </div>

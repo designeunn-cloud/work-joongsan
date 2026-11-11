@@ -6,6 +6,7 @@ import { computeDefaultEndDate } from "./dateHelpers";
 import { logActivity } from "./activityLog";
 import { findOrCreateProjectByName } from "./projects";
 import type { InterpretResult } from "./types";
+import { mergeRequestProducts } from "./productPolicy";
 
 export interface CreateTaskFromInterpretOptions {
   watchFolder: string;
@@ -23,7 +24,8 @@ export type CreateTaskFromInterpretResultOutcome =
 export async function createTaskFromInterpretResult(
   opts: CreateTaskFromInterpretOptions
 ): Promise<CreateTaskFromInterpretResultOutcome> {
-  const { watchFolder, fileName, flattenedText, result, saveFile } = opts;
+  const { watchFolder, fileName, flattenedText, result: extracted, saveFile } = opts;
+  const result = { ...extracted, productName: mergeRequestProducts(extracted.productName, flattenedText, fileName, [extracted.platform ?? ""]) || undefined };
 
   if (result.status !== "ok" || !result.assignee || !result.requestContent || !result.requestDateISO) {
     const reason = result.reason || "필수 항목(담당자/업무요청내용/요청일) 해석 실패";

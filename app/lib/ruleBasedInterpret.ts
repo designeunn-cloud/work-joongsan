@@ -1,4 +1,5 @@
 import type { InterpretResult } from "./types";
+import { mergeRequestProducts } from "./productPolicy";
 
 export interface RuleBasedInput {
   fileBaseName: string;
@@ -350,7 +351,7 @@ export function interpretExcelRules(input: RuleBasedInput): InterpretResult {
     assignee,
     department: department || undefined,
     brand: brand || undefined,
-    productName: productName || undefined,
+    productName: mergeRequestProducts(productName, rows, fileBaseName, platforms) || undefined,
     category: category || undefined,
     platform: platform || undefined,
     newProductCode: newProductCode || undefined,

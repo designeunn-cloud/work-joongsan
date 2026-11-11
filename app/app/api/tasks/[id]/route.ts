@@ -39,7 +39,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "코멘트는 200자 이내의 한 줄로 입력해 주세요." }, { status: 400 });
   }
   for (const field of ["startDateISO", "plannedEndDateISO", "endDateISO", "requestDateISO", "dueDateISO", "reviewDateISO"]) {
-    if (typeof body[field] === "string" && (body[field] || field === "endDateISO") && !Number.isFinite(new Date(body[field]).getTime())) {
+    if (typeof body[field] === "string" && body[field] && !Number.isFinite(new Date(body[field]).getTime())) {
       return NextResponse.json({ error: "올바른 날짜를 입력해 주세요." }, { status: 400 });
     }
   }
@@ -71,9 +71,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (commentOnly) data.updatedAt = new Date();
       if (body.workType !== undefined && (nextStatus !== "in_progress" || nextStatus === before.status)) {
         return NextResponse.json({ error: "작업 구분은 진행중으로 변경할 때 선택해주세요." }, { status: 400 });
-      }
-      if (typeof body.endDateISO === "string" && nextStatus !== "done") {
-        return NextResponse.json({ error: "종료일은 업무를 완료한 뒤 기록할 수 있습니다. 계획 날짜는 예정 종료일에 입력해 주세요." }, { status: 400 });
       }
       if (nextStatus === "done" && before.status !== "done" && await tx.subtask.count({ where: { taskId: id, done: false } }) > 0) {
         return NextResponse.json({ error: "남은 세부할일을 완료한 뒤 업무를 완료해 주세요." }, { status: 400 });
@@ -123,8 +120,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }
       if (typeof body.plannedEndDateISO === "string") data.plannedEndDate = body.plannedEndDateISO ? new Date(body.plannedEndDateISO) : null;
       if (typeof body.endDateISO === "string") {
-        data.endDate = new Date(body.endDateISO);
-        data.completedAt = data.endDate;
+        data.endDate = body.endDateISO ? new Date(body.endDateISO) : null;
+        data.completedAt = nextStatus === "done" ? data.endDate : null;
       }
       if (typeof body.dueDateISO === "string") data.dueDate = body.dueDateISO ? new Date(body.dueDateISO) : null;
       if (typeof body.reviewDateISO === "string") data.reviewDate = body.reviewDateISO ? new Date(body.reviewDateISO) : null;

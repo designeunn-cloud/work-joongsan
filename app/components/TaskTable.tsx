@@ -882,7 +882,7 @@ function TaskTableRow({
         className={`min-h-8 whitespace-nowrap py-1 ${!valueISO || emphasize ? "!text-red-700" : "!text-neutral-600"}`}
         valueISO={valueISO}
         emphasize={emphasize}
-        clearable={field === "startDate" || field === "plannedEndDate" || field === "reviewDate" || field === "requestDate" || field === "dueDate"}
+        clearable={field === "startDate" || field === "plannedEndDate" || field === "endDate" || field === "reviewDate" || field === "requestDate" || field === "dueDate"}
         open={openDateField === field}
         onToggle={() => setOpenDateField((f) => (f === field ? null : field))}
         onChange={(iso) => onUpdateDate(task.id, !iso && (field === "requestDate" || field === "dueDate") ? "requestDate" : field, iso)}
@@ -915,7 +915,7 @@ function TaskTableRow({
       case "startDate":
         return dateCell("startDate", task.startDate, !task.startDate);
       case "endDate":
-        return done ? dateCell("endDate", task.endDate) : <span className="flex min-h-8 items-center text-neutral-400" title="완료 후 종료일을 수정할 수 있습니다">-</span>;
+        return dateCell("endDate", task.endDate);
       case "plannedEndDate":
         return dateCell("plannedEndDate", task.plannedEndDate, !task.plannedEndDate);
       case "reviewDate":

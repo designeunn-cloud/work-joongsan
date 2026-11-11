@@ -74,9 +74,40 @@ test("table edits save dates, notes, locations and time atomically before publis
       for (const field of ["startDate", "requestDate", "dueDate", "reviewDate"]) assert.equal(result.body[field], null, field);
       const before = published.length;
       assert.equal((await call({ startDateISO: "invalid" })).status, 400);
-      assert.equal((await call({ endDateISO: "2026-11-11" })).status, 400);
+      assert.equal((await call({ endDateISO: "invalid" })).status, 400);
       assert.equal(published.length, before);
       assert.equal((await db.task.findUnique({ where: { id } })).status, "planned");
+    });
+
+    await t.test("end dates can be selected and cleared without completing or rescheduling unfinished work", async () => {
+      const changedAt = new Date("2026-11-01T03:00:00Z");
+      const runningSince = "2026-11-11T01:00:00.000Z";
+      await db.$executeRaw`INSERT INTO WorkTimer (id,taskId,runningSince) VALUES ('active',${id},${runningSince})`;
+      try {
+        for (const status of ["planned", "in_progress", "review"]) {
+          await db.task.update({ where: { id }, data: { status, statusChangedAt: changedAt, completedAt: null, endDate: null } });
+          const before = await db.task.findUnique({ where: { id } });
+          const result = await call({ endDateISO: "2026-11-20" });
+          assert.equal(result.status, 200, status);
+          assert.equal(result.body.endDate, "2026-11-20T00:00:00.000Z", status);
+          assert.equal(result.body.status, status);
+          assert.equal(result.body.completedAt, null);
+          assert.equal(result.body.statusChangedAt, changedAt.toISOString());
+          for (const field of ["startDate", "plannedEndDate", "reviewDate", "folderPath", "folderName"]) {
+            assert.equal(result.body[field], before[field] instanceof Date ? before[field].toISOString() : before[field], field);
+          }
+          const timer = (await db.$queryRaw`SELECT taskId,runningSince FROM WorkTimer WHERE id = 'active'`)[0];
+          assert.deepEqual(timer, { taskId: id, runningSince });
+          const cleared = await call({ endDateISO: "" });
+          assert.equal(cleared.status, 200, status);
+          assert.equal(cleared.body.endDate, null);
+          assert.equal(cleared.body.completedAt, null);
+          assert.equal(cleared.body.status, status);
+        }
+        assert.equal((await db.$queryRaw`SELECT COUNT(*) AS total FROM WorkTimeSegment`)[0].total, 0n);
+      } finally {
+        await db.$executeRaw`DELETE FROM WorkTimer WHERE id = 'active'`;
+      }
     });
 
     await t.test("notes and output changes update today only and keep reference memo separate", async () => {
@@ -104,6 +135,11 @@ test("table edits save dates, notes, locations and time atomically before publis
       assert.equal(result.status, 200);
       assert.equal(result.body.endDate.slice(0, 10), "2026-11-09");
       assert.equal(result.body.completedAt, result.body.endDate);
+      const cleared = await call({ endDateISO: "" });
+      assert.equal(cleared.status, 200);
+      assert.equal(cleared.body.endDate, null);
+      assert.equal(cleared.body.completedAt, null);
+      assert.equal(cleared.body.status, "done");
       await db.$executeRaw`INSERT INTO WorkTimer (id,taskId,runningSince) VALUES ('active',${id},${new Date(Date.now() - 60000).toISOString()})`;
       assert.equal((await call({ status: "done", completionHours: 1 })).status, 409);
       result = await call({ status: "done" });

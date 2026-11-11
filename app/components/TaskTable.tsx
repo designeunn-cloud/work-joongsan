@@ -903,7 +903,7 @@ function TaskTableRow({
       case "workCategory":
         return <span className="block truncate">{task.workCategory ?? getTaskWorkCategory(task) ?? "미지정"}</span>;
       case "productionType":
-        return <ProductionTypeEditor key={`${task.id}-${task.productionType ?? "empty"}`} taskId={task.id} value={task.productionType} onSaved={() => onTaskChanged?.()} compact />;
+        return <ProductionTypeEditor key={`${task.id}-${task.productionType ?? "empty"}`} taskId={task.id} value={task.productionType} onSaved={() => onTaskChanged?.()} inline />;
       case "brand":
         return <TaskIdentityEditor taskId={task.id} taskName={task.requestContent} field="brand" value={task.brand} options={brandOptions} onSaved={onTaskChanged} />;
       case "assignee":

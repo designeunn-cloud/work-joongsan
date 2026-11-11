@@ -1,0 +1,2 @@
+ALTER TABLE "Task" ADD COLUMN "workType" TEXT;
+ALTER TABLE "ActivityLog" ADD COLUMN "workType" TEXT;

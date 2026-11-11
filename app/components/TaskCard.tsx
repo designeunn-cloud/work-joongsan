@@ -12,7 +12,7 @@ import { getProductIssues } from "@/lib/productPolicy";
 import TaskMemo from "./TaskMemo";
 import TaskOutputLocation from "./TaskOutputLocation";
 
-export type DateField = "startDate" | "reviewDate" | "endDate" | "dueDate";
+export type DateField = "requestDate" | "startDate" | "reviewDate" | "plannedEndDate" | "endDate" | "dueDate";
 
 const ICON_PROPS = {
   width: 15,
@@ -117,6 +117,7 @@ export default function TaskCard({
   const productNeedsReview = productIssues.mismatch || productIssues.unregistered.length > 0;
   const late = showOverdueBadge && !done ? daysLate(task.startDate) : 0;
   const STATUS_ACCENT: Record<TaskStatus, string> = {
+    planned: "border-l-slate-300",
     in_progress: "border-l-blue-300",
     review: "border-l-orange-300",
     done: "border-l-emerald-300",

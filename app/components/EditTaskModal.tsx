@@ -45,7 +45,7 @@ export default function EditTaskModal({
   const [memo, setMemo] = useState(task.memo ?? "");
   const [projectId, setProjectId] = useState(task.projectId ?? "");
   const [requestContent, setRequestContent] = useState(task.requestContent);
-  const [requestDateISO, setRequestDateISO] = useState(toISODate(new Date(task.requestDate)));
+  const [requestDateISO, setRequestDateISO] = useState(task.requestDate ? toISODate(new Date(task.requestDate)) : "");
   const [submitting, setSubmitting] = useState(false);
 
   function handleAssigneeChange(value: string) {

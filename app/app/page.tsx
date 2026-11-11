@@ -12,6 +12,8 @@ import EditTaskModal, { type EditTaskInput } from "@/components/EditTaskModal";
 const LOG_PREVIEW_COUNT = 10;
 
 const DATE_FIELD_BODY_KEY: Record<DateField, string> = {
+  requestDate: "requestDateISO",
+  plannedEndDate: "plannedEndDateISO",
   startDate: "startDateISO",
   reviewDate: "reviewDateISO",
   endDate: "endDateISO",
@@ -147,7 +149,7 @@ export default function Dashboard() {
     () =>
       tasks.filter(
         (t) =>
-          new Date(t.requestDate).getFullYear() === now.getFullYear() &&
+          !!t.requestDate && new Date(t.requestDate).getFullYear() === now.getFullYear() &&
           new Date(t.requestDate).getMonth() === now.getMonth()
       ).length,
     [tasks, now]

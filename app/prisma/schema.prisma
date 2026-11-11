@@ -21,17 +21,23 @@ model Task {
   platform         String?
   tags             String?
   memo             String?
+  isPriority       Boolean   @default(false)
+  manualPriority   Int?
   referenceMemo    String?
   outputLocation   String?
   projectId        String?
   project          Project?  @relation(fields: [projectId], references: [id])
   requestContent   String
-  requestDate      DateTime
+  productTitleSource String?
+  requestDate      DateTime?
   dueDate          DateTime?
-  startDate        DateTime  @default(now())
+  startDate        DateTime? @default(now())
   reviewDate       DateTime?
+  plannedEndDate   DateTime?
   endDate          DateTime?
   status           String    @default("in_progress") // in_progress | review | done
+  workType         String?
+  productionType   String?
   statusChangedAt  DateTime?
   completedAt      DateTime?
   rawExtractedText String    @default("")
@@ -44,6 +50,8 @@ model Task {
   updatedAt        DateTime  @updatedAt
   subtasks         Subtask[]
   dailyJournalEntries DailyJournalEntry[]
+  journalDetails DailyJournalDetail[]
+  journalSelections JournalTaskSelection[]
 }
 
 model DailyJournal {
@@ -85,6 +93,11 @@ model Subtask {
 model ActivityLog {
   id        String   @id @default(cuid())
   taskId    String?
+  field     String?
+  fromStatus String?
+  toStatus   String?
+  comment    String?
+  workType   String?
   message   String
   createdAt DateTime @default(now())
 }
@@ -143,4 +156,51 @@ model LeaveQuota {
   id        String @id @default(cuid())
   year      Int    @unique
   totalDays Float
+}
+
+model DailyJournalDetail {
+  id             String   @id @default(cuid())
+  dateISO        String
+  taskId         String
+  task           Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author         String?
+  projectName    String?
+  selectedSubtaskIds String? // 해당 날짜 일지에 포함할 세부업무 ID 배열(JSON). null이면 기본 선택을 사용한다.
+  content        String?
+  hours          Float?
+  notes          String?
+  outputLocation String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([dateISO, taskId])
+}
+
+model WorkTimer {
+  id String @id
+  taskId String?
+  runningSince String?
+}
+
+model WorkTimeSegment {
+  id String @id
+  taskId String
+  startedAt String
+  endedAt String
+}
+
+model WorkTimeDay {
+  taskId String
+  dateISO String
+  source String
+  seconds Float
+  @@id([taskId, dateISO])
+}
+
+model JournalTaskSelection {
+  dateISO String
+  taskId String
+  included Int
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  @@id([dateISO, taskId])
 }

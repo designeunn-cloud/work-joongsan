@@ -55,3 +55,8 @@ next-env.d.ts
 .claude/settings.local.json
 .impeccable/*.local.json
 .impeccable/hook.cache.json
+
+# Private sheet connection and durable sync queue
+.google-sheets-journal.local.json
+.google-sheets-journal.script-backup.local.gs
+.journal-auto-sync/

@@ -18,6 +18,8 @@ import GanttChart from "@/components/GanttChart";
 import type { DateField } from "@/components/TaskCard";
 
 const DATE_FIELD_BODY_KEY: Record<DateField, string> = {
+  requestDate: "requestDateISO",
+  plannedEndDate: "plannedEndDateISO",
   startDate: "startDateISO",
   reviewDate: "reviewDateISO",
   endDate: "endDateISO",
@@ -71,11 +73,16 @@ export default function TasksPage() {
 
   async function updateDate(id: string, field: DateField, iso: string) {
     const bodyKey = DATE_FIELD_BODY_KEY[field];
-    await fetch(`/api/tasks/${id}`, {
+    const res = await fetch(`/api/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [bodyKey]: iso }),
     });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      alert(error.error || "날짜 저장에 실패했습니다.");
+      return;
+    }
     load();
   }
 
@@ -119,11 +126,12 @@ export default function TasksPage() {
   }
 
   async function updateDateRange(id: string, startISO: string, endISO: string) {
-    await fetch(`/api/tasks/${id}`, {
+    const res = await fetch(`/api/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ startDateISO: startISO, endDateISO: endISO }),
+      body: JSON.stringify({ startDateISO: startISO, plannedEndDateISO: endISO }),
     });
+    if (!res.ok) { alert("일정 저장에 실패했습니다."); return; }
     load();
   }
 
@@ -231,9 +239,10 @@ export default function TasksPage() {
     }
   }
 
+  const wideView = view === "journal" || view === "table";
   return (
     <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto px-6 py-10 w-full">
+      <div className={`${wideView ? "max-w-none px-3 sm:px-6 py-5" : "max-w-6xl px-3 sm:px-6 py-10"} mx-auto w-full`}>
         <header className="flex items-start justify-between mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-neutral-900">업무</h1>
@@ -362,6 +371,8 @@ export default function TasksPage() {
           ) : view === "table" ? (
             <TaskTable
               tasks={tasks}
+              master={master}
+              onTaskChanged={load}
               onUpdateStatus={updateTaskStatus}
               onOpenFolder={openFolder}
               onUpdateDate={updateDate}

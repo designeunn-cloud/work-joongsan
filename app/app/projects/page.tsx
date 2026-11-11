@@ -27,6 +27,8 @@ function TrashIcon() {
 }
 
 const DATE_FIELD_BODY_KEY: Record<DateField, string> = {
+  requestDate: "requestDateISO",
+  plannedEndDate: "plannedEndDateISO",
   startDate: "startDateISO",
   reviewDate: "reviewDateISO",
   endDate: "endDateISO",

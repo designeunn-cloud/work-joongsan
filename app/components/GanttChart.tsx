@@ -133,6 +133,7 @@ function GanttBar({
   const liveEnd = drag ? drag.liveEnd : endIdx;
   const clampedStart = clampIdx(liveStart);
   const clampedEnd = clampIdx(liveEnd);
+  const hasSchedule = Number.isFinite(startIdx) && Number.isFinite(endIdx);
   const colors = STATUS_COLORS[task.status];
 
   // 마감일이 이번 주 범위 안이면 그 위치에, 범위 밖(더 뒤)이면 차트 마지막 칸에 마름모를 둔다
@@ -141,7 +142,7 @@ function GanttBar({
   const dueBeyondWeek = dueIdx !== null && dueIdx > 6;
   const dueMarkerIdx = dueWithinWeek ? dueIdx : dueBeyondWeek ? 6 : null;
   // 종료일 다음 칸부터 마감일(또는 이번 주 끝)까지 연한 색으로 채워서 마감일까지 남은 기간을 보여준다.
-  const showExtension = dueIdx !== null && dueIdx > clampedEnd;
+  const showExtension = hasSchedule && dueIdx !== null && dueIdx > clampedEnd;
   const extensionEndIdx = dueBeyondWeek ? 6 : dueIdx;
 
   function idxToISO(idx: number): string {
@@ -233,7 +234,7 @@ function GanttBar({
       {/* 이번 주 5일 / 다음 주 2일 경계선 */}
       <div className="absolute inset-y-0 border-l border-neutral-100 pointer-events-none" style={{ left: `${(5 / 7) * 100}%` }} />
       {hasCycleTargets && <div className="absolute inset-0 cursor-pointer" onClick={handleRowClick} />}
-      <div
+      {hasSchedule && <div
         onPointerDown={(e) => beginDrag("move", e)}
         onClick={hasCycleTargets ? handleRowClick : undefined}
         className={`absolute top-1/2 -translate-y-1/2 h-2.5 rounded-full ${colors.dot} opacity-70 cursor-grab active:cursor-grabbing select-none`}
@@ -264,7 +265,7 @@ function GanttBar({
             style={{ touchAction: "none" }}
           />
         )}
-      </div>
+      </div>}
       {showExtension && (
         <div
           className={`absolute top-1/2 -translate-y-1/2 h-2.5 rounded-full ${colors.dot} opacity-25 pointer-events-none`}
@@ -350,8 +351,9 @@ export default function GanttChart({
   const rows = tasks
     .filter((t) => t.status !== "done")
     .map((t) => {
-      const startIdx = dayIndex(t.startDate, monday);
-      const endIdx = dayIndex(t.endDate ?? t.startDate, monday);
+      const startIdx = t.startDate ? dayIndex(t.startDate, monday) : NaN;
+      const endDate = t.plannedEndDate ?? t.endDate ?? t.startDate;
+      const endIdx = t.startDate && endDate ? dayIndex(endDate, monday) : NaN;
       const dueIdx = t.dueDate ? dayIndex(t.dueDate, monday) : null;
       const barVisible = startIdx <= 6 && endIdx >= 0;
       const dueVisible = dueIdx !== null && dueIdx >= 0 && dueIdx <= 6;

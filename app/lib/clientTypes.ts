@@ -1,4 +1,7 @@
 import type { TaskStatus } from "@/lib/statusConfig";
+import type { WorkType } from "@/lib/workTypes";
+import type { ProductionType } from "@/lib/productionTypes";
+import type { WorkCategory } from "@/lib/workCategories";
 import type { ProductIssues } from "@/lib/productPolicy";
 
 export interface Task {
@@ -11,6 +14,8 @@ export interface Task {
   outputLocation?: string | null;
   assignee: string;
   department: string | null;
+  workCategory?: WorkCategory | null;
+  productionType?: ProductionType | null;
   brand: string | null;
   productName: string | null;
   productIssues?: ProductIssues;
@@ -19,14 +24,17 @@ export interface Task {
   memo: string | null;
   referenceMemo?: string | null;
   projectId: string | null;
-  project: { name: string } | null;
+  project: { name: string; department?: string | null } | null;
   requestContent: string;
-  requestDate: string;
+  productTitleSource?: string | null;
+  requestDate: string | null;
   dueDate: string | null;
-  startDate: string;
+  startDate: string | null;
+  plannedEndDate: string | null;
   reviewDate: string | null;
   endDate: string | null;
   status: TaskStatus;
+  workType?: WorkType | null;
   statusChangedAt: string | null;
   completedAt: string | null;
   aiConfidenceNote: string | null;
@@ -34,6 +42,8 @@ export interface Task {
   relatedTask: { id: string; requestContent: string; status: TaskStatus } | null;
   followUps: { id: string; requestContent: string; status: TaskStatus }[];
   subtasks: Subtask[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UnprocessedLog {

@@ -89,7 +89,7 @@ export default function WeekCalendar({
         {days.map((day, i) => {
           const dayISO = toISODate(day);
           const isToday = dayISO === todayISO;
-          const dayTasks = tasks.filter((t) => toISODate(new Date(t.startDate)) === dayISO);
+          const dayTasks = tasks.filter((t) => t.startDate && toISODate(new Date(t.startDate)) === dayISO);
           return (
             <div
               key={i}

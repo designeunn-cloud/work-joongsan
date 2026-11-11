@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Sidebar from "@/components/Sidebar";
+import { WorkTimeProvider } from "@/components/WorkTime";
+import JournalAutoSyncStatus from "@/components/JournalAutoSyncStatus";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,8 +27,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex bg-neutral-100">
-        <Sidebar />
-        <main className="flex-1 min-w-0">{children}</main>
+        <WorkTimeProvider><Sidebar />
+        <main className="flex-1 min-w-0"><JournalAutoSyncStatus />{children}</main></WorkTimeProvider>
       </body>
     </html>
   );

@@ -313,8 +313,10 @@ function sortValueFor(task: Task, key: SortableKey): string | number | null {
       return STATUS_ORDER.indexOf(task.status);
     case "startDate":
       return task.startDate ? new Date(task.startDate).getTime() : null;
-    case "endDate":
-      return task.endDate ? new Date(task.endDate).getTime() : null;
+    case "endDate": {
+      const value = task.status === "done" ? task.completedAt ?? task.endDate ?? task.statusChangedAt : task.endDate;
+      return value ? new Date(value).getTime() : null;
+    }
     case "plannedEndDate":
       return task.plannedEndDate ? new Date(task.plannedEndDate).getTime() : null;
     case "reviewDate":
@@ -376,6 +378,10 @@ export default function TaskTable({
   onCreateFollowUp?: (task: Task) => void;
   onTaskChanged?: () => void;
 }) {
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("journal-focus", { detail: true }));
+    return () => { window.dispatchEvent(new CustomEvent("journal-focus", { detail: false })); };
+  }, []);
   const [initialFilters] = useState(loadTableFilters);
   const [query, setQuery] = useState(initialFilters.query);
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">(initialFilters.status);
@@ -383,7 +389,7 @@ export default function TaskTable({
   const [monthFilter, setMonthFilter] = useState<MonthFilter>(initialFilters.month);
   const [periodMode, setPeriodMode] = useState<TablePeriodMode>(initialFilters.periodMode);
   const [quarterFilter, setQuarterFilter] = useState<QuarterFilter>(initialFilters.quarter);
-  const [dateBasis, setDateBasis] = useState<TableDateBasis>(initialFilters.dateBasis);
+  const [dateBasis, setDateBasis] = useState<TableDateBasis>(initialFilters.status === "done" ? "completedAt" : initialFilters.dateBasis);
   const [assigneeFilter, setAssigneeFilter] = useState(initialFilters.assignee);
   const [projectFilter, setProjectFilter] = useState(initialFilters.project);
   const [copyFormat, setCopyFormat] = useState<TaskCopyFormat>(() => loadJSON<string>(COPY_FORMAT_KEY, "title") === "title_product" ? "title_product" : "title");
@@ -391,11 +397,12 @@ export default function TaskTable({
   const [copyFeedback, setCopyFeedback] = useState("");
   const [copyFallback, setCopyFallback] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortableKey>(() => {
+    if (initialFilters.status === "done") return "endDate";
     const saved = loadJSON<string>(SORT_KEY_KEY, "startDate");
     return (SORTABLE_KEYS as readonly string[]).includes(saved) ? (saved as SortableKey) : "startDate";
   });
-  const [sortDir, setSortDir] = useState<1 | -1>(() => (loadJSON<number>(SORT_DIR_KEY, 1) === -1 ? -1 : 1));
-  const [groupBy, setGroupBy] = useState<GroupKey>(initialFilters.groupBy);
+  const [sortDir, setSortDir] = useState<1 | -1>(() => initialFilters.status === "done" ? -1 : loadJSON<number>(SORT_DIR_KEY, 1) === -1 ? -1 : 1);
+  const [groupBy, setGroupBy] = useState<GroupKey>(initialFilters.status === "done" ? "none" : initialFilters.groupBy);
   const [rawTextTask, setRawTextTask] = useState<Task | null>(null);
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
   const tableWrapRef = useRef<HTMLDivElement>(null);
@@ -608,7 +615,11 @@ export default function TaskTable({
           {STATUS_FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.value}
-              onClick={() => setStatusFilter(opt.value)}
+              onClick={() => {
+                setStatusFilter(opt.value);
+                if (opt.value === "done") { setSortKey("endDate"); setSortDir(-1); setDateBasis("completedAt"); setGroupBy("none"); }
+              }}
+              title={opt.value === "done" ? "최근 완료순으로 보기" : undefined}
               className={`text-xs px-2.5 py-1.5 rounded-full border font-medium ${
                 statusFilter === opt.value
                   ? "bg-indigo-600 border-indigo-600 text-white"

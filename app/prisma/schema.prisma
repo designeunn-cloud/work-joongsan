@@ -52,6 +52,7 @@ model Task {
   dailyJournalEntries DailyJournalEntry[]
   journalDetails DailyJournalDetail[]
   journalSelections JournalTaskSelection[]
+  automaticTimeDays WorkTimeAuto[]
 }
 
 model DailyJournal {
@@ -203,4 +204,11 @@ model JournalTaskSelection {
   included Int
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   @@id([dateISO, taskId])
+}
+
+model WorkTimeAuto {
+  dateISO String @id
+  taskId String
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  @@index([taskId])
 }

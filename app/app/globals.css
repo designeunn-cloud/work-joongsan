@@ -24,3 +24,40 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Keep all journal columns visible with consistent inline field heights. */
+.journal-fit { container-type: inline-size; }
+.journal-fit table { font-size: clamp(11.5px, 1.05cqw, 13px); }
+.journal-fit :is(th, td) { padding: 4px 4px; overflow-wrap: anywhere; vertical-align: top; }
+.journal-fit th { padding-right: 10px; line-height: 1.5; }
+.journal-fit td :is(div, section, label) { min-width: 0; max-width: 100%; }
+.journal-fit td :is(input, select, button) { font-size: inherit; line-height: 1.5; }
+.journal-fit td select { width: 100%; min-width: 0; max-width: 100%; min-height: 32px; padding: 4px 2px; border-radius: 4px; }
+.journal-fit td button { max-width: 100%; white-space: normal; }
+.journal-fit td .whitespace-nowrap { white-space: normal; }
+.journal-fit .journal-time-button { height: 32px; min-height: 32px; display: flex; align-items: center; justify-content: center; padding: 4px 2px; }
+.journal-fit td button:focus-visible { outline: 2px solid #4f46e5; outline-offset: 1px; }
+@media (max-width: 640px) {
+  .journal-fit :is(th, td) { padding: 4px 1px; }
+  .journal-fit th { padding-right: 4px; }
+  .journal-fit td { word-break: break-all; }
+}
+.journal-fit td textarea { width: 100%; min-width: 0; max-width: 100%; height: 32px; min-height: 32px; max-height: 32px; padding: 4px; font: inherit; line-height: 1.6; overflow-y: auto; overflow-x: hidden; overflow-wrap: anywhere; resize: none; }
+.journal-fit td select[aria-label$="작성자"] { appearance: none; padding-inline: 0; text-align: center; }
+
+.journal-fit .journal-inline-field { min-height: 32px; }
+.journal-fit td textarea.journal-entry-content { min-height: 48px; max-height: none; overflow-y: hidden; }
+.journal-fit .journal-content-cell { position: relative; }
+.journal-fit .journal-subtask-anchor { position: relative; z-index: 1; margin-bottom: 4px; }
+.journal-fit .journal-subtask-anchor .journal-subtask-trigger { height: 28px; min-height: 28px; margin: 0; padding: 3px 6px; }
+.journal-fit td textarea.journal-entry-with-subtasks { padding-top: 4px; }
+.journal-fit td textarea[readonly] { background: #fafafa; color: #525252; cursor: default; }
+
+.journal-fit td .journal-status { white-space: nowrap; }
+
+/* Journal values align consistently; long notes grow with their content. */
+.journal-fit td { text-align: center; vertical-align: middle; }
+.journal-fit td :is(textarea, input, select) { text-align: center; }
+.journal-fit td :is(.journal-entry-content, .journal-entry-notes) { text-align: left; }
+.journal-fit td textarea.journal-entry-notes { min-height: 64px; max-height: none; overflow-y: hidden; }
+.journal-fit .journal-subtask-trigger { justify-content: center; text-align: center; }

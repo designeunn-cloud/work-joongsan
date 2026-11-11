@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   const projects = await prisma.project.findMany({
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { tasks: true } } },
+    include: { _count: { select: { tasks: { where: { source: { not: "journal" } } } } } },
   });
   return NextResponse.json(
     projects.map((p) => ({

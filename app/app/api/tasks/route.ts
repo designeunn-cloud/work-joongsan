@@ -11,6 +11,7 @@ import { findOrCreateProjectByName } from "@/lib/projects";
 
 export async function GET() {
   const tasks = await prisma.task.findMany({
+    where: { source: { not: "journal" } },
     orderBy: { createdAt: "desc" },
     include: {
       project: { select: { name: true } },

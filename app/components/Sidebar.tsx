@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const MENU = [
   { href: "/", label: "대시보드", icon: "home" as const },
@@ -73,7 +73,15 @@ function MenuIcon({ name }: { name: (typeof MENU)[number]["icon"] }) {
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [manualCollapsed, setCollapsed] = useState(false);
+  const [journalMode, setJournalMode] = useState(false);
+  const [journalExpanded, setJournalExpanded] = useState(false);
+  useEffect(() => {
+    const update = (event: Event) => { setJournalMode(Boolean((event as CustomEvent<boolean>).detail)); setJournalExpanded(false); };
+    window.addEventListener("journal-focus", update);
+    return () => window.removeEventListener("journal-focus", update);
+  }, []);
+  const collapsed = journalMode ? !journalExpanded : manualCollapsed;
 
   return (
     <aside
@@ -84,7 +92,7 @@ export default function Sidebar() {
       <div className="flex items-center justify-between px-3 py-4">
         {!collapsed && <span className="text-sm font-bold text-neutral-900 truncate">업무 대시보드</span>}
         <button
-          onClick={() => setCollapsed((v) => !v)}
+          onClick={() => journalMode ? setJournalExpanded(v => !v) : setCollapsed(v => !v)}
           className="ml-auto text-neutral-400 hover:text-neutral-700 shrink-0 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-neutral-100"
           aria-label={collapsed ? "펼치기" : "접기"}
         >

@@ -308,7 +308,7 @@ export async function syncTaskToNotion(task: Task): Promise<string> {
 
 /** 전체 업무를 순회하며 노션에 동기화한다. 개별 실패는 건너뛰고 개수만 집계한다. */
 export async function syncAllTasksToNotion(): Promise<{ created: number; updated: number; failed: number }> {
-  const tasks = await prisma.task.findMany();
+  const tasks = await prisma.task.findMany({ where: { source: { not: "journal" } } });
   let created = 0;
   let updated = 0;
   let failed = 0;

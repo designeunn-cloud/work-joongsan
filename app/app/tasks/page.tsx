@@ -147,6 +147,7 @@ export default function TasksPage() {
   async function deleteTask(id: string) {
     const res = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
     if (res.ok) {
+      window.dispatchEvent(new Event("work-time-updated"));
       load();
     } else {
       const err = await res.json().catch(() => ({}));

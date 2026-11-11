@@ -8,6 +8,7 @@ import { getDefaultWorkType, isWorkType } from "@/lib/workTypes";
 import { isProductionType } from "@/lib/productionTypes";
 import { syncMemoToToday, journalToday, appendCommentToJournal } from "@/lib/journalMemoSync";
 import { saveDay, settle, timerState } from "@/lib/workTimeServer";
+import { recalculateAutomaticTime } from "@/lib/autoWorkTime";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -193,7 +194,13 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   const { id } = await params;
   const task = await prisma.task.findUnique({ where: { id } });
   if (!task) return NextResponse.json({ error: "존재하지 않는 업무입니다." }, { status: 404 });
-  await prisma.task.delete({ where: { id } });
+  await prisma.$transaction(async tx => {
+    await tx.$executeRaw`INSERT OR IGNORE INTO WorkTimer (id) VALUES ('active')`;
+    await tx.$executeRaw`UPDATE WorkTimer SET id = id WHERE id = 'active'`;
+    const days = await tx.dailyJournalDetail.findMany({ where: { taskId: id }, select: { dateISO: true } });
+    await tx.task.delete({ where: { id } });
+    for (const date of new Set(days.map(day => day.dateISO))) await recalculateAutomaticTime(tx, date);
+  });
   await logActivity(`"${task.requestContent}" 업무를 삭제했습니다.`);
   return NextResponse.json({ ok: true });
 }

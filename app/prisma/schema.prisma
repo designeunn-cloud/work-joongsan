@@ -21,6 +21,8 @@ model Task {
   platform         String?
   tags             String?
   memo             String?
+  referenceMemo    String?
+  outputLocation   String?
   projectId        String?
   project          Project?  @relation(fields: [projectId], references: [id])
   requestContent   String

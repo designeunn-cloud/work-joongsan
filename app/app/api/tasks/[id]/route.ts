@@ -9,9 +9,21 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await request.json();
+  if (body.outputLocation !== undefined && body.outputLocation !== null
+    && (typeof body.outputLocation !== "string" || body.outputLocation.length > 4000)) {
+    return NextResponse.json({ error: "폴더 위치는 4,000자 이내로 입력해주세요." }, { status: 400 });
+  }
+  if (body.referenceMemo !== undefined && body.referenceMemo !== null
+    && (typeof body.referenceMemo !== "string" || body.referenceMemo.length > 40000)) {
+    return NextResponse.json({ error: "메모는 40,000자 이내로 입력해주세요." }, { status: 400 });
+  }
   const before = await prisma.task.findUnique({ where: { id } });
 
   const data: Record<string, unknown> = {};
+  if (body.outputLocation !== undefined) {
+    data.outputLocation = typeof body.outputLocation === "string" && body.outputLocation.trim() ? body.outputLocation : null;
+  }
+  if (body.referenceMemo !== undefined) data.referenceMemo = body.referenceMemo || null;
 
   const STATUS_VALUES = new Set(["in_progress", "review", "done"]);
   if (typeof body.status === "string" && STATUS_VALUES.has(body.status)) {

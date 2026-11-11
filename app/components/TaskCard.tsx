@@ -8,6 +8,8 @@ import SubtaskSection from "./SubtaskSection";
 import StatusSegment from "./StatusSegment";
 import { Pill } from "./Primitives";
 import TaskProductEditor from "./TaskProductEditor";
+import TaskMemo from "./TaskMemo";
+import TaskOutputLocation from "./TaskOutputLocation";
 
 export type DateField = "startDate" | "reviewDate" | "endDate" | "dueDate";
 
@@ -269,6 +271,8 @@ export default function TaskCard({
         </div>
       )}
       {task.memo && <div className="text-xs text-neutral-400 mb-1.5 line-clamp-2">{task.memo}</div>}
+      <TaskMemo taskId={task.id} memo={task.referenceMemo ?? null} field="referenceMemo" label="메모" onSaved={onSubtasksChanged} />
+      <TaskOutputLocation taskId={task.id} taskName={task.requestContent} value={task.outputLocation} onSaved={onSubtasksChanged} />
 
       {(task.relatedTask || task.followUps.length > 0) && (
         <div className="flex items-start gap-2 mb-1.5">

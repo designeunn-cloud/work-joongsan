@@ -7,6 +7,7 @@ export interface Task {
   rawExtractedText: string | null;
   folderPath: string;
   folderName: string;
+  outputLocation?: string | null;
   assignee: string;
   department: string | null;
   brand: string | null;
@@ -14,6 +15,7 @@ export interface Task {
   platform: string | null;
   tags: string | null;
   memo: string | null;
+  referenceMemo?: string | null;
   projectId: string | null;
   project: { name: string } | null;
   requestContent: string;

@@ -377,6 +377,7 @@ export default function TasksPage() {
               onUpdateStatus={updateTaskStatus}
               onOpenFolder={openFolder}
               onUpdateDate={updateDate}
+              onOpenDetail={setViewingTask}
               onEdit={setEditingTask}
               onDelete={deleteTask}
               onCreateFollowUp={createFollowUp}

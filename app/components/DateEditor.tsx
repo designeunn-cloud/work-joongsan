@@ -41,6 +41,41 @@ export default function DateEditor({
   const panelId = useId();
   const [portalTarget, setPortalTarget] = useState<Element | null>(null);
   const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
+  const tooltipId = `${panelId}-tooltip`;
+  const tooltipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [tooltip, setTooltip] = useState<{ left: number; top: number; above: boolean; target: Element } | null>(null);
+  const tooltipVisible = !!tooltip && !!valueISO && displayMode === "offset" && !open;
+
+  function showTooltip() {
+    if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
+    const trigger = triggerRef.current;
+    if (!trigger || !valueISO || displayMode !== "offset" || open) return;
+    const rect = trigger.getBoundingClientRect();
+    const above = rect.top >= 40;
+    setTooltip({
+      left: Math.max(8, Math.min(rect.left, window.innerWidth - 168)),
+      top: above ? rect.top - 6 : rect.bottom + 6,
+      above,
+      target: trigger.closest('[role="dialog"][aria-modal="true"]') ?? document.body,
+    });
+  }
+
+  function hideTooltipSoon() {
+    if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
+    tooltipTimer.current = setTimeout(() => {
+      if (document.activeElement !== triggerRef.current) setTooltip(null);
+    }, 100);
+  }
+
+  useEffect(() => () => { if (tooltipTimer.current) clearTimeout(tooltipTimer.current); }, []);
+
+  useEffect(() => {
+    if (!tooltipVisible) return;
+    const closeTooltip = () => setTooltip(null);
+    window.addEventListener("scroll", closeTooltip, true);
+    window.addEventListener("resize", closeTooltip);
+    return () => { window.removeEventListener("scroll", closeTooltip, true); window.removeEventListener("resize", closeTooltip); };
+  }, [tooltipVisible]);
 
   useEffect(() => {
     if (!open) return;
@@ -105,17 +140,29 @@ export default function DateEditor({
   return (
     <div className="relative" ref={rootRef}>
       <button ref={triggerRef} type="button" aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? panelId : undefined}
+        aria-describedby={tooltipVisible ? tooltipId : undefined}
+        onMouseEnter={showTooltip} onMouseLeave={hideTooltipSoon} onFocus={showTooltip} onBlur={hideTooltipSoon}
+        onKeyDown={event => {
+          if (event.key === "Escape" && tooltipVisible) { event.preventDefault(); event.stopPropagation(); setTooltip(null); }
+        }}
         onClick={event => {
+          setTooltip(null);
           if (portal) { setPortalTarget(event.currentTarget.closest('[role="dialog"][aria-modal="true"]') ?? document.body); setPosition(null); }
           onToggle();
         }}
-        title={valueISO ? formatAbsoluteDate(valueISO) : undefined}
+        title={valueISO && displayMode !== "offset" ? formatAbsoluteDate(valueISO) : undefined}
         className={`text-xs underline decoration-dotted ${
           emphasize ? "text-red-600 font-medium hover:text-red-700" : "text-neutral-400 hover:text-neutral-600"
         } ${className ?? ""}`}
       >
         {hideLabel && !valueISO ? label : <><span className={hideLabel ? "sr-only" : undefined}>{label} </span>{valueISO ? displayMode === "offset" ? formatDateOffset(valueISO) : displayMode === "short" ? valueISO.slice(5, 10).replace("-", ".") : displayMode === "absolute" ? formatAbsoluteDate(valueISO) : formatRelativeDate(valueISO) : "미설정"}</>}
       </button>
+      {tooltipVisible && tooltip && createPortal(<span id={tooltipId} role="tooltip"
+        onMouseEnter={() => { if (tooltipTimer.current) clearTimeout(tooltipTimer.current); }} onMouseLeave={hideTooltipSoon}
+        style={{ left: tooltip.left, top: tooltip.top, transform: tooltip.above ? "translateY(-100%)" : undefined, maxWidth: "calc(100vw - 16px)" }}
+        className="fixed z-[100] whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-xs leading-5 text-white">
+        {formatAbsoluteDate(valueISO!)}
+      </span>, tooltip.target)}
       {portal ? portalTarget && createPortal(popover, portalTarget) : popover}
     </div>
   );

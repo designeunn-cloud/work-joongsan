@@ -364,6 +364,7 @@ export default function TaskTable({
   onUpdateStatus,
   onOpenFolder,
   onUpdateDate,
+  onOpenDetail,
   onEdit,
   onDelete,
   onCreateFollowUp,
@@ -374,6 +375,7 @@ export default function TaskTable({
   onUpdateStatus: (id: string, status: TaskStatus) => void;
   onOpenFolder: (id: string) => void;
   onUpdateDate: (id: string, field: DateField, iso: string) => void;
+  onOpenDetail?: (task: Task) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
   onCreateFollowUp?: (task: Task) => void;
@@ -822,6 +824,7 @@ export default function TaskTable({
                   onUpdateStatus={onUpdateStatus}
                   onOpenFolder={onOpenFolder}
                   onUpdateDate={onUpdateDate}
+                  onOpenDetail={onOpenDetail}
                   onEdit={onEdit}
                   onDelete={onDelete}
                   onCreateFollowUp={onCreateFollowUp}
@@ -861,6 +864,7 @@ function TaskTableRow({
   onUpdateStatus,
   onOpenFolder,
   onUpdateDate,
+  onOpenDetail,
   onEdit,
   onDelete,
   onCreateFollowUp,
@@ -875,6 +879,7 @@ function TaskTableRow({
   onUpdateStatus: (id: string, status: TaskStatus) => void;
   onOpenFolder: (id: string) => void;
   onUpdateDate: (id: string, field: DateField, iso: string) => void;
+  onOpenDetail?: (task: Task) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
   onCreateFollowUp?: (task: Task) => void;
@@ -910,7 +915,7 @@ function TaskTableRow({
     switch (key) {
       case "requestContent":
         return (
-          <button onClick={() => onEdit(task)} title={task.requestContent} className="text-left font-medium text-neutral-900 hover:text-indigo-600 truncate block w-full">
+          <button type="button" onClick={() => (onOpenDetail ?? onEdit)(task)} aria-haspopup="dialog" title={task.requestContent} className="text-left font-medium text-neutral-900 hover:text-indigo-600 truncate block w-full">
             {task.requestContent}
           </button>
         );

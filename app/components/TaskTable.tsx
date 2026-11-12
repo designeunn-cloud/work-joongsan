@@ -893,7 +893,7 @@ function TaskTableRow({
       <DateEditor
         label={{ startDate: "시작일", plannedEndDate: "예정 종료일", endDate: "종료일", reviewDate: "검토일", requestDate: "요청일", dueDate: "요청일" }[field]}
         hideLabel
-        displayMode="absolute"
+        displayMode={field === "requestDate" || field === "dueDate" ? "offset" : "absolute"}
         portal
         className={`min-h-8 whitespace-nowrap py-1 ${!valueISO || emphasize ? "!text-red-700" : "!text-neutral-600"}`}
         valueISO={valueISO}

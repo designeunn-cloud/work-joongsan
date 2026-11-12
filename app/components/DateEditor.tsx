@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { formatRelativeDate, formatAbsoluteDate } from "@/lib/relativeDate";
+import { formatRelativeDate, formatAbsoluteDate, formatDateOffset } from "@/lib/relativeDate";
 import { toISODate } from "@/lib/dateHelpers";
 
 export default function DateEditor({
@@ -29,7 +29,7 @@ export default function DateEditor({
   onToggle: () => void;
   /** 값이 있을 때 날짜 삭제 버튼을 표시한다. 필수 날짜에는 사용하지 않는다. */
   clearable?: boolean;
-  displayMode?: "relative" | "absolute" | "short";
+  displayMode?: "relative" | "absolute" | "short" | "offset";
   /** 카드의 요약 줄에서는 날짜만 보이고 필드 이름은 접근성 이름으로 유지한다. */
   hideLabel?: boolean;
   /** 스크롤되는 표 안에서도 날짜 선택창이 잘리지 않도록 별도 레이어에 표시한다. */
@@ -114,7 +114,7 @@ export default function DateEditor({
           emphasize ? "text-red-600 font-medium hover:text-red-700" : "text-neutral-400 hover:text-neutral-600"
         } ${className ?? ""}`}
       >
-        {hideLabel && !valueISO ? label : <><span className={hideLabel ? "sr-only" : undefined}>{label} </span>{valueISO ? displayMode === "short" ? valueISO.slice(5, 10).replace("-", ".") : displayMode === "absolute" ? formatAbsoluteDate(valueISO) : formatRelativeDate(valueISO) : "미설정"}</>}
+        {hideLabel && !valueISO ? label : <><span className={hideLabel ? "sr-only" : undefined}>{label} </span>{valueISO ? displayMode === "offset" ? formatDateOffset(valueISO) : displayMode === "short" ? valueISO.slice(5, 10).replace("-", ".") : displayMode === "absolute" ? formatAbsoluteDate(valueISO) : formatRelativeDate(valueISO) : "미설정"}</>}
       </button>
       {portal ? portalTarget && createPortal(popover, portalTarget) : popover}
     </div>

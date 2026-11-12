@@ -254,6 +254,7 @@ export default function TaskCard({
           <DateEditor
             label="[마감일]"
             valueISO={task.dueDate}
+            displayMode="offset"
             emphasize={dueEmphasize}
             open={openDateField === "dueDate"}
             onToggle={() => setOpenDateField((f) => (f === "dueDate" ? null : "dueDate"))}

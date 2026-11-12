@@ -4,13 +4,22 @@ import { isValidJournalDate } from "@/lib/dailyJournal";
 import { recordJournalChange } from "@/lib/journalChangeTracker";
 import { koreaDate } from "@/lib/workTime";
 import { automaticTimeState, setAutomaticTime } from "@/lib/autoWorkTime";
+import { getReviewElapsedTime } from "@/lib/reviewElapsedTime";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   try {
     const q = new URL(request.url).searchParams;
     const taskId = q.get("taskId"), date = q.get("date");
-    return NextResponse.json({ timer: await timerState(prisma), ...(taskId && isValidJournalDate(date) ? { day: await dayState(prisma, taskId, date) } : {}) });
+    const validDay = taskId && isValidJournalDate(date);
+    if (q.get("includeReviewTime") === "1" && !validDay) {
+      return NextResponse.json({ error: "시간을 계산할 업무와 날짜를 확인해주세요." }, { status: 400 });
+    }
+    return NextResponse.json({
+      timer: await timerState(prisma),
+      ...(validDay ? { day: await dayState(prisma, taskId, date) } : {}),
+      ...(validDay && q.get("includeReviewTime") === "1" ? { reviewTime: await getReviewElapsedTime(prisma, taskId, date) } : {}),
+    });
   } catch { return NextResponse.json({ error: "소요시간을 불러오지 못했습니다." }, { status: 500 }); }
 }
 export async function POST(request: Request) {

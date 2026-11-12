@@ -12,6 +12,7 @@ import WorkTimeInlineInput from "./WorkTimeInlineInput";
 import DateEditor from "./DateEditor";
 import { roundedHours } from "@/lib/workTime";
 import { needsFirstReview, FIRST_REVIEW_REQUIRED } from "@/lib/statusConfig";
+import { getReviewElapsedPreview } from "@/lib/reviewElapsedPreview";
 
 const inputClass = "mt-1 min-h-10 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus-visible:outline-2 focus-visible:outline-indigo-600 disabled:opacity-60";
 
@@ -99,7 +100,7 @@ export default function TaskCompletionModal({ task, master, projects, onClose, o
           {!task.assignee?.trim() && <TaskIdentityEditor taskId={task.id} taskName={task.requestContent} field="assignee" value={assignee} options={master.assignees.map(item => item.name)} onChange={setAssignee}/>}
           {!task.productName?.trim() && <TaskIdentityEditor taskId={task.id} taskName={task.requestContent} field="productName" value={productName} options={master.products.map(item => item.code)} onChange={setProductName}/>}
           {!getTaskDeadline(task) && <DateEditor label="요청일" hideLabel valueISO={deadline || null} displayMode="short" className="min-h-8 !text-red-700" open={dateOpen} onToggle={() => setDateOpen(value => !value)} onChange={setDeadline}/>}
-          {timeState?.hours === null && <div><WorkTimeInlineInput taskName={task.requestContent} hours={hours === "" ? null : Number(hours)} disabled={busy} active={timeState.active} ready card onSave={async value => { setHours(String(roundedHours(value * 3600))); return true; }}/>{timeState.active && <p className="mt-1 text-xs text-neutral-600">측정 중인 시간은 완료할 때 종료·저장됩니다.</p>}</div>}
+          {timeState?.hours === null && <div><WorkTimeInlineInput taskName={task.requestContent} hours={hours === "" ? null : Number(hours)} disabled={busy} active={timeState.active} ready card onReviewTime={() => getReviewElapsedPreview(task.id, timeState.date)} onSave={async value => { setHours(String(roundedHours(value * 3600))); return true; }}/>{timeState.active && <p className="mt-1 text-xs text-neutral-600">측정 중인 시간은 완료할 때 종료·저장됩니다.</p>}</div>}
         </div></>}
         {!timeState && !loadError && <p role="status" className="text-xs text-neutral-600">소요시간 확인 중…</p>}
         {loadError && <p role="alert" className="text-xs text-red-700">{loadError} <button type="button" className="underline" onClick={() => setAttempt(value => value + 1)}>다시 불러오기</button></p>}

@@ -70,7 +70,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         return NextResponse.json({ error: "검토 단계는 새 기준이 적용된 업무에서만 사용할 수 있습니다." }, { status: 400 });
       }
       let confirmFirstDelivery = false;
-      if (reviewWorkflow && nextStatus === "done" && !firstReviewDate) {
+      if (reviewWorkflow && nextStatus === "done" && before.status !== "done" && !firstReviewDate) {
         if (before.status !== "planned" && before.status !== "in_progress") {
           return NextResponse.json({ error: "1차 전달 후 먼저 ‘검토’를 선택해 실제 완료일을 기록해주세요." }, { status: 400 });
         }
@@ -95,20 +95,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (reviewWorkflow && body.reviewDateISO === "" && (firstReviewDate || nextStatus === "submitted" || nextStatus === "done")) {
         return NextResponse.json({ error: "최초 검토일은 유지됩니다. 잘못 기록한 날짜는 올바른 날짜로 수정해주세요." }, { status: 400 });
       }
-      let correctedReviewDate: Date | undefined;
-      if (enrolledLegacyTask && typeof body.reviewDateISO === "string") {
-        if (!firstReviewDate && nextStatus !== "submitted") {
-          return NextResponse.json({ error: "먼저 ‘검토’를 선택해 1차 전달을 기록한 뒤 날짜를 수정해주세요." }, { status: 400 });
-        }
-        if (body.reviewDateISO && reviewStart && !reviewPolicy.confirmedDeliveries.has(id)) {
-          correctedReviewDate = new Date(body.reviewDateISO);
-          if (correctedReviewDate.getTime() < reviewStart.getTime()) {
-            // A date-only selection on activation day must not turn into a legacy hold date.
-            const activationDate = new Date(reviewStart.getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
-            if (body.reviewDateISO === activationDate) correctedReviewDate = reviewStart;
-            else return NextResponse.json({ error: "검토일은 이 업무에 검토 단계가 적용된 날짜부터 선택해주세요." }, { status: 400 });
-          }
-        }
+      if (enrolledLegacyTask && typeof body.reviewDateISO === "string" && body.reviewDateISO) {
+        // Choosing a review date explicitly confirms delivery, independently of status.
+        // Keep the selected day even when it predates this task's workflow enrollment.
+        confirmFirstDelivery = true;
       }
       const commentProjectId = typeof body.projectId === "string" ? body.projectId : before.projectId;
       const commentProject = commentProjectId ? await tx.project.findUnique({ where: { id: commentProjectId }, select: { name: true } }) : null;
@@ -178,7 +168,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         data.completedAt = nextStatus === "done" ? data.endDate : null;
       }
       if (typeof body.dueDateISO === "string") data.dueDate = body.dueDateISO ? new Date(body.dueDateISO) : null;
-      if (typeof body.reviewDateISO === "string") data.reviewDate = body.reviewDateISO ? correctedReviewDate ?? new Date(body.reviewDateISO) : null;
+      if (typeof body.reviewDateISO === "string") data.reviewDate = body.reviewDateISO ? new Date(body.reviewDateISO) : null;
       if (body.requestDateISO === "") {
         data.requestDate = null;
         data.dueDate = null;
@@ -203,7 +193,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       } else if (typeof data.memo === "string" && data.memo !== before.memo) await syncMemoToToday(tx, id, data.memo, commentDate);
       if (confirmFirstDelivery) {
         // Confirmation distinguishes a chosen past delivery date from an old hold date.
-        // Write only after every rejection guard, in the same transaction as completion.
+        // Write only after every rejection guard, in the same transaction as the task edit.
         await tx.$executeRaw`INSERT OR IGNORE INTO TaskWorkflowPolicy (name, activatedAt) VALUES (${`${REVIEW_WORKFLOW_DELIVERY_PREFIX}${id}`}, ${new Date().toISOString()})`;
         reviewPolicy.confirmedDeliveries.add(id);
       }

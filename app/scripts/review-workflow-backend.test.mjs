@@ -223,10 +223,8 @@ test("review workflow isolates legacy tasks, supports explicit enrollment and pr
       assert.equal(listed.find(task => task.id === enrolled.id).reviewDate, null);
       assert.equal(listed.find(task => task.id === old.id).reviewWorkflow, false);
     });
-    await t.test("legacy hold dates cannot skip first delivery or be edited before enrollment's first submission", async () => {
+    await t.test("untouched legacy hold dates cannot skip first delivery", async () => {
       assert.equal((await patch(enrolled.id, { status: "done" })).status, 400);
-      assert.equal((await patch(enrolled.id, { reviewDateISO: journalToday() })).status, 400);
-      assert.equal((await patch(enrolled.id, { reviewDateISO: "" })).status, 400);
       assert.deepEqual(await db.task.findUnique({ where: { id: enrolled.id } }), enrolledBefore);
       const edited = await patch(enrolled.id, { referenceMemo: "개별 적용 확인" });
       assert.equal(edited.status, 200);
@@ -256,17 +254,69 @@ test("review workflow isolates legacy tasks, supports explicit enrollment and pr
       assert.ok(finished.body.completedAt);
       assert.deepEqual((await policy.getReviewWorkflowPolicy(db)).taskSnapshots.get(enrolled.id), JSON.parse(legacySnapshot));
     });
-    await t.test("date-only correction on enrollment day remains valid while earlier legacy dates are rejected", async () => {
+    await t.test("explicit review corrections preserve the selected day, including before enrollment", async () => {
       const activationDate = new Date(enrolledAt.getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const corrected = await patch(enrolled.id, { reviewDateISO: activationDate });
       assert.equal(corrected.status, 200);
       assert.ok(corrected.body.reviewDate);
-      assert.ok(new Date(corrected.body.reviewDate).getTime() >= enrolledAt.getTime());
+      assert.equal(corrected.body.reviewDate, `${activationDate}T00:00:00.000Z`);
       assert.equal((await patch(enrolled.id, { status: "in_progress" })).body.workType, "revision");
       assert.equal((await patch(enrolled.id, { status: "done" })).status, 200);
-      const before = await db.task.findUnique({ where: { id: enrolled.id } });
-      assert.equal((await patch(enrolled.id, { reviewDateISO: formerReview.toISOString().slice(0, 10) })).status, 400);
-      assert.deepEqual(await db.task.findUnique({ where: { id: enrolled.id } }), before);
+      const earlierDate = formerReview.toISOString().slice(0, 10);
+      const earlier = await patch(enrolled.id, { reviewDateISO: earlierDate });
+      assert.equal(earlier.status, 200);
+      assert.equal(earlier.body.reviewDate, `${earlierDate}T00:00:00.000Z`);
+    });
+    await t.test("table review dates save without a status transition and survive reloads for every enrolled state", async () => {
+      const { withJournalReviewState } = load("lib/journalReviewWorkflow.ts");
+      const dateISO = new Date(enrolledAt.getTime() - 7 * 86_400_000).toISOString().slice(0, 10);
+      const runningSince = new Date(Date.now() - 60000).toISOString();
+      for (const status of ["planned", "in_progress", "review", "submitted", "done"]) {
+        const task = await create(`table-review-${status}`, {
+          status, createdAt: new Date(cutoff.getTime() - 10 * 86_400_000), reviewDate: formerReview,
+          startDate: formerReview, endDate: status === "done" ? enrolledAt : null,
+          completedAt: status === "done" ? enrolledAt : null, statusChangedAt: enrolledAt,
+        });
+        const snapshot = { status, reviewDate: formerReview.toISOString(), endDate: task.endDate?.toISOString() ?? null, completedAt: task.completedAt?.toISOString() ?? null };
+        await db.$executeRaw`INSERT INTO TaskWorkflowPolicy (name, activatedAt, legacySnapshot) VALUES (${`review-task:${task.id}`}, ${enrolledAt.toISOString()}, ${JSON.stringify(snapshot)})`;
+        await db.$executeRaw`INSERT OR REPLACE INTO WorkTimer (id, taskId, runningSince) VALUES ('active', ${task.id}, ${runningSince})`;
+        await db.dailyJournalDetail.create({ data: { taskId: task.id, dateISO, hours: 2, notes: "과거 일지 보존" } });
+        const response = await patch(task.id, { reviewDateISO: dateISO });
+        assert.equal(response.status, 200, `${status}: ${response.body.error}`);
+        assert.equal(response.body.reviewDate, `${dateISO}T00:00:00.000Z`);
+        const saved = await db.task.findUnique({ where: { id: task.id } });
+        for (const field of ["status", "statusChangedAt", "startDate", "plannedEndDate", "endDate", "completedAt", "workType", "folderPath", "folderName"]) {
+          assert.deepEqual(saved[field], task[field], `${status}: ${field}`);
+        }
+        const listed = await listRoute.GET().then(response => response.json());
+        assert.equal(listed.find(row => row.id === task.id).reviewDate, response.body.reviewDate);
+        const currentPolicy = await policy.getReviewWorkflowPolicy(db);
+        assert.equal(currentPolicy.confirmedDeliveries.has(task.id), true);
+        assert.deepEqual(currentPolicy.taskSnapshots.get(task.id), snapshot);
+        const historical = (await withJournalReviewState([saved], dateISO, db))[0];
+        for (const field of ["status", "reviewDate", "endDate", "completedAt"]) assert.equal(historical[field], snapshot[field]);
+        assert.equal(await db.activityLog.count({ where: { taskId: task.id, toStatus: { not: null } } }), 0);
+        assert.equal(await db.activityLog.count({ where: { taskId: task.id, field: "reviewDate" } }), 1);
+        assert.deepEqual((await db.$queryRaw`SELECT taskId,runningSince FROM WorkTimer WHERE id='active'`)[0], { taskId: task.id, runningSince });
+        assert.equal((await db.dailyJournalDetail.findUnique({ where: { dateISO_taskId: { dateISO, taskId: task.id } } })).hours, 2);
+        const rejected = await patch(task.id, { reviewDateISO: "" });
+        assert.equal(rejected.status, 400);
+        assert.deepEqual(await db.task.findUnique({ where: { id: task.id } }), saved);
+      }
+      await db.$executeRaw`DELETE FROM WorkTimer WHERE id = 'active'`;
+    });
+    await t.test("failed date edits leave no delivery confirmation or changed task", async () => {
+      const task = await create("table-review-rollback", { createdAt: new Date(cutoff.getTime() - 86_400_000) });
+      await db.$executeRaw`INSERT INTO TaskWorkflowPolicy (name, activatedAt) VALUES (${`review-task:${task.id}`}, ${enrolledAt.toISOString()})`;
+      const transaction = db.$transaction.bind(db);
+      db.$transaction = callback => transaction(async tx => { await callback(tx); throw new Error("intentional rollback"); });
+      const quiet = t.mock.method(console, "error", () => {});
+      try {
+        assert.equal((await patch(task.id, { reviewDateISO: journalToday() })).status, 500);
+      } finally { db.$transaction = transaction; quiet.mock.restore(); }
+      assert.deepEqual(await db.task.findUnique({ where: { id: task.id } }), task);
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(task.id), false);
+      assert.equal(await db.activityLog.count({ where: { taskId: task.id } }), 0);
     });
     await t.test("an enrolled task without a legacy review date follows the same first-delivery flow", async () => {
       const task = await create("enrolled-empty", { createdAt: new Date(cutoff.getTime() - 86_400_000) });

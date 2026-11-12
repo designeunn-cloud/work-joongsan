@@ -257,3 +257,30 @@ test("individual activation works without a global cutoff and accepts a delivery
   const { reviewedJournalTaskIds } = load("lib/journalReviewWorkflow.ts");
   assert.deepEqual(await reviewedJournalTaskIds("2099-01-04"), ["individual-only"]);
 }));
+
+test("a confirmed earlier delivery on direct completion preserves pre-activation journal rows", async () => fixture(async ({ db, load, task, status, at }) => {
+  const original = await task("direct-earlier", {
+    createdAt: at("2098-12-15T09:00:00"), status: "in_progress", reviewDate: null,
+    endDate: at("2098-12-30T17:00:00"),
+  });
+  const activation = at("2099-01-03T15:00:00").toISOString();
+  const snapshot = JSON.stringify({ status: original.status, reviewDate: null, endDate: original.endDate, completedAt: null });
+  await db.$executeRaw`INSERT INTO TaskWorkflowPolicy(name, activatedAt, legacySnapshot) VALUES ('review-task:direct-earlier', ${activation}, ${snapshot})`;
+  const completed = await db.task.update({ where: { id: original.id }, data: {
+    status: "done", reviewDate: at("2099-01-01T00:00:00"),
+    completedAt: at("2099-01-04T17:00:00"), endDate: at("2099-01-04T17:00:00"),
+  } });
+  await db.$executeRaw`INSERT INTO TaskWorkflowPolicy(name, activatedAt) VALUES ('review-delivery:direct-earlier', ${at("2099-01-04T17:00:00").toISOString()})`;
+  await status(original.id, null, "in_progress", "2098-12-15T09:00:00");
+  await status(original.id, "in_progress", "done", "2099-01-04T17:00:00");
+  const { withJournalReviewState, reviewedJournalTaskIds } = load("lib/journalReviewWorkflow.ts");
+  const { buildJournalTableRows } = load("lib/journalTable.ts");
+  const previous = "2099-01-02";
+  assert.deepEqual(buildJournalTableRows(await withJournalReviewState([completed], previous), previous), buildJournalTableRows([original], previous));
+  assert.deepEqual(await reviewedJournalTaskIds(previous), [], "confirmation cannot retroactively enroll an old date");
+  const row = buildJournalTableRows(await withJournalReviewState([completed], "2099-01-04"), "2099-01-04")[0];
+  assert.equal(row.completedDate, "2099-01-01");
+  assert.equal(row.status, "완료");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-04"), [original.id]);
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-05"), []);
+}));

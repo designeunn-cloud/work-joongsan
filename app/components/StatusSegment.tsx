@@ -16,7 +16,7 @@ export default function StatusSegment({
 }) {
   const [open, setOpen] = useState(false);
   const others = taskStatusOptions(reviewWorkflow).filter((s) => s !== status);
-  const reviewRequired = needsFirstReview({ reviewWorkflow, reviewDate });
+  const reviewRequired = needsFirstReview({ reviewWorkflow, reviewDate }) && status !== "planned" && status !== "in_progress";
 
   if (!open) {
     const colors = STATUS_COLORS[status];

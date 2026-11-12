@@ -4,6 +4,7 @@ import { prisma } from "./prisma";
 type Database = Pick<Prisma.TransactionClient, "$queryRaw">;
 export const REVIEW_WORKFLOW_POLICY = "review-v1";
 export const REVIEW_WORKFLOW_TASK_PREFIX = "review-task:";
+export const REVIEW_WORKFLOW_DELIVERY_PREFIX = "review-delivery:";
 
 export type ReviewWorkflowSnapshot = {
   status: string;
@@ -15,6 +16,7 @@ export type ReviewWorkflowPolicy = {
   cutoff: Date | null;
   taskStarts: Map<string, Date>;
   taskSnapshots: Map<string, ReviewWorkflowSnapshot>;
+  confirmedDeliveries: Set<string>;
 };
 type WorkflowTask = { id?: string; createdAt: Date | string; reviewDate?: Date | string | null };
 type PolicyRow = { name: string; activatedAt: string; legacySnapshot?: string | null };
@@ -33,15 +35,15 @@ function readSnapshot(json: string): ReviewWorkflowSnapshot {
 
 /** Global registration cutoff and explicitly enrolled existing tasks share one additive policy table. */
 export async function getReviewWorkflowPolicy(db: Database = prisma): Promise<ReviewWorkflowPolicy> {
-  const policy: ReviewWorkflowPolicy = { cutoff: null, taskStarts: new Map(), taskSnapshots: new Map() };
+  const policy: ReviewWorkflowPolicy = { cutoff: null, taskStarts: new Map(), taskSnapshots: new Map(), confirmedDeliveries: new Set() };
   let rows: PolicyRow[];
   try {
     try {
-      rows = await db.$queryRaw<PolicyRow[]>`SELECT name, activatedAt, legacySnapshot FROM TaskWorkflowPolicy WHERE name = ${REVIEW_WORKFLOW_POLICY} OR name LIKE ${`${REVIEW_WORKFLOW_TASK_PREFIX}%`}`;
+      rows = await db.$queryRaw<PolicyRow[]>`SELECT name, activatedAt, legacySnapshot FROM TaskWorkflowPolicy WHERE name = ${REVIEW_WORKFLOW_POLICY} OR name LIKE ${`${REVIEW_WORKFLOW_TASK_PREFIX}%`} OR name LIKE ${`${REVIEW_WORKFLOW_DELIVERY_PREFIX}%`}`;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (!/no such column:\s*(?:\w+\.)?legacySnapshot\b/i.test(message)) throw error;
-      rows = await db.$queryRaw<PolicyRow[]>`SELECT name, activatedAt FROM TaskWorkflowPolicy WHERE name = ${REVIEW_WORKFLOW_POLICY} OR name LIKE ${`${REVIEW_WORKFLOW_TASK_PREFIX}%`}`;
+      rows = await db.$queryRaw<PolicyRow[]>`SELECT name, activatedAt FROM TaskWorkflowPolicy WHERE name = ${REVIEW_WORKFLOW_POLICY} OR name LIKE ${`${REVIEW_WORKFLOW_TASK_PREFIX}%`} OR name LIKE ${`${REVIEW_WORKFLOW_DELIVERY_PREFIX}%`}`;
     }
   } catch (error) {
     // Old installations can run before the additive migration is applied.
@@ -59,6 +61,10 @@ export async function getReviewWorkflowPolicy(db: Database = prisma): Promise<Re
       if (!taskId) throw new Error("검토 업무 적용 대상이 올바르지 않습니다.");
       policy.taskStarts.set(taskId, activatedAt);
       if (row.legacySnapshot) policy.taskSnapshots.set(taskId, readSnapshot(row.legacySnapshot));
+    } else if (row.name.startsWith(REVIEW_WORKFLOW_DELIVERY_PREFIX)) {
+      const taskId = row.name.slice(REVIEW_WORKFLOW_DELIVERY_PREFIX.length);
+      if (!taskId) throw new Error("최초 전달일 확인 대상이 올바르지 않습니다.");
+      policy.confirmedDeliveries.add(taskId);
     }
   }
   return policy;
@@ -81,13 +87,14 @@ export function getReviewWorkflowStart(task: WorkflowTask, policy: ReviewWorkflo
   return taskStart && taskStart.getTime() < globalStart.getTime() ? taskStart : globalStart;
 }
 
-/** A legacy hold date is not evidence of first delivery after explicit enrollment. */
+/** A legacy hold date needs explicit delivery confirmation to count before enrollment. */
 export function getReviewWorkflowFirstDate(task: WorkflowTask, policy: ReviewWorkflowPolicy): Date | null {
   if (!task.reviewDate) return null;
   const date = new Date(task.reviewDate);
   if (!Number.isFinite(date.getTime())) return null;
   const start = getReviewWorkflowStart(task, policy);
-  if (start && !usesReviewWorkflow(task, policy.cutoff) && date.getTime() < start.getTime()) return null;
+  if (start && !usesReviewWorkflow(task, policy.cutoff) && date.getTime() < start.getTime()
+    && !(task.id && policy.confirmedDeliveries.has(task.id))) return null;
   return date;
 }
 

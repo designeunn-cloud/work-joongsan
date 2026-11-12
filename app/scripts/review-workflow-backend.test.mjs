@@ -106,10 +106,10 @@ test("review workflow isolates legacy tasks, supports explicit enrollment and pr
       assert.equal((await patch(old.id, { status: "submitted" })).status, 400);
       assert.equal((await db.task.findUnique({ where: { id: old.id } })).reviewDate.toISOString(), oldBefore.reviewDate.toISOString());
     });
-    await t.test("new tasks must record review before final completion", async () => {
+    await t.test("new tasks without a first delivery must confirm its date before direct completion", async () => {
       const rejected = await patch(fresh.id, { status: "done", completionHours: 1 });
       assert.equal(rejected.status, 400);
-      assert.match(rejected.body.error, /먼저.*검토/);
+      assert.match(rejected.body.error, /최초 전달일/);
       const unchanged = await db.task.findUnique({ where: { id: fresh.id } });
       assert.equal(unchanged.status, "in_progress");
       assert.equal(unchanged.reviewDate, null);
@@ -287,6 +287,110 @@ test("review workflow isolates legacy tasks, supports explicit enrollment and pr
       assert.equal(current[1].reviewWorkflow, true);
       assert.equal((await patch(task.id, { status: "submitted" })).status, 400);
       assert.equal(policy.getReviewWorkflowStart(fresh, await policy.getReviewWorkflowPolicy(db)).toISOString(), cutoff.toISOString());
+    });
+
+    const koreaDate = offset => new Date(Date.now() + offset * 86_400_000 + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const deliveryStamp = dateISO => new Date(`${dateISO}T00:00:00+09:00`).toISOString();
+    await t.test("planned work can finish directly with a confirmed past delivery and no invented start date", async () => {
+      const task = await create("direct-planned", { status: "planned", startDate: null });
+      const beforeCompletion = Date.now();
+      const completed = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(-2), completionHours: 1.5 });
+      assert.equal(completed.status, 200);
+      assert.equal(completed.body.status, "done");
+      assert.equal(completed.body.reviewDate, deliveryStamp(koreaDate(-2)));
+      assert.equal(completed.body.startDate, null);
+      assert.ok(new Date(completed.body.completedAt).getTime() >= beforeCompletion);
+      assert.equal(completed.body.endDate, completed.body.completedAt);
+      assert.equal((await db.dailyJournalDetail.findUnique({ where: { dateISO_taskId: { dateISO: journalToday(), taskId: task.id } } })).hours, 1.5);
+      const transitions = await db.activityLog.findMany({ where: { taskId: task.id, toStatus: { not: null } } });
+      assert.deepEqual(transitions.map(row => [row.fromStatus, row.toStatus]), [["planned", "done"]]);
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(task.id), false, "global new tasks need no individual confirmation marker");
+      await patch(task.id, { status: "planned" });
+      const repeated = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(1) });
+      assert.equal(repeated.status, 200);
+      assert.equal(repeated.body.reviewDate, completed.body.reviewDate, "a redundant delivery selection cannot overwrite an existing first date");
+      assert.equal(repeated.body.startDate, null);
+    });
+    await t.test("in-progress direct completion settles the timer and preserves the original start", async () => {
+      const started = new Date(Date.now() - 86_400_000);
+      const task = await create("direct-running", { startDate: started });
+      await db.$executeRaw`INSERT OR REPLACE INTO WorkTimer (id, taskId, runningSince) VALUES ('active', ${task.id}, ${new Date(Date.now() - 120000).toISOString()})`;
+      const completed = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(0) });
+      assert.equal(completed.status, 200);
+      assert.equal(completed.body.startDate, started.toISOString());
+      assert.equal(completed.body.reviewDate, deliveryStamp(koreaDate(0)));
+      assert.equal((await db.$queryRaw`SELECT taskId FROM WorkTimer WHERE id='active'`)[0].taskId, null);
+      assert.ok((await db.dailyJournalDetail.findUnique({ where: { dateISO_taskId: { dateISO: journalToday(), taskId: task.id } } })).hours > 0);
+    });
+    await t.test("missing, malformed, impossible, future and conflicting first dates leave the task and timer untouched", async () => {
+      const task = await create("direct-invalid", { createdAt: new Date(cutoff.getTime() - 86_400_000) });
+      await db.$executeRaw`INSERT INTO TaskWorkflowPolicy (name, activatedAt) VALUES (${`review-task:${task.id}`}, ${enrolledAt.toISOString()})`;
+      await db.$executeRaw`INSERT OR REPLACE INTO WorkTimer (id, taskId, runningSince) VALUES ('active', ${task.id}, ${new Date(Date.now() - 60000).toISOString()})`;
+      const before = await db.task.findUnique({ where: { id: task.id } });
+      const invalid = [undefined, null, "", 20261112, "2026-2-03", "2026-02-30", "2026-11-12T00:00:00Z", "invalid", koreaDate(1)];
+      for (const firstDeliveryDateISO of invalid) {
+        const rejected = await patch(task.id, { status: "done", firstDeliveryDateISO });
+        assert.equal(rejected.status, 400, `reject ${String(firstDeliveryDateISO)}`);
+      }
+      assert.equal((await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(0), reviewDateISO: koreaDate(1) })).status, 400);
+      assert.deepEqual(await db.task.findUnique({ where: { id: task.id } }), before);
+      assert.equal((await db.$queryRaw`SELECT taskId FROM WorkTimer WHERE id='active'`)[0].taskId, task.id);
+      assert.equal(await db.activityLog.count({ where: { taskId: task.id } }), 0);
+      assert.equal(await db.dailyJournalDetail.count({ where: { taskId: task.id } }), 0);
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(task.id), false);
+    });
+    await t.test("direct completion retains subtask and timer guards without leaving a confirmation marker", async () => {
+      const task = await create("direct-guarded", { createdAt: new Date(cutoff.getTime() - 86_400_000) });
+      await db.$executeRaw`INSERT INTO TaskWorkflowPolicy (name, activatedAt) VALUES (${`review-task:${task.id}`}, ${enrolledAt.toISOString()})`;
+      await db.subtask.create({ data: { id: "direct-pending-subtask", taskId: task.id, content: "남은 세부할일", done: false } });
+      await db.$executeRaw`INSERT OR REPLACE INTO WorkTimer (id, taskId, runningSince) VALUES ('active', ${task.id}, ${new Date(Date.now() - 60000).toISOString()})`;
+      const before = await db.task.findUnique({ where: { id: task.id } });
+      const blocked = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(-3) });
+      assert.equal(blocked.status, 400);
+      assert.match(blocked.body.error, /세부할일/);
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(task.id), false);
+      await db.subtask.update({ where: { id: "direct-pending-subtask" }, data: { done: true } });
+      const conflict = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(-3), completionHours: 1 });
+      assert.equal(conflict.status, 409);
+      assert.deepEqual(await db.task.findUnique({ where: { id: task.id } }), before);
+      assert.equal((await db.$queryRaw`SELECT taskId FROM WorkTimer WHERE id='active'`)[0].taskId, task.id);
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(task.id), false);
+      const completed = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(-3) });
+      assert.equal(completed.status, 200);
+      assert.equal(completed.body.reviewDate, deliveryStamp(koreaDate(-3)));
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(task.id), true);
+      assert.equal((await db.$queryRaw`SELECT taskId FROM WorkTimer WHERE id='active'`)[0].taskId, null);
+      const listed = await listRoute.GET().then(response => response.json());
+      assert.equal(listed.find(row => row.id === task.id).reviewDate, completed.body.reviewDate, "confirmed pre-enrollment delivery must survive a fresh policy read");
+    });
+    await t.test("an enrolled task can confirm an earlier delivery without changing its legacy snapshot", async () => {
+      const task = await create("direct-legacy-past", { createdAt: new Date(cutoff.getTime() - 86_400_000), reviewDate: formerReview });
+      const snapshot = JSON.stringify({ status: "in_progress", reviewDate: formerReview.toISOString(), endDate: null, completedAt: null });
+      await db.$executeRaw`INSERT INTO TaskWorkflowPolicy (name, activatedAt, legacySnapshot) VALUES (${`review-task:${task.id}`}, ${enrolledAt.toISOString()}, ${snapshot})`;
+      const completed = await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(-7) });
+      assert.equal(completed.status, 200);
+      assert.equal(completed.body.reviewDate, deliveryStamp(koreaDate(-7)));
+      let currentPolicy = await policy.getReviewWorkflowPolicy(db);
+      assert.deepEqual(currentPolicy.taskSnapshots.get(task.id), JSON.parse(snapshot));
+      assert.equal(policy.getReviewWorkflowFirstDate(await db.task.findUnique({ where: { id: task.id } }), currentPolicy).toISOString(), completed.body.reviewDate);
+      await patch(task.id, { status: "in_progress" });
+      assert.equal((await patch(task.id, { status: "done", firstDeliveryDateISO: koreaDate(-1) })).body.reviewDate, completed.body.reviewDate);
+      const corrected = await patch(task.id, { reviewDateISO: koreaDate(-6) });
+      assert.equal(corrected.status, 200, "separate explicit date correction is still available after confirmation");
+      assert.equal(corrected.body.reviewDate, `${koreaDate(-6)}T00:00:00.000Z`);
+      currentPolicy = await policy.getReviewWorkflowPolicy(db);
+      assert.deepEqual(currentPolicy.taskSnapshots.get(task.id), JSON.parse(snapshot));
+    });
+    await t.test("the direct date field does not change untouched legacy completion or bypass hold requirements", async () => {
+      const legacy = await create("direct-legacy-unchanged", { status: "planned", startDate: null, createdAt: new Date(cutoff.getTime() - 86_400_000) });
+      const completed = await patch(legacy.id, { status: "done", firstDeliveryDateISO: koreaDate(-1) });
+      assert.equal(completed.status, 200);
+      assert.equal(completed.body.reviewDate, null);
+      assert.equal(completed.body.startDate, null);
+      assert.equal((await policy.getReviewWorkflowPolicy(db)).confirmedDeliveries.has(legacy.id), false);
+      const held = await create("direct-hold-unchanged", { status: "review" });
+      assert.equal((await patch(held.id, { status: "done", firstDeliveryDateISO: koreaDate(-1) })).status, 400);
+      assert.equal((await db.task.findUnique({ where: { id: held.id } })).reviewDate, null);
     });
   } finally {
     await db.$disconnect();

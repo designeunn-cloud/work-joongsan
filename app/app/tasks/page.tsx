@@ -13,6 +13,8 @@ import DailyJournal from "@/components/DailyJournal";
 import AddTaskModal, { type NewTaskInput } from "@/components/AddTaskModal";
 import EditTaskModal, { type EditTaskInput } from "@/components/EditTaskModal";
 import TaskDetailModal from "@/components/TaskDetailModal";
+import TaskCompletionModal from "@/components/TaskCompletionModal";
+import { TaskCompletionContext } from "@/components/TaskCompletionContext";
 import EditLeaveModal, { type EditLeaveInput } from "@/components/EditLeaveModal";
 import GanttChart from "@/components/GanttChart";
 import type { DateField } from "@/components/TaskCard";
@@ -37,6 +39,8 @@ export default function TasksPage() {
   const [creatingFollowUp, setCreatingFollowUp] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
+  const [completingId, setCompletingId] = useState<string | null>(null);
+  const completingTask = tasks.find(task => task.id === completingId);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
   const [view, setView] = useState<"kanban" | "table" | "calendar" | "journal">("kanban");
 
@@ -63,6 +67,7 @@ export default function TasksPage() {
   useVisiblePolling(load, 8000);
 
   async function updateTaskStatus(id: string, status: TaskStatus) {
+    if (status === "done") { setCompletingId(id); return; }
     await fetch(`/api/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -242,7 +247,7 @@ export default function TasksPage() {
 
   const wideView = view === "journal" || view === "table";
   return (
-    <div className="min-h-screen">
+    <TaskCompletionContext.Provider value={setCompletingId}><div className="min-h-screen">
       <div className={`${wideView ? "max-w-none px-3 sm:px-6 py-5" : "max-w-6xl px-3 sm:px-6 py-10"} mx-auto w-full`}>
         <header className="flex items-start justify-between mb-6 gap-4">
           <div>
@@ -294,6 +299,9 @@ export default function TasksPage() {
               onUpload={uploadExcelTask}
             />
           )}
+
+          {completingTask && <TaskCompletionModal key={completingTask.id} task={completingTask} master={master} projects={projects}
+            onClose={() => setCompletingId(null)} onSaved={() => { setCompletingId(null); void load(); }}/>}
 
           {editingTask && (
             <EditTaskModal
@@ -401,6 +409,6 @@ export default function TasksPage() {
           )}
         </div>
       </div>
-    </div>
+    </div></TaskCompletionContext.Provider>
   );
 }

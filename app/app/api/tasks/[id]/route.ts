@@ -9,7 +9,7 @@ import { isProductionType } from "@/lib/productionTypes";
 import { syncMemoToToday, journalToday, appendCommentToJournal } from "@/lib/journalMemoSync";
 import { saveDay, settle, timerState } from "@/lib/workTimeServer";
 import { recalculateAutomaticTime } from "@/lib/autoWorkTime";
-import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart, usesReviewWorkflow } from "@/lib/reviewWorkflowServer";
+import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart, REVIEW_WORKFLOW_DELIVERY_PREFIX, usesReviewWorkflow } from "@/lib/reviewWorkflowServer";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -69,8 +69,28 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (nextStatus === "submitted" && !reviewWorkflow) {
         return NextResponse.json({ error: "검토 단계는 새 기준이 적용된 업무에서만 사용할 수 있습니다." }, { status: 400 });
       }
+      let confirmFirstDelivery = false;
       if (reviewWorkflow && nextStatus === "done" && !firstReviewDate) {
-        return NextResponse.json({ error: "1차 전달 후 먼저 ‘검토’를 선택해 실제 완료일을 기록해주세요." }, { status: 400 });
+        if (before.status !== "planned" && before.status !== "in_progress") {
+          return NextResponse.json({ error: "1차 전달 후 먼저 ‘검토’를 선택해 실제 완료일을 기록해주세요." }, { status: 400 });
+        }
+        const dateISO = body.firstDeliveryDateISO;
+        if (typeof dateISO !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dateISO)) {
+          return NextResponse.json({ error: "완료하기 전에 최초 전달일을 확인해주세요." }, { status: 400 });
+        }
+        const calendarDate = new Date(`${dateISO}T00:00:00.000Z`);
+        if (!Number.isFinite(calendarDate.getTime()) || calendarDate.toISOString().slice(0, 10) !== dateISO) {
+          return NextResponse.json({ error: "최초 전달일에 올바른 날짜를 입력해주세요." }, { status: 400 });
+        }
+        const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        if (dateISO > today) {
+          return NextResponse.json({ error: "최초 전달일은 오늘 또는 이전 날짜로 선택해주세요." }, { status: 400 });
+        }
+        if (body.reviewDateISO !== undefined) {
+          return NextResponse.json({ error: "최초 전달일 확인과 검토일 수정은 따로 진행해주세요." }, { status: 400 });
+        }
+        data.reviewDate = new Date(`${dateISO}T00:00:00+09:00`);
+        confirmFirstDelivery = enrolledLegacyTask;
       }
       if (reviewWorkflow && body.reviewDateISO === "" && (firstReviewDate || nextStatus === "submitted" || nextStatus === "done")) {
         return NextResponse.json({ error: "최초 검토일은 유지됩니다. 잘못 기록한 날짜는 올바른 날짜로 수정해주세요." }, { status: 400 });
@@ -80,7 +100,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         if (!firstReviewDate && nextStatus !== "submitted") {
           return NextResponse.json({ error: "먼저 ‘검토’를 선택해 1차 전달을 기록한 뒤 날짜를 수정해주세요." }, { status: 400 });
         }
-        if (body.reviewDateISO && reviewStart) {
+        if (body.reviewDateISO && reviewStart && !reviewPolicy.confirmedDeliveries.has(id)) {
           correctedReviewDate = new Date(body.reviewDateISO);
           if (correctedReviewDate.getTime() < reviewStart.getTime()) {
             // A date-only selection on activation day must not turn into a legacy hold date.
@@ -181,6 +201,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         if (typeof body.memo === "string") await syncMemoToToday(tx, id, body.memo, commentDate);
         await appendCommentToJournal(tx, id, recordedComment, commentDate);
       } else if (typeof data.memo === "string" && data.memo !== before.memo) await syncMemoToToday(tx, id, data.memo, commentDate);
+      if (confirmFirstDelivery) {
+        // Confirmation distinguishes a chosen past delivery date from an old hold date.
+        // Write only after every rejection guard, in the same transaction as completion.
+        await tx.$executeRaw`INSERT OR IGNORE INTO TaskWorkflowPolicy (name, activatedAt) VALUES (${`${REVIEW_WORKFLOW_DELIVERY_PREFIX}${id}`}, ${new Date().toISOString()})`;
+        reviewPolicy.confirmedDeliveries.add(id);
+      }
       const task = await tx.task.update({ where: { id }, data });
       if (body.completionHours !== undefined) await saveDay(tx, id, commentDate, body.completionHours * 3600, "manual");
       if (body.outputLocation !== undefined) {

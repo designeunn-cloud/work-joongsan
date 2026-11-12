@@ -7,11 +7,13 @@ export default function Modal({
   children,
   widthClassName = "max-w-md",
   closeOnBackdropClick = true,
+  label = "상세 창",
 }: {
   onClose: () => void;
   children: React.ReactNode;
   widthClassName?: string;
   closeOnBackdropClick?: boolean;
+  label?: string;
 }) {
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -23,7 +25,7 @@ export default function Modal({
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 px-4" onClick={() => { if (closeOnBackdropClick) onClose(); }}>
-      <div
+      <div role="dialog" aria-modal="true" aria-label={label}
         onClick={(e) => e.stopPropagation()}
         className={`bg-white rounded-xl shadow-lg w-full p-6 max-h-[90vh] overflow-y-auto ${widthClassName}`}
       >

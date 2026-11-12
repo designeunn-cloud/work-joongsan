@@ -30,7 +30,7 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
   const comment = commentsEnabled ? composeStatusComment(option, detail) : "";
   const resetting = status === "in_progress" && target === "in_progress" && selectedWorkType === "reset";
   const commentOnly = target === status && !resetting;
-  const reviewRequired = needsFirstReview({ reviewWorkflow, reviewDate });
+  const reviewRequired = needsFirstReview({ reviewWorkflow, reviewDate }) && status !== "planned" && status !== "in_progress";
 
   function close() { setOpen(false); setTarget(null); setOption(""); setDetail(""); setError(""); }
   function openEditor() {
@@ -67,6 +67,7 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
   async function save() {
     if (!target || saving || comment.length > 200 || (commentOnly && !comment)) return;
     if (target === "done" && reviewRequired) { setError(FIRST_REVIEW_REQUIRED); return; }
+    if (target === "done" && requestCompletion) { close(); requestCompletion(taskId); return; }
     setSaving(true); setError("");
     try {
       const res = await fetch(`/api/tasks/${taskId}`, {

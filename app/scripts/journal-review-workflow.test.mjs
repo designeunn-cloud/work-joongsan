@@ -177,3 +177,83 @@ test("past snapshot reads add a missing new review while preserving old entries 
   assert.deepEqual((await getDailyJournal(journalDate)).tasks.map(task => task.id), [old.id]);
   assert.equal((await db.dailyJournalEntry.findMany()).length, 2, "excluding a row does not rewrite the fixed snapshot");
 }));
+
+test("an opted-in existing task preserves pre-activation journal cells and carries only after its first delivery", async () => fixture(async ({ db, load, task, status, at }) => {
+  const original = await task("opted-in", {
+    createdAt: at("2098-12-15T09:00:00"), status: "in_progress", reviewDate: null,
+    completedAt: null, endDate: at("2098-12-30T17:00:00"),
+    memo: "과거 메모", productName: "보존할 품명", productionType: "수정", outputLocation: "기존 결과물",
+  });
+  await task("untouched-legacy", { createdAt: at("2098-12-15T09:00:00"), status: "in_progress", reviewDate: at("2099-01-04T11:00:00") });
+  const snapshot = JSON.stringify({ status: original.status, reviewDate: original.reviewDate, endDate: original.endDate, completedAt: original.completedAt });
+  await db.$executeRaw`INSERT INTO TaskWorkflowPolicy(name, activatedAt, legacySnapshot) VALUES ('review-task:opted-in', ${at("2099-01-03T15:00:00").toISOString()}, ${snapshot})`;
+  const source = await db.task.update({ where: { id: original.id }, data: {
+    status: "done", reviewDate: at("2099-01-04T11:00:00"), completedAt: at("2099-01-06T17:00:00"), endDate: at("2099-01-06T17:00:00"),
+  } });
+  await status(source.id, null, "in_progress", "2098-12-15T09:00:00");
+  await status(source.id, "in_progress", "submitted", "2099-01-04T11:00:00");
+  await status(source.id, "submitted", "in_progress", "2099-01-05T10:00:00");
+  await status(source.id, "in_progress", "submitted", "2099-01-05T16:00:00");
+  await status(source.id, "submitted", "done", "2099-01-06T17:00:00");
+  const { reviewedJournalTaskIds, withJournalReviewState } = load("lib/journalReviewWorkflow.ts");
+  const { buildJournalTableRows, journalRowsToTsv } = load("lib/journalTable.ts");
+  const details = [{ taskId: source.id, dateISO: "2099-01-02", author: "김희영 과장", content: "당시 처리내용", notes: "당시 비고", hours: 2.5 }];
+  const legacyRows = buildJournalTableRows([original], "2099-01-02", details);
+  const historical = await withJournalReviewState([source], "2099-01-02");
+  assert.equal(historical[0].reviewWorkflow, false, "an individual opt-in never changes earlier dates");
+  assert.equal(historical[0].status, original.status, "finishing later cannot rewrite the earlier legacy status");
+  assert.deepEqual(buildJournalTableRows(historical, "2099-01-02", details), legacyRows);
+  assert.equal(journalRowsToTsv(buildJournalTableRows(historical, "2099-01-02", details)), journalRowsToTsv(legacyRows));
+  assert.equal(legacyRows[0].completedDate, "", "the prior blank actual-completion cell is preserved after the task finally closes");
+  assert.equal(new Date(historical[0].endDate).getTime(), original.endDate.getTime(), "the old target/end date is restored from activation's legacy snapshot");
+  const { livePreviewTaskIds } = load("lib/dailyJournalSnapshot.ts");
+  assert.deepEqual(await livePreviewTaskIds("2099-01-02"), [], "opting in later cannot add the task to an old automatic membership list");
+  await db.dailyJournalDetail.create({ data: details[0] });
+  await db.$executeRaw`INSERT INTO JournalTaskSelection(dateISO, taskId, included) VALUES ('2099-01-02', 'opted-in', 1)`;
+  const { getDailyJournal } = load("lib/dailyJournal.ts");
+  assert.deepEqual((await getDailyJournal("2099-01-02")).rows, legacyRows, "the real journal API keeps all old cells after subsequent final closure");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-02"), []);
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-03"), [], "activation without a first delivery does not carry waiting work");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-05"), [source.id], "other legacy tasks do not opt in implicitly");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-06"), [source.id]);
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-07"), []);
+  const after = buildJournalTableRows(await withJournalReviewState([source], "2099-01-05"), "2099-01-05")[0];
+  assert.equal(after.status, "진행중");
+  assert.equal(after.completedDate, "2099-01-04", "revision and final closure retain the first delivery after opt-in");
+}));
+
+test("an old hold date is ignored after individual activation until a valid delivery is recorded", async () => fixture(async ({ db, load, task, status, at }) => {
+  const source = await task("old-hold", {
+    createdAt: at("2098-12-15T09:00:00"), status: "in_progress", reviewDate: at("2098-12-20T09:00:00"),
+  });
+  await db.$executeRaw`INSERT INTO TaskWorkflowPolicy(name, activatedAt) VALUES ('review-task:old-hold', ${at("2099-01-03T12:00:00").toISOString()})`;
+  await status(source.id, null, "review", "2098-12-20T09:00:00");
+  await status(source.id, "review", "in_progress", "2099-01-03T13:00:00");
+  const { reviewedJournalTaskIds, withJournalReviewState } = load("lib/journalReviewWorkflow.ts");
+  const { buildJournalTableRows } = load("lib/journalTable.ts");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-04"), []);
+  const after = await withJournalReviewState([source], "2099-01-04");
+  assert.equal(after[0].reviewWorkflow, true);
+  assert.equal(after[0].reviewDate, null);
+  assert.equal(buildJournalTableRows(after, "2099-01-04")[0].completedDate, "");
+  assert.equal((await withJournalReviewState([source], "2099-01-02"))[0].reviewDate.getTime(), source.reviewDate.getTime(), "pre-activation source dates remain untouched");
+  const delivered = await db.task.update({ where: { id: source.id }, data: { status: "submitted", reviewDate: at("2099-01-05T14:00:00") } });
+  await status(source.id, "in_progress", "submitted", "2099-01-05T14:00:00");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-06"), [source.id]);
+  assert.equal(buildJournalTableRows(await withJournalReviewState([delivered], "2099-01-06"), "2099-01-06")[0].completedDate, "2099-01-05");
+  assert.equal((await db.task.findUnique({ where: { id: source.id } })).reviewDate.getTime(), delivered.reviewDate.getTime(), "journal reads never rewrite the stored date");
+}));
+
+test("individual activation works without a global cutoff and accepts a delivery exactly at activation", async () => fixture(async ({ db, load, task, status, at }) => {
+  await db.$executeRaw`DELETE FROM TaskWorkflowPolicy WHERE name = 'review-v1'`;
+  const activation = at("2099-01-03T15:00:00");
+  await task("individual-only", { createdAt: at("2098-12-15T09:00:00"), status: "submitted", reviewDate: activation });
+  await task("one-ms-too-early", { createdAt: at("2098-12-15T09:00:00"), status: "submitted", reviewDate: new Date(activation.getTime() - 1) });
+  await task("not-enrolled", { status: "submitted", reviewDate: activation });
+  for (const id of ["individual-only", "one-ms-too-early"]) {
+    await db.$executeRaw`INSERT INTO TaskWorkflowPolicy(name, activatedAt) VALUES (${`review-task:${id}`}, ${activation.toISOString()})`;
+  }
+  await status("individual-only", "in_progress", "submitted", "2099-01-03T15:00:00");
+  const { reviewedJournalTaskIds } = load("lib/journalReviewWorkflow.ts");
+  assert.deepEqual(await reviewedJournalTaskIds("2099-01-04"), ["individual-only"]);
+}));

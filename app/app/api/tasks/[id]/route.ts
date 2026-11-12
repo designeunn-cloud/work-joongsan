@@ -9,7 +9,7 @@ import { isProductionType } from "@/lib/productionTypes";
 import { syncMemoToToday, journalToday, appendCommentToJournal } from "@/lib/journalMemoSync";
 import { saveDay, settle, timerState } from "@/lib/workTimeServer";
 import { recalculateAutomaticTime } from "@/lib/autoWorkTime";
-import { getReviewWorkflowCutoff, usesReviewWorkflow } from "@/lib/reviewWorkflowServer";
+import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart, usesReviewWorkflow } from "@/lib/reviewWorkflowServer";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -52,7 +52,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return await prisma.$transaction(async tx => {
       const before = await tx.task.findUnique({ where: { id } });
       if (!before) return NextResponse.json({ error: "업무를 찾을 수 없습니다." }, { status: 404 });
-      const reviewWorkflow = usesReviewWorkflow(before, await getReviewWorkflowCutoff(tx));
+      const reviewPolicy = await getReviewWorkflowPolicy(tx);
+      const reviewStart = getReviewWorkflowStart(before, reviewPolicy);
+      const reviewWorkflow = !!reviewStart && reviewStart.getTime() <= Date.now();
+      const firstReviewDate = getReviewWorkflowFirstDate(before, reviewPolicy);
+      const enrolledLegacyTask = reviewWorkflow && !usesReviewWorkflow(before, reviewPolicy.cutoff);
       const data: Record<string, unknown> = {};
       if (body.referenceMemo !== undefined) data.referenceMemo = body.referenceMemo || null;
       if (body.outputLocation !== undefined) {
@@ -63,13 +67,28 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       const STATUS_VALUES = new Set<string>(STATUS_ORDER);
       const nextStatus = typeof body.status === "string" && STATUS_VALUES.has(body.status) ? body.status : before.status;
       if (nextStatus === "submitted" && !reviewWorkflow) {
-        return NextResponse.json({ error: "검토 단계는 새 기준이 적용된 신규 업무에서만 사용할 수 있습니다." }, { status: 400 });
+        return NextResponse.json({ error: "검토 단계는 새 기준이 적용된 업무에서만 사용할 수 있습니다." }, { status: 400 });
       }
-      if (reviewWorkflow && nextStatus === "done" && !before.reviewDate) {
+      if (reviewWorkflow && nextStatus === "done" && !firstReviewDate) {
         return NextResponse.json({ error: "1차 전달 후 먼저 ‘검토’를 선택해 실제 완료일을 기록해주세요." }, { status: 400 });
       }
-      if (reviewWorkflow && body.reviewDateISO === "" && (before.reviewDate || nextStatus === "submitted" || nextStatus === "done")) {
+      if (reviewWorkflow && body.reviewDateISO === "" && (firstReviewDate || nextStatus === "submitted" || nextStatus === "done")) {
         return NextResponse.json({ error: "최초 검토일은 유지됩니다. 잘못 기록한 날짜는 올바른 날짜로 수정해주세요." }, { status: 400 });
+      }
+      let correctedReviewDate: Date | undefined;
+      if (enrolledLegacyTask && typeof body.reviewDateISO === "string") {
+        if (!firstReviewDate && nextStatus !== "submitted") {
+          return NextResponse.json({ error: "먼저 ‘검토’를 선택해 1차 전달을 기록한 뒤 날짜를 수정해주세요." }, { status: 400 });
+        }
+        if (body.reviewDateISO && reviewStart) {
+          correctedReviewDate = new Date(body.reviewDateISO);
+          if (correctedReviewDate.getTime() < reviewStart.getTime()) {
+            // A date-only selection on activation day must not turn into a legacy hold date.
+            const activationDate = new Date(reviewStart.getTime() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+            if (body.reviewDateISO === activationDate) correctedReviewDate = reviewStart;
+            else return NextResponse.json({ error: "검토일은 이 업무에 검토 단계가 적용된 날짜부터 선택해주세요." }, { status: 400 });
+          }
+        }
       }
       const commentProjectId = typeof body.projectId === "string" ? body.projectId : before.projectId;
       const commentProject = commentProjectId ? await tx.project.findUnique({ where: { id: commentProjectId }, select: { name: true } }) : null;
@@ -108,14 +127,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         data.completedAt = nextStatus === "done" ? now : null;
         data.endDate = nextStatus === "done" ? now : null;
         if (nextStatus === "in_progress") {
-          data.workType = reviewWorkflow && before.reviewDate ? "revision" : body.workType ?? getDefaultWorkType(before.status as TaskStatus, before.workType);
+          data.workType = reviewWorkflow && firstReviewDate ? "revision" : body.workType ?? getDefaultWorkType(before.status as TaskStatus, before.workType);
           if (!before.startDate) {
             data.startDate = now;
             if (!before.plannedEndDate) data.plannedEndDate = computeDefaultEndDate(now, before.department);
           }
         } else if (before.status === "done" && nextStatus === "planned") data.workType = "revision";
         if (reviewWorkflow) {
-          if (nextStatus === "submitted" && !before.reviewDate) data.reviewDate = now;
+          if (nextStatus === "submitted" && !firstReviewDate) data.reviewDate = now;
         } else if (nextStatus === "review") data.reviewDate = new Date(toISODate(now));
       }
 
@@ -139,7 +158,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         data.completedAt = nextStatus === "done" ? data.endDate : null;
       }
       if (typeof body.dueDateISO === "string") data.dueDate = body.dueDateISO ? new Date(body.dueDateISO) : null;
-      if (typeof body.reviewDateISO === "string") data.reviewDate = body.reviewDateISO ? new Date(body.reviewDateISO) : null;
+      if (typeof body.reviewDateISO === "string") data.reviewDate = body.reviewDateISO ? correctedReviewDate ?? new Date(body.reviewDateISO) : null;
       if (body.requestDateISO === "") {
         data.requestDate = null;
         data.dueDate = null;
@@ -196,7 +215,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
           message: `"${before.requestContent}" ${dates[field]}을 ${before[field]?.toISOString() ?? "미기록"} → ${task[field]?.toISOString() ?? "미기록"}로 변경했습니다.`,
         } });
       }
-      return NextResponse.json({ ...task, reviewWorkflow });
+      const responseReviewDate = reviewWorkflow ? getReviewWorkflowFirstDate(task, reviewPolicy) : task.reviewDate;
+      return NextResponse.json({ ...task, reviewDate: responseReviewDate, reviewWorkflow });
     }, { timeout: 25000 });
   } catch (error) {
     console.error("[tasks] 업무 저장 실패", error);

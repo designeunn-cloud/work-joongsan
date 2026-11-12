@@ -6,7 +6,7 @@ import Module from "node:module";
 import ts from "typescript";
 
 function fixture() {
-  const state = { today: "2026-11-12", cutoff: new Date("2026-11-12T00:00:00Z"), tasks: [], events: [], files: new Map(), reads: 0 };
+  const state = { today: "2026-11-12", cutoff: new Date("2026-11-12T00:00:00Z"), taskStarts: new Map(), tasks: [], events: [], files: new Map(), reads: 0 };
   const uses = (task, cutoff) => !!cutoff && new Date(task.createdAt) >= cutoff;
   const mocks = {
     "node:fs/promises": {
@@ -21,7 +21,7 @@ function fixture() {
     "./googleSheetsJournal": { getGoogleSheetsJournalConfig: async () => ({ configured: true }) },
     "./journalAutoSync": { queueJournalChanges: async events => { state.events.push(...events); } },
     "./journalMemoSync": { journalToday: () => state.today },
-    "./reviewWorkflowServer": { getReviewWorkflowCutoff: async () => state.cutoff, usesReviewWorkflow: uses },
+    "./reviewWorkflowServer": { getReviewWorkflowPolicy: async () => ({ cutoff: state.cutoff, taskStarts: state.taskStarts }), usesReviewWorkflow: uses },
   };
   const file = path.resolve("lib/reviewCarrySync.ts");
   const mod = new Module(file);
@@ -74,4 +74,24 @@ test("viewing other dates does not enqueue or read a carry journal", async () =>
   await queueReviewCarryDay("2026-11-13");
   assert.equal(state.reads, 0);
   assert.deepEqual(state.events, []);
+});
+
+test("an explicitly enabled existing task carries after its first delivery", async () => {
+  const { state, queueReviewCarryDay } = fixture();
+  const existing = { ...submitted, createdAt: "2026-09-22T23:36:04Z", reviewWorkflow: true };
+  state.tasks = [{ ...existing, reviewDate: null, status: "in_progress" }];
+  await queueReviewCarryDay();
+  assert.deepEqual(state.events, []);
+  state.tasks = [existing];
+  await queueReviewCarryDay();
+  assert.deepEqual(state.events, [{ dateISO: "2026-11-12" }]);
+});
+
+test("an individual policy can queue carry even without a global policy", async () => {
+  const { state, queueReviewCarryDay } = fixture();
+  state.cutoff = null;
+  state.taskStarts.set("existing", new Date("2026-11-12T00:00:00Z"));
+  state.tasks = [{ ...submitted, createdAt: "2026-09-22T23:36:04Z", reviewWorkflow: true }];
+  await queueReviewCarryDay();
+  assert.deepEqual(state.events, [{ dateISO: "2026-11-12" }]);
 });

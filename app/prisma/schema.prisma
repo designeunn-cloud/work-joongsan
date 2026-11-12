@@ -12,6 +12,7 @@ datasource db {
 model TaskWorkflowPolicy {
   name        String @id
   activatedAt String
+  legacySnapshot String?
 }
 
 model Task {

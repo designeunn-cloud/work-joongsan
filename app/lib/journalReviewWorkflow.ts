@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
-import { getReviewWorkflowCutoff, usesReviewWorkflow } from "./reviewWorkflowServer";
+import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart } from "./reviewWorkflowServer";
 
 type ReviewTask = {
   id: string;
@@ -8,6 +8,7 @@ type ReviewTask = {
   createdAt: Date | string;
   reviewDate?: Date | string | null;
   completedAt?: Date | string | null;
+  endDate?: Date | string | null;
   statusChangedAt?: Date | string | null;
 };
 type StatusEvent = {
@@ -70,19 +71,29 @@ async function statusEvents(taskIds: string[], db: Prisma.TransactionClient) {
   return byTask;
 }
 
-/** Only newly created, already reviewed work carries forward until final closure. */
+/** Reviewed work carries from its workflow activation through its final closure. */
 export async function reviewedJournalTaskIds(
   dateISO: string, db: Prisma.TransactionClient = prisma,
 ): Promise<string[]> {
-  const cutoff = await getReviewWorkflowCutoff(db);
-  if (!cutoff) return [];
+  const policy = await getReviewWorkflowPolicy(db);
+  if (!policy.cutoff && !policy.taskStarts.size) return [];
   const { start, end } = reviewJournalDayRange(dateISO);
   const tasks = await db.task.findMany({
-    where: { createdAt: { gte: cutoff, lte: end }, reviewDate: { lte: end } },
+    where: {
+      createdAt: { lte: end }, reviewDate: { lte: end },
+      OR: [
+        ...(policy.cutoff ? [{ createdAt: { gte: policy.cutoff } }] : []),
+        ...(policy.taskStarts.size ? [{ id: { in: [...policy.taskStarts.keys()] } }] : []),
+      ],
+    },
     select: { id: true, status: true, createdAt: true, reviewDate: true, completedAt: true, statusChangedAt: true },
   });
   const byTask = await statusEvents(tasks.map(task => task.id), db);
   return tasks.filter(task => {
+    const activation = getReviewWorkflowStart(task, policy);
+    // A legacy hold date predating opt-in is not a first delivery.
+    const firstReview = getReviewWorkflowFirstDate(task, policy);
+    if (!activation || activation > end || !firstReview || firstReview > end) return false;
     const state = stateAt(task, byTask.get(task.id) ?? [], end);
     return state.status !== "done" || (state.changedAt !== null && state.changedAt >= start);
   }).map(task => task.id);
@@ -92,11 +103,20 @@ export async function reviewedJournalTaskIds(
 export async function withJournalReviewState<T extends ReviewTask>(
   tasks: readonly T[], dateISO: string, db: Prisma.TransactionClient = prisma,
 ): Promise<Array<T & { reviewWorkflow: boolean }>> {
-  const cutoff = await getReviewWorkflowCutoff(db);
-  const current = tasks.filter(task => usesReviewWorkflow(task, cutoff));
-  const byTask = await statusEvents(current.map(task => task.id), db);
+  const policy = await getReviewWorkflowPolicy(db);
   const { end } = reviewJournalDayRange(dateISO);
-  return tasks.map(task => usesReviewWorkflow(task, cutoff)
-    ? { ...task, status: stateAt(task, byTask.get(task.id) ?? [], end).status, reviewWorkflow: true }
-    : { ...task, reviewWorkflow: false });
+  const activeStarts = new Map(tasks.flatMap(task => {
+    const activation = getReviewWorkflowStart(task, policy);
+    return activation && activation <= end ? [[task.id, activation] as const] : [];
+  }));
+  const byTask = await statusEvents([...activeStarts.keys()], db);
+  return tasks.map(task => {
+    const activation = activeStarts.get(task.id);
+    if (!activation) {
+      const legacySnapshot = policy.taskSnapshots.get(task.id);
+      return { ...task, ...legacySnapshot, reviewWorkflow: false };
+    }
+    const activeTask = { ...task, reviewDate: getReviewWorkflowFirstDate(task, policy) };
+    return { ...activeTask, status: stateAt(activeTask, byTask.get(task.id) ?? [], end).status, reviewWorkflow: true };
+  });
 }

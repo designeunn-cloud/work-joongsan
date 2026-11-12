@@ -4,11 +4,11 @@ function startOfDay(date: Date): number {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 }
 
-/** 오늘을 기준으로 지난 날짜는 -N, 남은 날짜는 +N으로 표시한다. */
+/** 요청일까지 남은 날짜는 D-N, 지난 날짜는 +N으로 표시한다. */
 export function formatDateOffset(iso: string, now: Date = new Date()): string {
   const dayDiff = Math.round((startOfDay(new Date(iso)) - startOfDay(now)) / 86400000);
   if (!Number.isFinite(dayDiff)) return "미설정";
-  return dayDiff === 0 ? "오늘" : dayDiff > 0 ? `+${dayDiff}` : String(dayDiff);
+  return dayDiff === 0 ? "오늘" : dayDiff > 0 ? `D-${dayDiff}` : `+${Math.abs(dayDiff)}`;
 }
 
 function mondayOfWeek(date: Date): number {

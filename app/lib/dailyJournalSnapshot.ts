@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import type { Prisma } from "@prisma/client";
 import { toISODate } from "./dateHelpers";
+import { reviewedJournalTaskIds } from "./journalReviewWorkflow";
 
 function dayRangeFor(dateISO: string): { start: Date; end: Date } {
   const [y, m, d] = dateISO.split("-").map(Number);
@@ -31,12 +32,13 @@ async function eligibleTaskIdsForDate(dateISO: string, db: Prisma.TransactionCli
     where: { createdAt: { lte: end } },
     select: { id: true, createdAt: true, completedAt: true },
   });
-  return candidates
+  const recorded = candidates
     .filter((t) => {
       if (t.completedAt && t.completedAt >= start && t.completedAt <= end) return true;
       return t.createdAt >= start || worked.has(t.id);
     })
     .map((t) => t.id);
+  return [...new Set([...recorded, ...await reviewedJournalTaskIds(dateISO, db)])];
 }
 
 /**
@@ -56,11 +58,13 @@ export async function finalizeDay(dateISO: string): Promise<void> {
         select: { id: true },
       });
       const recorded = new Set(exists.entries.map((entry) => entry.taskId));
-      const missing = completed.filter((task) => !recorded.has(task.id));
+      const reviewed = await reviewedJournalTaskIds(dateISO, tx);
+      const missing = [...new Set([...completed.map(task => task.id), ...reviewed])]
+        .filter(taskId => !recorded.has(taskId));
       if (missing.length) {
         await tx.dailyJournal.update({
           where: { id: exists.id },
-          data: { entries: { create: missing.map((task) => ({ taskId: task.id })) } },
+          data: { entries: { create: missing.map((taskId) => ({ taskId })) } },
         });
       }
       return;

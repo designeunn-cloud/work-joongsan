@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "@/lib/prisma";
+import { withReviewWorkflow } from "@/lib/reviewWorkflowServer";
 import { getProductIssues } from "@/lib/productPolicy";
 import { buildFolderName, resolveUniqueFolderPath } from "@/lib/folderNaming";
 import { computeDefaultEndDate } from "@/lib/dateHelpers";
@@ -21,7 +22,8 @@ export async function GET() {
     },
   });
   const products = await prisma.productCache.findMany({ select: { code: true } });
-  return NextResponse.json(tasks.map((task) => ({ ...task, productIssues: getProductIssues(task, products) })));
+  const visibleTasks = await withReviewWorkflow(tasks);
+  return NextResponse.json(visibleTasks.map((task) => ({ ...task, productIssues: getProductIssues(task, products) })));
 }
 
 export async function POST(request: Request) {
@@ -133,5 +135,6 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json(task, { status: 201 });
+  const [createdTask] = await withReviewWorkflow([task]);
+  return NextResponse.json(createdTask, { status: 201 });
 }

@@ -1,4 +1,4 @@
-export type JournalTaskFilter = "unfinished" | "in_progress" | "planned" | "review" | "done" | "all";
+export type JournalTaskFilter = "unfinished" | "in_progress" | "planned" | "submitted" | "review" | "done" | "all";
 
 type Choice = {
   id: string;
@@ -12,7 +12,7 @@ type Choice = {
   projectName?: string | null;
 };
 
-const statusRank: Record<string, number> = { in_progress: 0, planned: 1, review: 2, done: 3 };
+const statusRank: Record<string, number> = { in_progress: 0, planned: 1, submitted: 2, review: 3, done: 4 };
 
 export function journalTaskChoices<T extends Choice>(tasks: T[], filter: JournalTaskFilter, query: string): T[] {
   const search = query.trim().toLowerCase();
@@ -22,7 +22,7 @@ export function journalTaskChoices<T extends Choice>(tasks: T[], filter: Journal
   }).sort((a, b) => {
     // Already included tasks remain visible, after tasks that can still be added.
     const group = Number(a.included) - Number(b.included)
-      || (statusRank[a.status] ?? 4) - (statusRank[b.status] ?? 4);
+      || (statusRank[a.status] ?? 5) - (statusRank[b.status] ?? 5);
     if (group) return group;
     if (a.dueDate !== b.dueDate) {
       if (!a.dueDate) return 1;

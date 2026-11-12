@@ -927,7 +927,7 @@ function TaskTableRow({
       case "department":
         return task.department ? <span className="block truncate">{task.department}</span> : <span className="text-neutral-300">-</span>;
       case "status":
-        return <StatusChangeEditor key={`${task.id}-${task.status}`} taskId={task.id} status={task.status} workType={task.workType} commentsEnabled={recordsStatusComments(task)} showWorkTypeLabel={false} onSaved={(s) => onTaskChanged ? onTaskChanged() : onUpdateStatus(task.id, s)} />;
+        return <StatusChangeEditor key={`${task.id}-${task.status}`} taskId={task.id} status={task.status} workType={task.workType} reviewWorkflow={task.reviewWorkflow} reviewDate={task.reviewDate} commentsEnabled={recordsStatusComments(task)} showWorkTypeLabel={false} onSaved={(s) => onTaskChanged ? onTaskChanged() : onUpdateStatus(task.id, s)} />;
       case "startDate":
         return dateCell("startDate", task.startDate, !task.startDate);
       case "endDate":

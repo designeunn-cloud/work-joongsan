@@ -11,6 +11,7 @@ import type { InterpretResult } from "../lib/types";
 import { createTaskFromInterpretResult } from "../lib/taskCreation";
 import { createProductInNotion } from "../lib/notionSync";
 import { finalizePastDays } from "../lib/dailyJournalSnapshot";
+import { queueReviewCarryDay } from "../lib/reviewCarrySync";
 
 // "ai" = Claude API로 해석 (ANTHROPIC_API_KEY 필요, 유료), "rules" = 라벨/캐시 매칭 기반 무료 해석 (기본값)
 const INTERPRET_MODE = (process.env.INTERPRET_MODE || "rules").toLowerCase();
@@ -88,8 +89,10 @@ const processing = new Set<string>();
 // 자정이 지나 새 날짜가 시작되면 어제치 업무일지를 그 날짜의 오전 9시 기준으로 고정한다.
 // 오늘 것은 하루가 끝나야 고정되므로 여기서 다루지 않는다(실시간 조회는 API에서 처리).
 void finalizePastDays().catch((err) => console.error("[watcher] 업무일지 고정 실패:", err));
+void queueReviewCarryDay().catch((err) => console.error("[watcher] 검토 업무 동기화 예약 실패:", err));
 setInterval(() => {
   void finalizePastDays().catch((err) => console.error("[watcher] 업무일지 고정 실패:", err));
+void queueReviewCarryDay().catch((err) => console.error("[watcher] 검토 업무 동기화 예약 실패:", err));
 }, 10 * 60 * 1000);
 
 watcher.on("add", (filePath) => {

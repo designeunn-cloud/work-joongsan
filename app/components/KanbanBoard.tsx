@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
-import { STATUS_ORDER, type TaskStatus } from "@/lib/statusConfig";
+import { STATUS_ORDER, needsFirstReview, FIRST_REVIEW_REQUIRED, type TaskStatus } from "@/lib/statusConfig";
 import { compareByDueDateUrgentFirst } from "@/lib/dateHelpers";
 import type { Task, MasterData } from "@/lib/clientTypes";
 import KanbanColumn from "./KanbanColumn";
@@ -37,17 +37,32 @@ export default function KanbanBoard({
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
   const [rawTextTask, setRawTextTask] = useState<Task | null>(null);
 
+  const [statusError, setStatusError] = useState("");
+  function updateStatus(id: string, nextStatus: TaskStatus) {
+    const task = tasks.find(item => item.id === id);
+    if (!task) return;
+    if (nextStatus === "submitted" && !task.reviewWorkflow) return;
+    if (nextStatus === "done" && needsFirstReview(task)) {
+      setStatusError(FIRST_REVIEW_REQUIRED);
+      return;
+    }
+    setStatusError("");
+    onUpdateStatus(id, nextStatus);
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const taskId = event.active.id as string;
     const newStatus = event.over?.id as TaskStatus | undefined;
     if (!newStatus) return;
     const task = tasks.find((t) => t.id === taskId);
-    if (task && task.status !== newStatus) onUpdateStatus(taskId, newStatus);
+    if (task && task.status !== newStatus) updateStatus(taskId, newStatus);
   }
 
   const tasksByStatus = STATUS_ORDER.map((status) => ({
     status,
-    tasks: tasks.filter((t) => t.status === status).sort(compareByDueDateUrgentFirst),
+    tasks: tasks.filter((t) => t.status === status).sort(status === "submitted"
+      ? (a, b) => (a.reviewDate ?? "9999").localeCompare(b.reviewDate ?? "9999") || a.id.localeCompare(b.id)
+      : compareByDueDateUrgentFirst),
   }));
   // 검토/완료는 카드가 없으면 컬럼 자체를 숨겨 빈 박스가 화면을 차지하지 않게 한다.
   // 진행중은 기본 상태라 전체가 0개인 초기 상태에도 항상 표시한다.
@@ -56,13 +71,14 @@ export default function KanbanBoard({
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-4">
+        {statusError && <p role="alert" className="text-sm text-red-700">{statusError}</p>}
         {visibleColumns.map(({ status, tasks: columnTasks }) => (
           <KanbanColumn
             key={status}
             status={status}
             tasks={columnTasks}
             master={master}
-            onUpdateStatus={onUpdateStatus}
+            onUpdateStatus={updateStatus}
             onOpenFolder={onOpenFolder}
             onUpdateDate={onUpdateDate}
             onUpdateContent={onUpdateContent}

@@ -50,6 +50,7 @@ export default function KanbanColumn({
         {STATUS_LABELS[status]}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-white text-neutral-500">{tasks.length}</span>
       </h3>
+      {status === "submitted" && <p className="text-xs text-neutral-600">1차 전달 후 최종 확인 중 · 최초 검토일이 오래된 순</p>}
       <div className="grid grid-cols-2 gap-2 items-stretch">
         {tasks.map((t) => (
           <KanbanCard

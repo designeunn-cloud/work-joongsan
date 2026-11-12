@@ -8,6 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// The activation boundary separates new workflow tasks without rewriting old tasks.
+model TaskWorkflowPolicy {
+  name        String @id
+  activatedAt String
+}
+
 model Task {
   id               String    @id @default(cuid())
   source           String    @default("excel") // excel | manual

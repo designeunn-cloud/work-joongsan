@@ -30,6 +30,8 @@ export type JournalTableTask = {
   requestDate?: DateValue;
   dueDate?: DateValue;
   completedAt?: DateValue;
+  reviewDate?: DateValue;
+  reviewWorkflow?: boolean;
   endDate?: DateValue;
   rawExtractedText?: string | null;
   aiConfidenceNote?: string | null;
@@ -149,10 +151,12 @@ export function buildJournalTableRows(
       projectName: workCategory === "영업팀" ? task.platform?.trim() || "배너" : task.project?.name?.trim() ?? "",
       content: journalContent(task, detail?.content, selected, subtasks),
       dueDate: deadline ?? "",
-      completedDate: task.status === "done" ? dateText(task.completedAt) || dateText(task.endDate) : "",
+      completedDate: task.reviewWorkflow
+        ? (dateText(task.reviewDate) <= dateISO ? dateText(task.reviewDate) : "")
+        : task.status === "done" ? dateText(task.completedAt) || dateText(task.endDate) : "",
       hours: typeof hours === "number" && Number.isFinite(hours) && hours >= 0 && hours <= 24 ? hours : null,
       status: task.status === "done" ? "완료" : task.status === "planned" ? "대기"
-        : task.status === "in_progress" ? "진행중" : task.status === "review" ? "보류" : "",
+        : task.status === "in_progress" || (task.reviewWorkflow && task.status === "submitted") ? "진행중" : task.status === "review" ? "보류" : "",
       productionType: isProductionType(task.productionType) ? task.productionType : null,
       notes: visibleStatusNotes(detail?.notes, recordsStatusComments(task)),
       outputLocation: detail?.outputLocation ?? task.outputLocation ?? "",

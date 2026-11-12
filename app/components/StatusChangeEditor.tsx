@@ -2,23 +2,26 @@
 
 import { useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { STATUS_ORDER, STATUS_LABELS, STATUS_COLORS, type TaskStatus } from "@/lib/statusConfig";
+import { taskStatusOptions, needsFirstReview, FIRST_REVIEW_REQUIRED, STATUS_LABELS, STATUS_COLORS, type TaskStatus } from "@/lib/statusConfig";
 import { COMMENT_OPTIONS, composeStatusComment, getDefaultStatusCommentOption, type CommentOption } from "@/lib/statusComments";
 import { getDefaultWorkType, isWorkType, WORK_TYPE_LABELS, type WorkType } from "@/lib/workTypes";
 import Modal from "./Modal";
 import { TaskCompletionContext } from "./TaskCompletionContext";
 
-export default function StatusChangeEditor({ taskId, status, workType, onSaved, showWorkTypeLabel = true, commentsEnabled = true }: {
+export default function StatusChangeEditor({ taskId, status, workType, onSaved, showWorkTypeLabel = true, commentsEnabled = true, reviewWorkflow = false, reviewDate }: {
   taskId: string; status: TaskStatus; workType?: WorkType | null; onSaved: (status: TaskStatus) => void;
   showWorkTypeLabel?: boolean;
   commentsEnabled?: boolean;
+  reviewWorkflow?: boolean;
+  reviewDate?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const requestCompletion = useContext(TaskCompletionContext);
   const [target, setTarget] = useState<TaskStatus | null>(null);
   const [option, setOption] = useState<CommentOption | "">("");
   const [detail, setDetail] = useState("");
-  const [selectedWorkType, setSelectedWorkType] = useState<WorkType | "reset">(getDefaultWorkType(status, workType));
+  const defaultWorkType = reviewWorkflow && reviewDate && status !== "in_progress" ? "revision" : getDefaultWorkType(status, workType);
+  const [selectedWorkType, setSelectedWorkType] = useState<WorkType | "reset">(defaultWorkType);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const panel = useRef<HTMLDivElement>(null);
@@ -27,10 +30,11 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
   const comment = commentsEnabled ? composeStatusComment(option, detail) : "";
   const resetting = status === "in_progress" && target === "in_progress" && selectedWorkType === "reset";
   const commentOnly = target === status && !resetting;
+  const reviewRequired = needsFirstReview({ reviewWorkflow, reviewDate });
 
   function close() { setOpen(false); setTarget(null); setOption(""); setDetail(""); setError(""); }
   function openEditor() {
-    setSelectedWorkType(getDefaultWorkType(status, workType));
+    setSelectedWorkType(defaultWorkType);
     setOpen(true);
     if (status === "in_progress" && commentsEnabled) {
       setTarget(status);
@@ -62,6 +66,7 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
 
   async function save() {
     if (!target || saving || comment.length > 200 || (commentOnly && !comment)) return;
+    if (target === "done" && reviewRequired) { setError(FIRST_REVIEW_REQUIRED); return; }
     setSaving(true); setError("");
     try {
       const res = await fetch(`/api/tasks/${taskId}`, {
@@ -88,10 +93,12 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
           <h2 id={`${dialogId}-title`} className="text-sm font-semibold text-neutral-800">{commentsEnabled ? "상태 및 코멘트" : "상태 변경"}</h2>
           <button type="button" aria-label="상태 변경 창 닫기" disabled={saving} onClick={close} className="rounded-lg px-2 py-1 text-neutral-500 hover:bg-neutral-100 disabled:opacity-50">×</button>
         </div>
-        <div className="flex flex-wrap gap-2">{STATUS_ORDER.filter((s) => s !== status || s === "in_progress").map((s) => <button type="button" key={s} disabled={saving}
-          onClick={() => { if (s === "done" && requestCompletion) { close(); requestCompletion(taskId); return; } if (target !== s) { setOption(getDefaultStatusCommentOption(status, s)); setSelectedWorkType(getDefaultWorkType(status, workType)); } setTarget(s); setError(""); }} aria-pressed={target === s}
-          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-shadow ${STATUS_COLORS[s].bg} ${STATUS_COLORS[s].text} ${STATUS_COLORS[s].border} ${target === s ? "ring-2 ring-current ring-offset-1" : "hover:opacity-80"}`}>{STATUS_LABELS[s]}</button>)}</div>
+        <div className="flex flex-wrap gap-2">{taskStatusOptions(reviewWorkflow).filter((s) => s !== status || s === "in_progress").map((s) => <button type="button" key={s} disabled={saving || (s === "done" && reviewRequired)}
+          onClick={() => { if (s === "done" && requestCompletion) { close(); requestCompletion(taskId); return; } if (target !== s) { setOption(getDefaultStatusCommentOption(status, s)); setSelectedWorkType(defaultWorkType); } setTarget(s); setError(""); }} aria-pressed={target === s}
+          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-shadow disabled:opacity-50 ${STATUS_COLORS[s].bg} ${STATUS_COLORS[s].text} ${STATUS_COLORS[s].border} ${target === s ? "ring-2 ring-current ring-offset-1" : "hover:opacity-80"}`}>{STATUS_LABELS[s]}</button>)}</div>
+        {reviewRequired && <p className="mt-2 text-xs leading-5 text-neutral-600">{FIRST_REVIEW_REQUIRED}</p>}
         {target && <form className="mt-3" onSubmit={(e) => { e.preventDefault(); void save(); }}>
+          {target === "submitted" && <p className="mb-2 text-xs leading-5 text-neutral-600">{reviewDate ? "처음 검토한 날짜를 실제 완료일로 유지합니다. 일지에는 진행중으로 표시됩니다." : "오늘을 1차 전달일로 기록합니다. 일지에는 진행중으로 표시되고, 실제 완료일에는 이 날짜가 들어갑니다."}</p>}
           {target === "in_progress" && <>
             <label className="mb-1 block text-xs text-neutral-500">작업 구분
               <select aria-label="진행중 작업 구분" value={selectedWorkType} disabled={saving} onChange={(e) => {

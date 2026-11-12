@@ -94,8 +94,8 @@ export default function TaskDetailModal({
         />
         <Row label="요청일" value={formatDateRow(task.requestDate)} />
         <Row label="시작일" value={formatDateRow(task.startDate)} />
-        <Row label="검토일" value={formatDateRow(task.reviewDate)} />
-        <Row label="종료일" value={formatDateRow(task.endDate)} />
+        <Row label={task.reviewWorkflow ? "실제 완료일" : "검토일"} value={formatDateRow(task.reviewDate)} />
+        <Row label={task.reviewWorkflow ? "최종종료일" : "종료일"} value={formatDateRow(task.endDate)} />
         <Row label="마감일" value={formatDateRow(task.dueDate)} />
         <Row label="메모" value={task.memo && <span className="whitespace-pre-wrap">{task.memo}</span>} />
         <Row label="폴더" value={<span className="text-xs text-neutral-400 break-all">{task.folderName}</span>} />

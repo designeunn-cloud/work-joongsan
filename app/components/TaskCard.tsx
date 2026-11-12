@@ -119,6 +119,7 @@ export default function TaskCard({
   const STATUS_ACCENT: Record<TaskStatus, string> = {
     planned: "border-l-slate-300",
     in_progress: "border-l-blue-300",
+    submitted: "border-l-violet-300",
     review: "border-l-orange-300",
     done: "border-l-emerald-300",
   };
@@ -140,7 +141,7 @@ export default function TaskCard({
 
       {/* 진행중 -------- 폴더/휴지통 아이콘 */}
       <div className="flex items-center justify-between gap-2">
-        <StatusSegment status={task.status} onChange={(s) => onUpdateStatus(task.id, s)} />
+        <StatusSegment status={task.status} reviewWorkflow={task.reviewWorkflow} reviewDate={task.reviewDate} onChange={(s) => onUpdateStatus(task.id, s)} />
         <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => onOpenFolder(task.id)}

@@ -34,6 +34,7 @@ export interface Task {
   reviewDate: string | null;
   endDate: string | null;
   status: TaskStatus;
+  reviewWorkflow?: boolean;
   workType?: WorkType | null;
   statusChangedAt: string | null;
   completedAt: string | null;

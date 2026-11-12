@@ -4,6 +4,7 @@ import { finalizeDay, finalizePastDays, livePreviewTaskIds } from "./dailyJourna
 import { toISODate } from "./dateHelpers";
 import { getTaskWorkCategory } from "./workCategories";
 import { buildJournalTableRows } from "./journalTable";
+import { withJournalReviewState } from "./journalReviewWorkflow";
 
 export function isValidJournalDate(value: unknown): value is string {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -27,7 +28,8 @@ export async function getDailyJournal(dateISO: string) {
       where: { id: { in: taskIds.filter(id => !excluded.has(id)) } },
       include: { subtasks: true, project: { select: { name: true, department: true } } },
     });
-    const categorizedTasks = tasks.map((task) => ({ ...task, workCategory: getTaskWorkCategory(task) }));
+    const historicalTasks = await withJournalReviewState(tasks, dateISO);
+    const categorizedTasks = historicalTasks.map((task) => ({ ...task, workCategory: getTaskWorkCategory(task) }));
     const details = await prisma.dailyJournalDetail.findMany({ where: { dateISO, taskId: { in: tasks.map((task) => task.id) } } });
     return { dateISO, manualTaskIds, preview: true, tasks: categorizedTasks, rows: buildJournalTableRows(categorizedTasks, dateISO, details) };
   }
@@ -41,7 +43,7 @@ export async function getDailyJournal(dateISO: string) {
   const recorded = await prisma.dailyJournalDetail.findMany({ where: { dateISO, hours: { not: null } }, select: { taskId: true } });
   const extra = await prisma.task.findMany({ where: { id: { in: [...recorded.map(row => row.taskId), ...includedTaskIds].filter(id => !journal?.entries.some(entry => entry.taskId === id)) } }, include: { subtasks: true, project: { select: { name: true, department: true } } } });
   const candidates = [...(journal?.entries.map(({ task }) => ({ ...task, workCategory: getTaskWorkCategory(task) })) ?? []), ...extra.map(task => ({ ...task, workCategory: getTaskWorkCategory(task) }))];
-  const tasks = candidates.filter(task => !excluded.has(task.id));
+  const tasks = await withJournalReviewState(candidates.filter(task => !excluded.has(task.id)), dateISO);
   const details = await prisma.dailyJournalDetail.findMany({ where: { dateISO, taskId: { in: tasks.map((task) => task.id) } } });
   return { dateISO, manualTaskIds, preview: false, tasks, rows: buildJournalTableRows(tasks, dateISO, details) };
 }

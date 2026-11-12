@@ -77,12 +77,13 @@ export default function TodayJournalTasks({ taskId, disabled = false }: { taskId
           </label>
         </li>)}</ul>
       </section>}
-      <p className="mt-2 text-xs leading-5 text-neutral-600">{date} · 진행중 → 대기 → 보류 순으로, 같은 상태에서는 마감일이 가까운 업무부터 표시합니다. 마감일이 없거나 이미 포함된 업무는 뒤에 표시합니다.</p>
+      <p className="mt-2 text-xs leading-5 text-neutral-600">{date} · 진행중 → 대기 → 검토 → 보류 순으로, 같은 상태에서는 마감일이 가까운 업무부터 표시합니다. 마감일이 없거나 이미 포함된 업무는 뒤에 표시합니다.</p>
       <label className="mt-3 block text-xs font-medium text-neutral-700">업무 상태
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value as JournalTaskFilter)} className="mt-1 min-h-10 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-indigo-600">
-          <option value="unfinished">미완료 (진행중·대기·보류)</option>
+          <option value="unfinished">미완료 (진행중·대기·검토·보류)</option>
           <option value="in_progress">진행중</option>
           <option value="planned">대기</option>
+          <option value="submitted">검토</option>
           <option value="review">보류</option>
           <option value="done">완료</option>
           <option value="all">전체</option>

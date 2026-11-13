@@ -29,6 +29,8 @@ export async function GET(_request: Request, { params }: Context) {
         automatic: day.automatic, timerActive: active, timerRunning: active && !!timer.runningSince,
         timerStartedAt: active ? timer.runningSince : null,
         timerHours: roundedHours(Math.min(86400, day.seconds + (day.automatic ? 0 : pending))),
+        timerSeconds: Math.min(86400, day.seconds + (day.automatic ? 0 : pending)), serverNow: now.toISOString(),
+        otherTimerTaskName: timer.taskId && !active ? timer.taskName : null,
       });
     });
   } catch {

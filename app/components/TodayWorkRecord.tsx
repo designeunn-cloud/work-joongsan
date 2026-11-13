@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
-import { roundedHours } from "@/lib/workTime";
+import { roundedHours, splitDays } from "@/lib/workTime";
 
 type RecordState = {
   date: string; version: string | null; content: string; hours: number | null; totalHours: number;
   automatic: boolean; timerActive: boolean; timerRunning: boolean; timerStartedAt: string | null; timerHours: number;
+  timerSeconds: number; serverNow: string; otherTimerTaskName: string | null; receivedAt: number;
 };
 type SavedRecord = { date: string; content: string; hours: number; totalHours: number };
 const inputClass = "mt-1 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus-visible:outline-2 focus-visible:outline-indigo-600";
@@ -34,6 +35,8 @@ export function TodayWorkRecordModal({ taskId, taskName, onClose, onSaved }: {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [changingTimer, setChangingTimer] = useState(false);
+  const [tick, setTick] = useState(0);
   const [saved, setSaved] = useState<SavedRecord | null>(null);
   const saving = useRef(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -43,16 +46,43 @@ export function TodayWorkRecordModal({ taskId, taskName, onClose, onSaved }: {
     fetch(endpoint, { signal: controller.signal, cache: "no-store" }).then(async response => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
-      if (!controller.signal.aborted) { setRecord(data); setContent(data.content); setHours(data.hours == null ? "" : String(data.hours)); setLoading(false); }
+      if (!controller.signal.aborted) { setRecord({ ...data, receivedAt: performance.now() }); setContent(data.content); setHours(data.hours == null ? "" : String(data.hours)); setLoading(false); }
     }).catch(reason => {
       if (!controller.signal.aborted) { setError(reason instanceof Error ? reason.message : "기록을 불러오지 못했습니다."); setLoading(false); }
     });
     return () => controller.abort();
   }, [endpoint, attempt]);
-  useEffect(() => { if (!loading && record) contentRef.current?.focus(); }, [loading, record]);
+  useEffect(() => { if (!loading) contentRef.current?.focus(); }, [loading]);
+  useEffect(() => {
+    if (!record?.timerRunning || saved) return;
+    const interval = setInterval(() => setTick(performance.now()), 1000);
+    return () => clearInterval(interval);
+  }, [record?.timerRunning, saved]);
   function reload() { setLoading(true); setError(""); setAttempt(value => value + 1); }
   const validHours = hours.trim() !== "" && Number.isFinite(Number(hours)) && Number(hours) >= 0 && Number(hours) <= 24;
-  const chosenHours = record?.timerActive ? record.timerHours : validHours ? roundedHours(Number(hours) * 3600) : null;
+  const unsavedHours = hours.trim() !== "" && Number(hours) !== (record?.hours ?? 0);
+  const elapsed = record?.timerRunning && !record.automatic ? splitDays(new Date(record.serverNow), new Date(new Date(record.serverNow).getTime() + Math.max(0, tick - record.receivedAt)))
+    .filter(part => part.dateISO === record.date).reduce((sum, part) => sum + part.seconds, 0) : 0;
+  const timerSeconds = Math.floor(Math.min(86400, (record?.timerSeconds ?? 0) + elapsed));
+  const timerDisplay = [Math.floor(timerSeconds / 3600), Math.floor(timerSeconds / 60) % 60, timerSeconds % 60].map(value => String(value).padStart(2, "0")).join(":");
+  const chosenHours = record?.timerActive ? roundedHours(Math.min(86400, record.timerSeconds + elapsed)) : validHours ? roundedHours(Number(hours) * 3600) : null;
+  async function controlTimer(action: "start" | "pause" | "resume" | "auto") {
+    if (saving.current || !record) return;
+    saving.current = true; setBusy(true); setChangingTimer(true); setError("");
+    try {
+      const response = await fetch("/api/work-time", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, taskId, ...(action === "auto" ? { date: record.date, enabled: false } : {}) }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "측정 상태를 변경하지 못했습니다.");
+      window.dispatchEvent(new Event("work-time-updated"));
+      const refreshed = await fetch(endpoint, { cache: "no-store" });
+      const data = await refreshed.json();
+      if (!refreshed.ok) throw new Error(data.error || "측정 상태를 다시 불러와주세요.");
+      // Refresh the version changed by timer settlement without discarding the user's draft.
+      if (data.date !== record.date || data.content !== record.content) throw new Error("오늘 기록이 변경되었습니다. 최신 기록을 다시 불러와주세요.");
+      setRecord({ ...data, receivedAt: performance.now() });
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "측정 상태를 변경하지 못했습니다. 다시 시도해주세요."); }
+    finally { saving.current = false; setBusy(false); setChangingTimer(false); }
+  }
   async function save() {
     if (saving.current || !record || !content.trim() || (!record.timerActive && !validHours)) return;
     saving.current = true; setBusy(true); setError("");
@@ -84,12 +114,23 @@ export function TodayWorkRecordModal({ taskId, taskName, onClose, onSaved }: {
       {loading ? <p role="status" className="py-6 text-sm text-neutral-600">오늘 기록을 불러오는 중…</p> : record && <>
         <p className="mt-3 text-xs leading-5 text-neutral-600">{record.date} · 진행중으로 오늘 작업분을 기록합니다.</p>
         <fieldset disabled={busy} className="mt-4 space-y-4">
+          <div className="space-y-2 border-b border-neutral-200 pb-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium text-neutral-800">{record.timerActive ? record.timerRunning ? "측정 중" : "일시정지" : "타이머"}</p>
+              <button type="button" disabled={!record.timerActive && (!!record.otherTimerTaskName || unsavedHours)} onClick={() => void controlTimer(record.timerActive ? record.timerRunning ? "pause" : "resume" : record.automatic ? "auto" : "start")} className={secondaryClass}>
+                {changingTimer ? "변경 중…" : record.timerActive ? record.timerRunning ? "일시정지" : "측정 재개" : record.automatic ? "자동 시간 해제" : "시간 측정 시작"}
+              </button>
+            </div>
+            {record.timerActive ? <>
+              <p className="text-2xl font-semibold tabular-nums text-neutral-900" aria-label={`오늘 측정 합계 ${timerDisplay}`}>{timerDisplay}<span className="ml-2 text-xs font-normal text-neutral-600">오늘 합계</span></p>
+              <p className="text-xs leading-5 text-neutral-600">창을 닫아도 측정 상태가 유지됩니다. 화면 하단에서도 일시정지·재개할 수 있습니다.</p>
+            </> : <p className="text-xs leading-5 text-neutral-600">{record.otherTimerTaskName ? `‘${record.otherTimerTaskName}’ 측정을 화면 하단에서 종료한 뒤 이 창을 다시 열어주세요.` : unsavedHours ? "입력한 시간을 먼저 저장한 뒤 측정을 시작해주세요." : record.automatic ? "자동 시간을 해제하면 현재 시간을 유지한 채 측정을 시작할 수 있습니다." : "지금부터 측정하거나, 아래에 오늘 작업한 시간을 직접 입력하세요. 측정시간은 저장된 오늘 시간에 더해집니다."}</p>}
+          </div>
           <label className="block text-sm font-medium text-neutral-700">오늘 작업 내용
             <textarea ref={contentRef} required maxLength={40000} rows={4} value={content} onChange={event => setContent(event.target.value)} placeholder="예: A 시안 작업" className={`${inputClass} resize-y`} />
           </label>
           {record.timerActive ? <div className="space-y-1 text-sm text-neutral-700">
             <p className="font-medium">{record.timerRunning ? "측정 중인 시간" : "일시정지한 측정시간"}으로 저장</p>
-            <p className="tabular-nums">오늘 합계 약 {record.timerHours}시간</p>
             <p className="text-xs leading-5 text-neutral-600">저장할 때 측정을 종료하고 오늘 일지에 반영합니다. 실행 중인 측정값은 저장 시점까지 계산합니다.</p>
           </div> : <div>
             <label className="block text-sm font-medium text-neutral-700">오늘 총 소요시간 (시간)
@@ -104,8 +145,8 @@ export function TodayWorkRecordModal({ taskId, taskName, onClose, onSaved }: {
       </>}
       {error && <div role="alert" className="mt-3 space-y-2 text-sm text-red-700"><p>{error}</p><button type="button" disabled={busy || loading} onClick={reload} className="underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-indigo-600">최신 기록 다시 불러오기</button></div>}
       <div className="mt-5 flex justify-end gap-2 border-t border-neutral-200 pt-4">
-        <button type="button" disabled={busy} onClick={onClose} className={secondaryClass}>취소</button>
-        <button type="submit" disabled={busy || loading || !record || !content.trim() || (!record.timerActive && !validHours)} className="min-h-10 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50">{busy ? "저장 중…" : record?.timerActive ? "측정 종료하고 기록" : "오늘 작업 저장"}</button>
+        <button type="button" disabled={busy} onClick={onClose} className={secondaryClass}>{record?.timerActive ? "닫기" : "취소"}</button>
+        <button type="submit" disabled={busy || loading || !record || !content.trim() || (!record.timerActive && !validHours)} className="min-h-10 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50">{busy && !changingTimer ? "저장 중…" : record?.timerActive ? "측정 종료하고 기록" : "오늘 작업 저장"}</button>
       </div>
     </form>}
   </Modal>;

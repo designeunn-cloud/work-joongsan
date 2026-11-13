@@ -36,6 +36,13 @@ test("today work records save content and time while work remains in progress", 
   sql.close();
   const db = new PrismaClient({ datasources: { db: { url: `file:${file.replaceAll("\\", "/")}` } } });
   const load = loader(db), route = load("app/api/tasks/[id]/work-record/route.ts");
+  const timerRoute = load("app/api/work-time/route.ts");
+  const controlTimer = async (id, action, extra = {}) => {
+    const response = await timerRoute.POST(new Request("http://localhost/api/work-time", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ taskId: id, action, ...extra }),
+    }));
+    return { status: response.status, body: await response.json() };
+  };
   const { koreaDate } = load("lib/workTime.ts");
   const { dayState, saveDay } = load("lib/workTimeServer.ts");
   const published = [];
@@ -114,6 +121,57 @@ test("today work records save content and time while work remains in progress", 
         assert.equal((await save(task.id, state, body)).status, 409);
         assert.equal((await read(task.id)).body.hours, result.body.hours);
       }
+    });
+    await t.test("start, pause, resume and record save count only working time and keep the task in progress", async () => {
+      const task = await create(), other = await create();
+      t.mock.timers.enable({ apis: ["Date"], now: new Date("2099-02-01T01:00:00Z") });
+      try {
+        let state = (await read(task.id)).body;
+        assert.equal(state.timerActive, false);
+        assert.equal(state.timerSeconds, 0);
+        assert.equal((await controlTimer(task.id, "start")).status, 200);
+        t.mock.timers.tick(30 * 60000);
+        state = (await read(task.id)).body;
+        assert.equal(state.timerRunning, true);
+        assert.equal(state.timerSeconds, 1800);
+        assert.equal(state.timerHours, 0.5);
+        assert.equal((await read(other.id)).body.otherTimerTaskName, task.requestContent);
+        assert.equal((await controlTimer(other.id, "start")).status, 409);
+        assert.equal((await controlTimer(task.id, "pause")).status, 200);
+        state = (await read(task.id)).body;
+        assert.equal(state.timerActive, true);
+        assert.equal(state.timerRunning, false);
+        assert.equal(state.timerStartedAt, null);
+        t.mock.timers.tick(20 * 60000);
+        assert.equal((await read(task.id)).body.timerSeconds, 1800, "breaks are not counted");
+        assert.equal((await controlTimer(task.id, "resume")).status, 200);
+        t.mock.timers.tick(30 * 60000);
+        state = (await read(task.id)).body;
+        assert.equal(state.timerSeconds, 3600);
+        assert.equal(state.serverNow, "2099-02-01T02:20:00.000Z");
+        const saved = await save(task.id, state, { mode: "timer", timerStartedAt: state.timerStartedAt, content: "A 작업 완료, B와 C는 내일" });
+        assert.equal(saved.status, 200);
+        assert.equal(saved.body.hours, 1);
+        assert.equal(saved.body.content, "A 작업 완료, B와 C는 내일");
+        assert.equal((await read(task.id)).body.timerActive, false);
+        assert.deepEqual(await db.task.findUnique({ where: { id: task.id }, include: { subtasks: true } }), task);
+        assert.equal((await save(task.id, state, { mode: "timer", timerStartedAt: state.timerStartedAt })).status, 409);
+      } finally { t.mock.timers.reset(); }
+    });
+    await t.test("automatic time can be disabled before starting a timer without losing existing hours", async () => {
+      const task = await create();
+      t.mock.timers.enable({ apis: ["Date"], now: new Date("2099-02-02T01:00:00Z") });
+      try {
+        assert.equal((await controlTimer(task.id, "auto", { date: "2099-02-02", enabled: true })).status, 200);
+        assert.equal((await controlTimer(task.id, "start")).status, 409);
+        const before = (await read(task.id)).body;
+        assert.equal((await controlTimer(task.id, "auto", { date: before.date, enabled: false })).status, 200);
+        assert.equal((await controlTimer(task.id, "start")).status, 200);
+        const state = (await read(task.id)).body;
+        assert.equal(state.automatic, false);
+        assert.equal(state.hours, before.hours);
+        assert.equal((await save(task.id, state, { mode: "timer", timerStartedAt: state.timerStartedAt })).status, 200);
+      } finally { t.mock.timers.reset(); }
     });
     await t.test("timer changes and another task's running timer are handled independently", async () => {
       const task = await create(), other = await create();

@@ -5,6 +5,7 @@ import type { TaskStatus } from "@/lib/statusConfig";
 import type { Task, MasterData } from "@/lib/clientTypes";
 import DateEditor from "./DateEditor";
 import SubtaskSection from "./SubtaskSection";
+import TodayWorkRecord from "./TodayWorkRecord";
 import StatusSegment from "./StatusSegment";
 import { Pill } from "./Primitives";
 import TaskProductEditor from "./TaskProductEditor";
@@ -140,8 +141,9 @@ export default function TaskCard({
       ) : null}
 
       {/* 진행중 -------- 폴더/휴지통 아이콘 */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <StatusSegment status={task.status} reviewWorkflow={task.reviewWorkflow} reviewDate={task.reviewDate} onChange={(s) => onUpdateStatus(task.id, s)} />
+        <TodayWorkRecord taskId={task.id} taskName={task.requestContent} status={task.status} onSaved={onSubtasksChanged} />
         <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => onOpenFolder(task.id)}

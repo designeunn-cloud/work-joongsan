@@ -6,6 +6,7 @@ import { STATUS_LABELS, STATUS_COLORS } from "@/lib/statusConfig";
 import { formatAbsoluteDate, formatRelativeDate } from "@/lib/relativeDate";
 import { baseName } from "@/lib/ruleBasedInterpret";
 import Modal from "./Modal";
+import TodayWorkRecord from "./TodayWorkRecord";
 
 const ICON_PROPS = {
   width: 15,
@@ -73,6 +74,7 @@ export default function TaskDetailModal({
 
       <h2 className="text-lg font-bold text-neutral-900 mb-1">{task.requestContent}</h2>
       {subtitle && <p className="text-sm text-neutral-400 mb-4">{subtitle}</p>}
+      <TodayWorkRecord taskId={task.id} taskName={task.requestContent} status={task.status} />
 
       <div className="divide-y divide-neutral-100 border-t border-b border-neutral-100">
         <Row label="담당자" value={`${baseName(task.assignee)}${task.department ? ` · ${task.department}` : ""}`} />

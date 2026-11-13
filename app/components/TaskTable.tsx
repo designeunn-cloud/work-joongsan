@@ -8,6 +8,7 @@ import { baseName } from "@/lib/ruleBasedInterpret";
 import { formatAbsoluteDate } from "@/lib/relativeDate";
 import { getTaskDeadline, getTaskDeadlineField } from "@/lib/taskDeadline";
 import DateEditor from "./DateEditor";
+import TodayWorkRecord from "./TodayWorkRecord";
 import StatusChangeEditor from "./StatusChangeEditor";
 import { recordsStatusComments } from "@/lib/statusComments";
 import RawTextModal from "./RawTextModal";
@@ -932,7 +933,7 @@ function TaskTableRow({
       case "department":
         return task.department ? <span className="block truncate">{task.department}</span> : <span className="text-neutral-300">-</span>;
       case "status":
-        return <StatusChangeEditor key={`${task.id}-${task.status}`} taskId={task.id} status={task.status} workType={task.workType} reviewWorkflow={task.reviewWorkflow} reviewDate={task.reviewDate} commentsEnabled={recordsStatusComments(task)} showWorkTypeLabel={false} onSaved={(s) => onTaskChanged ? onTaskChanged() : onUpdateStatus(task.id, s)} />;
+        return <div className="flex flex-col items-start gap-1"><StatusChangeEditor key={`${task.id}-${task.status}`} taskId={task.id} status={task.status} workType={task.workType} reviewWorkflow={task.reviewWorkflow} reviewDate={task.reviewDate} commentsEnabled={recordsStatusComments(task)} showWorkTypeLabel={false} onSaved={(s) => onTaskChanged ? onTaskChanged() : onUpdateStatus(task.id, s)} /><TodayWorkRecord taskId={task.id} taskName={task.requestContent} status={task.status} onSaved={onTaskChanged} /></div>;
       case "startDate":
         return dateCell("startDate", task.startDate, !task.startDate);
       case "endDate":

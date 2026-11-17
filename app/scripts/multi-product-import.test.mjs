@@ -70,6 +70,32 @@ test("general prose and reference codes are not silently added to an existing ex
   assert.deepEqual(splitProducts(filenameOnly.productName), models, "one catalog match must not hide two other codes explicitly listed in the filename");
 });
 
+test("detail-page model fields exclude adjacent quantity and color metadata", () => {
+  const detailRows = [["요청자", "검증자"], ["상 품 기 술 서"],
+    ["모델명", "ETS511", "발주수량", "그레이 514대, 베이지 514대", "색상", "그레이, 베이지"]];
+  const flattenedText = detailRows.map(row => row.join(" | ")).join("\n");
+  for (const source of [detailRows, flattenedText]) {
+    assert.deepEqual(extractRequestProducts(source), ["ETS511"]);
+    assert.equal(mergeRequestProducts("ETS511", source), "ETS511");
+  }
+  const result = interpretExcelRules({ ...input, fileBaseName: "20261023_ETS511_블루투스 내용 추가_디자인요청서",
+    rows: detailRows, flattenedText, sheetNames: ["ETS511"],
+    assignees: [{ name: "검증자", department: "마케팅팀" }],
+    products: ["ETS511", "발주수량", "그레이 514대"].map(code => ({ code, brand: null })) });
+  assert.equal(result.status, "ok");
+  assert.equal(result.productName, "ETS511");
+  assert.equal(result.newProductCode, undefined, "metadata must not be registered as a new Notion product");
+});
+
+test("metadata boundaries support inline values and units while preserving multiple model cells", () => {
+  for (const boundary of ["발주 수량", "발주수량(대)", "주문수량：514대", "수량: 514대", "색 상", "색상: 그레이", "컬러：베이지"]) {
+    const source = [["품명", "ETS511", "ETS512", boundary, "그레이 514대", "베이지"]];
+    assert.deepEqual(extractRequestProducts(source), ["ETS511", "ETS512"], boundary);
+    assert.deepEqual(extractRequestProducts(source[0].join(" | ")), ["ETS511", "ETS512"], boundary);
+  }
+  assert.deepEqual(extractRequestProducts([["품명", "에어 스텝퍼", "색상", "그레이"]]), ["에어 스텝퍼"]);
+});
+
 test("registration preserves all explicitly requested products even if an AI/extractor returned one", async () => {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), "multi-product-import-"));
   const sql = new DatabaseSync(path.join(temp, "test.db"));

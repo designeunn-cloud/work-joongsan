@@ -20,7 +20,7 @@ export function extractProductCodes(text: string, ignored: string[] = []): strin
 export function extractRequestProducts(source: string | ReadonlyArray<ReadonlyArray<string>>): string[] {
   const rows = typeof source === "string" ? source.split(/\r?\n/).map(line => line.split(/\s*\|\s*/)) : source;
   const labels = new Set(["품명", "제품명", "상품명", "모델명", "제품코드", "상품코드", "모델코드", "제품", "제품명(모델명)", "품명(모델명)"]);
-  const fieldBoundary = /^(?:요청(?:자|일|일자|완료일|완료일자|부서)|담당자|작성자|협조부서|부서|브랜드|플랫폼|수량|납기일|참고.*|업무.*|내용|규격|비고|요청사항|요청내용)[:：]?$/;
+  const fieldBoundary = /^(?:요청(?:자|일|일자|완료일|완료일자|부서)|담당자|작성자|협조부서|부서|브랜드|플랫폼|(?:발주|주문|입고|출고|요청)?수량|(?:제품)?(?:색상|컬러)|납기일|참고.*|업무.*|내용|규격|비고|요청사항|요청내용)(?:\([^)]*\))?$/;
   const found: string[] = [];
   let referenceSection = false;
   const fieldProducts = (value: string, namesAllowed: boolean) => {
@@ -53,7 +53,8 @@ export function extractRequestProducts(source: string | ReadonlyArray<ReadonlyAr
         if (labelParts?.[2].trim()) fieldProducts(labelParts[2], label !== "제품");
         for (let next = index + 1; next < row.length; next++) {
           const value = row[next].trim();
-          const normalized = value.replace(/\s+/g, "");
+          // Other fields can include units or an inline value, e.g. "발주수량(대): 514".
+          const normalized = value.split(/[:：]/, 1)[0].replace(/\s+/g, "");
           if (labels.has(normalized) || fieldBoundary.test(normalized)) break;
           fieldProducts(value, label !== "제품");
         }

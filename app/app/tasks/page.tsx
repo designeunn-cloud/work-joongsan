@@ -42,7 +42,7 @@ export default function TasksPage() {
   const [completingId, setCompletingId] = useState<string | null>(null);
   const completingTask = tasks.find(task => task.id === completingId);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
-  const [view, setView] = useState<"kanban" | "table" | "calendar" | "journal">("kanban");
+  const [view, setView] = useState<"kanban" | "table" | "calendar" | "journal">("table");
 
   const load = useCallback(async () => {
     const [tasksRes, logsRes, masterRes, projectsRes, leavesRes] = await Promise.all([

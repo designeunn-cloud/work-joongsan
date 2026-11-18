@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { STATUS_ORDER, STATUS_LABELS, type TaskStatus } from "@/lib/statusConfig";
 import type { MasterData, Task } from "@/lib/clientTypes";
 import { daysLate } from "@/lib/bucketTasks";
@@ -23,6 +23,9 @@ import TaskProductEditor from "./TaskProductEditor";
 import TaskMemo from "./TaskMemo";
 import TaskOutputLocation from "./TaskOutputLocation";
 import { WorkTimeEditor } from "./WorkTime";
+import TaskContextMenu from "./TaskContextMenu";
+
+type RowMenuPosition = { x: number; y: number; trigger: HTMLTableRowElement };
 
 type ColumnKey =
   | "requestContent"
@@ -408,7 +411,11 @@ export default function TaskTable({
   const [sortDir, setSortDir] = useState<1 | -1>(() => initialFilters.status === "done" ? -1 : loadJSON<number>(SORT_DIR_KEY, 1) === -1 ? -1 : 1);
   const [groupBy, setGroupBy] = useState<GroupKey>(initialFilters.status === "done" ? "none" : initialFilters.groupBy);
   const [rawTextTask, setRawTextTask] = useState<Task | null>(null);
+  const [deletingTask, setDeletingTask] = useState<Task | null>(null);
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
+  const [contextMenu, setContextMenu] = useState<(RowMenuPosition & { taskId: string }) | null>(null);
+  const closeContextMenu = useCallback(() => setContextMenu(null), []);
+  const menuTask = contextMenu ? tasks.find(task => task.id === contextMenu.taskId) : null;
   const tableWrapRef = useRef<HTMLDivElement>(null);
 
   const [visibleKeys, setVisibleKeys] = useState<Set<ColumnKey>>(
@@ -822,12 +829,16 @@ export default function TaskTable({
                   columns={visibleColumns}
                   active={activeRowId === task.id}
                   onActivate={() => setActiveRowId(task.id)}
+                  onOpenContextMenu={position => {
+                    setActiveRowId(task.id);
+                    setContextMenu({ ...position, taskId: task.id });
+                  }}
                   onUpdateStatus={onUpdateStatus}
                   onOpenFolder={onOpenFolder}
                   onUpdateDate={onUpdateDate}
                   onOpenDetail={onOpenDetail}
                   onEdit={onEdit}
-                  onDelete={onDelete}
+                  onDelete={() => setDeletingTask(task)}
                   onCreateFollowUp={onCreateFollowUp}
                   onTaskChanged={onTaskChanged}
                   onOpenRawText={setRawTextTask}
@@ -839,6 +850,32 @@ export default function TaskTable({
         {rows.length === 0 && <p className="text-center text-sm text-neutral-400 py-8">조건에 맞는 업무가 없습니다.</p>}
       </div>
 
+      {contextMenu && menuTask && <TaskContextMenu
+        key={menuTask.id}
+        taskName={menuTask.requestContent}
+        {...contextMenu}
+        onClose={closeContextMenu}
+        actions={[
+          { label: "후속작업 등록", icon: <FollowUpIcon />, disabled: !onCreateFollowUp, onSelect: () => onCreateFollowUp?.(menuTask) },
+          { label: "삭제", icon: <TrashIcon />, destructive: true, onSelect: () => setDeletingTask(menuTask) },
+          { label: "업무 수정", icon: <EditIcon />, onSelect: () => onEdit(menuTask) },
+          { label: "폴더 열기", icon: <FolderIcon />, onSelect: () => onOpenFolder(menuTask.id) },
+          { label: "원문보기", icon: <DocTextIcon />, disabled: !menuTask.rawExtractedText,
+            description: menuTask.rawExtractedText ? undefined : "등록된 원문이 없습니다.", onSelect: () => setRawTextTask(menuTask) },
+        ]}
+      />}
+      {deletingTask && <Modal onClose={() => setDeletingTask(null)} widthClassName="max-w-sm">
+        <h2 className="text-lg font-semibold text-neutral-900">업무를 삭제할까요?</h2>
+        <p className="mt-3 break-words text-sm font-medium text-neutral-800">{deletingTask.requestContent}</p>
+        <p className="mt-2 text-sm text-neutral-600">업무와 연결된 일지 기록이 삭제되며 되돌릴 수 없습니다. 작업 폴더와 파일은 유지됩니다.</p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button type="button" autoFocus onClick={() => setDeletingTask(null)} className="min-h-10 rounded-lg border border-neutral-300 px-4 text-sm text-neutral-700 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-indigo-600">취소</button>
+          <button type="button" onClick={() => {
+            onDelete(deletingTask.id);
+            setDeletingTask(null);
+          }} className="min-h-10 rounded-lg bg-red-600 px-4 text-sm font-medium text-white hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-red-700 focus-visible:outline-offset-2">업무 삭제</button>
+        </div>
+      </Modal>}
       {rawTextTask && rawTextTask.rawExtractedText && (
         <RawTextModal
           fileName={rawTextTask.sourceFileName}
@@ -862,6 +899,7 @@ function TaskTableRow({
   columns,
   active,
   onActivate,
+  onOpenContextMenu,
   onUpdateStatus,
   onOpenFolder,
   onUpdateDate,
@@ -877,6 +915,7 @@ function TaskTableRow({
   columns: ColumnDef[];
   active: boolean;
   onActivate: () => void;
+  onOpenContextMenu: (position: RowMenuPosition) => void;
   onUpdateStatus: (id: string, status: TaskStatus) => void;
   onOpenFolder: (id: string) => void;
   onUpdateDate: (id: string, field: DateField, iso: string) => void;
@@ -1009,9 +1048,7 @@ function TaskTableRow({
               </button>
             )}
             <button
-              onClick={() => {
-                if (confirm(`"${task.requestContent}" 업무를 삭제할까요? 되돌릴 수 없습니다.`)) onDelete(task.id);
-              }}
+              onClick={() => onDelete(task.id)}
               title="삭제"
               className="p-1.5 rounded-lg border border-neutral-200 text-neutral-500 hover:border-red-300 hover:text-red-600 hover:bg-red-50"
             >
@@ -1025,6 +1062,19 @@ function TaskTableRow({
   return (
     <tr
       onClick={onActivate}
+      tabIndex={0}
+      aria-haspopup="menu"
+      onContextMenu={event => {
+        if ((event.target as Element).closest("input, textarea, [contenteditable='true']")) return;
+        event.preventDefault();
+        onOpenContextMenu({ x: event.clientX, y: event.clientY, trigger: event.currentTarget });
+      }}
+      onKeyDown={event => {
+        if (event.target !== event.currentTarget || !(event.key === "ContextMenu" || event.shiftKey && event.key === "F10")) return;
+        event.preventDefault();
+        const bounds = event.currentTarget.getBoundingClientRect();
+        onOpenContextMenu({ x: bounds.left + 12, y: bounds.bottom, trigger: event.currentTarget });
+      }}
       className={`border-b border-neutral-100 last:border-0 hover:bg-neutral-50 align-top cursor-pointer ${
         done && task.productionType ? "opacity-60" : ""
       } ${active ? "bg-indigo-50/40" : ""}`}

@@ -54,8 +54,10 @@ export type JournalTableDetail = {
 
 export type JournalTableRow = {
   taskId: string;
+  requestContent?: string;
   taskName: string;
   workTitle?: string;
+  productName?: string | null;
   author: string;
   dateISO: string;
   workCategory: string;
@@ -96,10 +98,22 @@ function taskTitle(task: JournalTableTask): string {
   return `${brand}${task.requestContent}${product}`.trim();
 }
 
-function defaultWorkContent(task: JournalTableTask): string {
+export function journalWorkTitle(task: Pick<JournalTableTask, "requestContent" | "productName">): string {
   const title = task.requestContent.trim();
   const product = task.productName?.trim() ?? "";
   return product && !title.toLocaleLowerCase().includes(product.toLocaleLowerCase()) ? `${title} ${product}`.trim() : title;
+}
+
+/** Only the exact title line is shared; dated prose and selected bullets stay intact. */
+export function replaceJournalTitle(content: string, previous: ReadonlyArray<string>, title: string): string {
+  const first = content.split(/\r?\n/, 1)[0];
+  return first.trim() && previous.some(value => value.trim() === first.trim())
+    ? title + content.slice(first.length) : content;
+}
+
+export function journalContentBody(content: string, title: string): string {
+  const first = /^([^\r\n]*)(?:\r?\n|$)/.exec(content);
+  return first && first[1].trim() === title.trim() ? content.slice(first[0].length) : content;
 }
 export function withJournalWorkTitle(content: string, title: string): string {
   const lines = content.split(/\r?\n/).filter(line => line.trim());
@@ -107,7 +121,7 @@ export function withJournalWorkTitle(content: string, title: string): string {
 }
 
 function journalContent(task: JournalTableTask, content: string | null | undefined, selected: string[], subtasks: JournalTableRow["subtasks"]): string {
-  const title = defaultWorkContent(task);
+  const title = journalWorkTitle(task);
   const bullets = [...new Set(subtasks.filter(item => selected.includes(item.id)).map(item => item.content.trim()).filter(Boolean))].map(text => `- ${text}`).join("\n");
   if (content === undefined || content === null) return [title, bullets].filter(Boolean).join("\n");
   return withJournalWorkTitle(content, title);
@@ -143,8 +157,10 @@ export function buildJournalTableRows(
     const selected = selectedIds(detail?.selectedSubtaskIds, subtasks);
     return {
       taskId: task.id,
+      requestContent: task.requestContent,
       taskName: taskTitle(task),
-      workTitle: defaultWorkContent(task),
+      workTitle: journalWorkTitle(task),
+      productName: task.productName ?? null,
       author: detail?.author ?? DEFAULT_JOURNAL_AUTHOR,
       dateISO,
       workCategory,

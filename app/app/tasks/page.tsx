@@ -66,6 +66,12 @@ export default function TasksPage() {
   }, [load]);
   useVisiblePolling(load, 8000);
 
+  useEffect(() => {
+    const refresh = () => { void load(); };
+    window.addEventListener("task-name-updated", refresh);
+    return () => window.removeEventListener("task-name-updated", refresh);
+  }, [load]);
+
   async function updateTaskStatus(id: string, status: TaskStatus) {
     if (status === "done") { setCompletingId(id); return; }
     await fetch(`/api/tasks/${id}`, {

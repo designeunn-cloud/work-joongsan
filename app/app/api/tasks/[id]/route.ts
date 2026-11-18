@@ -9,6 +9,7 @@ import { isProductionType } from "@/lib/productionTypes";
 import { syncMemoToToday, journalToday, appendCommentToJournal } from "@/lib/journalMemoSync";
 import { saveDay, settle, timerState } from "@/lib/workTimeServer";
 import { recalculateAutomaticTime } from "@/lib/autoWorkTime";
+import { syncTaskNameToJournals } from "@/lib/journalTaskNameSync";
 import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart, REVIEW_WORKFLOW_DELIVERY_PREFIX, usesReviewWorkflow } from "@/lib/reviewWorkflowServer";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -17,6 +18,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return NextResponse.json({ error: "수정할 업무 내용을 확인해주세요." }, { status: 400 });
   }
+  if (body.requestContent !== undefined && (typeof body.requestContent !== "string"
+    || !body.requestContent.trim() || body.requestContent.length > 2000 || /[\r\n]/.test(body.requestContent))) {
+    return NextResponse.json({ error: "업무명은 2,000자 이내의 한 줄로 입력해주세요." }, { status: 400 });
+  }
+  if (typeof body.requestContent === "string") body.requestContent = body.requestContent.trim();
   if (body.outputLocation !== undefined && body.outputLocation !== null
     && (typeof body.outputLocation !== "string" || body.outputLocation.length > 4000)) {
     return NextResponse.json({ error: "결과물 위치는 4,000자 이내로 입력해주세요." }, { status: 400 });
@@ -198,6 +204,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         reviewPolicy.confirmedDeliveries.add(id);
       }
       const task = await tx.task.update({ where: { id }, data });
+      await syncTaskNameToJournals(tx, before, task);
       if (body.completionHours !== undefined) await saveDay(tx, id, commentDate, body.completionHours * 3600, "manual");
       if (body.outputLocation !== undefined) {
         await tx.dailyJournalDetail.upsert({

@@ -8,14 +8,15 @@ import TodayJournalTasks, { JournalExcludeButton } from "./TodayJournalTasks";
 import JournalColumnSettings from "./JournalColumnSettings";
 import { JOURNAL_COLUMNS, JOURNAL_LAYOUT_KEY, columnWidth, defaultJournalLayout, restoreJournalLayout, type JournalColumn } from "@/lib/journalColumns";
 import { toISODate } from "@/lib/dateHelpers";
-import { JOURNAL_AUTHORS, journalRowsToTsv, formatJournalHours, toggleJournalSubtaskContent, withJournalWorkTitle, type JournalTableRow } from "@/lib/journalTable";
+import { JOURNAL_AUTHORS, journalRowsToTsv, formatJournalHours, toggleJournalSubtaskContent, withJournalWorkTitle, journalContentBody, replaceJournalTitle, type JournalTableRow } from "@/lib/journalTable";
 import { WorkTimeEditor } from "@/components/WorkTime";
 import GoogleSheetsJournalSettings from "@/components/GoogleSheetsJournalSettings";
 import ProductionTypeEditor from "@/components/ProductionTypeEditor";
+import TaskNameEditor from "./TaskNameEditor";
 
 type TextDraftKey = "author" | "projectName" | "content" | "hours" | "notes" | "outputLocation";
 type JournalEditField = "projectName" | "content" | "notes" | "outputLocation";
-type Draft = Partial<Record<TextDraftKey, string>> & { selectedSubtaskIds?: string[] };
+type Draft = Partial<Record<TextDraftKey, string>> & { selectedSubtaskIds?: string[]; workTitle?: string };
 type Drafts = Record<string, Record<string, Draft>>;
 const DRAFT_STORAGE_KEY = "work-app-journal-drafts-v1";
 const COMPETITOR_RESEARCH_SHEET_URL = "https://docs.google.com/spreadsheets/d/1r-m-mm-TxtNRctcFcNzMpuoir8riuAwh1fzZsyySDu8/edit?pli=1&gid=1984931867#gid=1984931867";
@@ -67,7 +68,7 @@ function restoreDrafts(): Drafts {
       if (!fields || typeof fields !== "object" || Array.isArray(fields)) continue;
       const draft: Draft = {};
       const values = fields as Record<string, unknown>;
-      for (const key of ["author", "content", "hours", "notes", "outputLocation"] as const) {
+      for (const key of ["author", "content", "hours", "notes", "outputLocation", "workTitle"] as const) {
         if (typeof values[key] === "string") draft[key] = values[key];
       }
       if (Array.isArray(values.selectedSubtaskIds) && values.selectedSubtaskIds.length <= 500
@@ -224,7 +225,9 @@ export default function DailyJournal() {
   const hasInvalidHours = rows.some((row) => !validHours(dayDrafts[row.taskId]?.hours ?? formatJournalHours(row.hours)));
   const currentRows = useMemo(() => rows.map((row) => {
     const draft = drafts[dateISO]?.[row.taskId];
-    return { ...row, ...draft, content: withJournalWorkTitle(draft?.content ?? row.content, row.workTitle ?? row.taskName), hours: draft?.hours === undefined ? row.hours : draft.hours.trim() === "" ? null : Number(draft.hours) };
+    const title = row.workTitle ?? row.taskName;
+    const content = replaceJournalTitle(draft?.content ?? row.content, [draft?.workTitle ?? title], title);
+    return { ...row, ...draft, workTitle: row.workTitle, content: withJournalWorkTitle(content, title), hours: draft?.hours === undefined ? row.hours : draft.hours.trim() === "" ? null : Number(draft.hours) };
   }), [rows, drafts, dateISO]);
   const unavailable = loading || loadedDate !== dateISO || !draftsReady;
   const syncHash = `${googleStatus?.spreadsheetUrl ?? ""}|${journalSyncFingerprint(currentRows)}`;
@@ -242,6 +245,10 @@ export default function DailyJournal() {
       const draft = { ...dateDrafts[row.taskId], [key]: value };
       const original = key === "hours" ? formatJournalHours(row.hours) : row[key];
       if (value === original) delete draft[key];
+      if (key === "content") {
+        if (draft.content === undefined) delete draft.workTitle;
+        else draft.workTitle = row.workTitle ?? row.taskName;
+      }
       if (Object.keys(draft).length) dateDrafts[row.taskId] = draft;
       else delete dateDrafts[row.taskId];
       return { ...previous, [dateISO]: dateDrafts };
@@ -257,6 +264,8 @@ export default function DailyJournal() {
         draft.selectedSubtaskIds ?? row.selectedSubtaskIds ?? [], subtask, checked, row.subtasks ?? [], row.workTitle ?? row.taskName);
       if (next.content === row.content) delete draft.content;
       else draft.content = next.content;
+      if (draft.content === undefined) delete draft.workTitle;
+      else draft.workTitle = row.workTitle ?? row.taskName;
       if (sameSelection(next.selectedSubtaskIds, row.selectedSubtaskIds ?? [])) delete draft.selectedSubtaskIds;
       else draft.selectedSubtaskIds = next.selectedSubtaskIds;
       if (Object.keys(draft).length) dateDrafts[row.taskId] = draft;
@@ -270,8 +279,10 @@ export default function DailyJournal() {
     if (!editedCount) return true;
     setSaving(true); setError(""); setSaved(false);
     const changes = rows.filter((row) => dayDrafts[row.taskId]).map((row) => {
-      const draft = dayDrafts[row.taskId];
-      return { taskId: row.taskId, ...draft, ...(draft.hours === undefined ? {} : { hours: draft.hours.trim() === "" ? null : Number(draft.hours) }) };
+      const { workTitle, ...draft } = dayDrafts[row.taskId];
+      return { taskId: row.taskId, ...draft,
+        ...(draft.content === undefined ? {} : { content: replaceJournalTitle(draft.content, [workTitle ?? row.workTitle ?? row.taskName], row.workTitle ?? row.taskName) }),
+        ...(draft.hours === undefined ? {} : { hours: draft.hours.trim() === "" ? null : Number(draft.hours) }) };
     });
     try {
       const response = await fetch(`/api/journal/${dateISO}/rows`, {
@@ -363,7 +374,7 @@ export default function DailyJournal() {
         <button type="button" onClick={copy} disabled={unavailable || busy || !rows.length || hasInvalidHours} className={secondaryButton} title="제목 행 없이 숨긴 열을 포함한 12개 항목을 기본 순서로 복사합니다">{copied ? "복사됨" : "내용 복사"}</button>
       </div>
     </div>
-    <p id="journal-table-help" className="mb-3 text-xs leading-5 text-neutral-600">프로젝트명은 연결된 프로젝트에서 가져옵니다. 처리내용에는 업무명이 기본으로 들어가며 세부할일을 아래에 추가할 수 있습니다. <strong className="font-medium text-neutral-800">소요시간·작업구분은 즉시 저장</strong>됩니다.</p>
+    <p id="journal-table-help" className="mb-3 text-xs leading-5 text-neutral-600">업무명 옆 연필을 누르면 칸반·테이블·일지의 이름이 함께 바뀝니다. 아래에는 해당 날짜의 처리내용을 작성하세요. <strong className="font-medium text-neutral-800">소요시간·작업구분은 즉시 저장</strong>됩니다.</p>
     {otherDraftDates.length > 0 && <div className="mb-3 flex flex-wrap gap-2 text-xs text-amber-800"><span>다른 날짜의 저장 전 초안:</span>{otherDraftDates.map(date => <button type="button" key={date} onClick={() => setDateISO(date)} disabled={busy} className="underline">{date}</button>)}</div>}
     {registration && <p role="status" className="mb-3 text-sm text-emerald-700">{registration.message} <a href={registration.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">시트에서 보기</a></p>}
     {error && <p role="alert" className="mb-3 text-sm text-red-700">{error}</p>}
@@ -381,7 +392,7 @@ export default function DailyJournal() {
             const label = `${index+1}행`;
             const source = rows.find(item => item.taskId === row.taskId)!;
             const previewCell = (key: JournalEditField, text: string, placeholder: string) => <div className="journal-inline-field">
-              <JournalEntryInput autoSize={key === "content" || key === "notes"} aria-label={`${label} ${placeholder}`} rows={2} readOnly={key === "projectName"} title={key === "projectName" ? "업무에 연결된 프로젝트 이름입니다" : undefined} maxLength={key === "content" ? 40000 : key === "notes" ? 10000 : key === "outputLocation" ? 4000 : 1000} disabled={busy} value={text} placeholder={placeholder} onChange={key === "projectName" ? undefined : event => edit(source,key,event.target.value)} className={`journal-entry ${key === "content" ? "journal-entry-content" : key === "notes" ? "journal-entry-notes" : ""} ${key === "content" && row.subtasks.length > 0 ? "journal-entry-with-subtasks" : ""} w-full min-w-0 resize-none rounded-md border border-neutral-300 bg-white px-2 py-2 leading-5 text-neutral-900 placeholder:text-neutral-500 focus-visible:outline-2 focus-visible:outline-indigo-600`} />
+              <JournalEntryInput autoSize={key === "content" || key === "notes"} aria-label={`${label} ${placeholder}`} rows={2} readOnly={key === "projectName"} title={key === "projectName" ? "업무에 연결된 프로젝트 이름입니다" : undefined} maxLength={key === "content" ? 40000 : key === "notes" ? 10000 : key === "outputLocation" ? 4000 : 1000} disabled={busy} value={text} placeholder={placeholder} onChange={key === "projectName" ? undefined : event => edit(source,key,key === "content" ? [row.workTitle ?? row.taskName, event.target.value].filter(Boolean).join("\n") : event.target.value)} className={`journal-entry ${key === "content" ? "journal-entry-content" : key === "notes" ? "journal-entry-notes" : ""} ${key === "content" && row.subtasks.length > 0 ? "journal-entry-with-subtasks" : ""} w-full min-w-0 resize-none rounded-md border border-neutral-300 bg-white px-2 py-2 leading-5 text-neutral-900 placeholder:text-neutral-500 focus-visible:outline-2 focus-visible:outline-indigo-600`} />
             </div>;
             const dateCell = (value: string) => <span className="whitespace-nowrap tabular-nums" title={value || "미입력"} aria-label={value || "미입력"}>{value ? value.slice(5).replace("-",".") : "—"}</span>;
             const cells = [
@@ -391,7 +402,9 @@ export default function DailyJournal() {
               <div key="project">{previewCell("projectName",row.projectName,"프로젝트 미연결")}</div>,
               <div key="content" className="journal-content-cell">
                 {row.subtasks.length > 0 && <div className="journal-subtask-anchor"><JournalSubtaskDropdown row={row} rowLabel={label} disabled={busy} onToggle={(subtask,checked)=>selectSubtask(source,subtask,checked)}/></div>}
-                {previewCell("content",row.content,"처리내용 작성")}
+                <div className="mb-1 pr-6"><TaskNameEditor taskId={row.taskId} value={row.requestContent ?? row.workTitle ?? row.taskName} disabled={busy} onSaved={() => setTimeVersion(version => version + 1)} /></div>
+                {row.productName && !row.requestContent?.toLocaleLowerCase().includes(row.productName.toLocaleLowerCase()) && <p className="mb-1 break-words px-1 text-xs text-neutral-600">{row.productName}</p>}
+                {previewCell("content",journalContentBody(row.content,row.workTitle ?? row.taskName),"처리내용 작성")}
               </div>,
               <span key="due">{dateCell(row.dueDate)}</span>,
               <span key="completed">{dateCell(row.completedDate)}</span>,

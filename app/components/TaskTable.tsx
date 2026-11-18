@@ -857,11 +857,11 @@ export default function TaskTable({
         onClose={closeContextMenu}
         actions={[
           { label: "후속작업 등록", icon: <FollowUpIcon />, disabled: !onCreateFollowUp, onSelect: () => onCreateFollowUp?.(menuTask) },
-          { label: "삭제", icon: <TrashIcon />, destructive: true, onSelect: () => setDeletingTask(menuTask) },
           { label: "업무 수정", icon: <EditIcon />, onSelect: () => onEdit(menuTask) },
           { label: "폴더 열기", icon: <FolderIcon />, onSelect: () => onOpenFolder(menuTask.id) },
           { label: "원문보기", icon: <DocTextIcon />, disabled: !menuTask.rawExtractedText,
             description: menuTask.rawExtractedText ? undefined : "등록된 원문이 없습니다.", onSelect: () => setRawTextTask(menuTask) },
+          { label: "삭제", icon: <TrashIcon />, destructive: true, onSelect: () => setDeletingTask(menuTask) },
         ]}
       />}
       {deletingTask && <Modal onClose={() => setDeletingTask(null)} widthClassName="max-w-sm">

@@ -219,3 +219,19 @@ model WorkTimeAuto {
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   @@index([taskId])
 }
+
+model NoticeTemplate {
+  id             String   @id @default(cuid())
+  name           String
+  source         String
+  productNames   String   @default("[]")
+  projectId      String?
+  requestContent String
+  productionType String?
+  assignee       String   @default("")
+  dueDateISO     String   @default("")
+  splitByProduct Boolean  @default(false)
+  dateConfirmed  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

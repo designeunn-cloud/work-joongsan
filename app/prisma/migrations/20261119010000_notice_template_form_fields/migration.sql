@@ -1,0 +1,4 @@
+ALTER TABLE "NoticeTemplate" ADD COLUMN "assignee" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "NoticeTemplate" ADD COLUMN "dueDateISO" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "NoticeTemplate" ADD COLUMN "splitByProduct" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "NoticeTemplate" ADD COLUMN "dateConfirmed" BOOLEAN NOT NULL DEFAULT false;

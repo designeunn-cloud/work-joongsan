@@ -7,11 +7,13 @@ import { Field } from "./Primitives";
 import Modal from "./Modal";
 import Combobox from "./Combobox";
 import QuickDatePicker from "./QuickDatePicker";
+import type { ProductionType } from "@/lib/productionTypes";
 
 const DEPARTMENTS = ["마케팅팀", "영업부", "무역부", "기타"];
 const BRANDS = ["엑사이더", "위즈웰"];
 
 export interface NewTaskInput {
+  productionType?: ProductionType | null;
   assignee: string;
   department: string;
   brand: string;
@@ -19,10 +21,14 @@ export interface NewTaskInput {
   platform: string;
   tags: string;
   memo: string;
+  referenceMemo?: string;
   projectId: string;
   requestContent: string;
   requestDateISO: string;
-  startDateISO: string;
+  startDateISO?: string;
+  dueDateISO?: string;
+  noticeRegistration?: boolean;
+  splitByProduct?: boolean;
 }
 
 export default function AddTaskModal({

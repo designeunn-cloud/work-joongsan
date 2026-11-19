@@ -12,6 +12,8 @@ import { recalculateAutomaticTime } from "@/lib/autoWorkTime";
 import { syncTaskNameToJournals } from "@/lib/journalTaskNameSync";
 import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart, REVIEW_WORKFLOW_DELIVERY_PREFIX, usesReviewWorkflow } from "@/lib/reviewWorkflowServer";
 
+import { createTaskOutputNote, rollbackTaskOutputNote, TaskOutputNoteError, type TaskOutputNote } from "@/lib/taskOutputNote";
+
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const body = await request.json().catch(() => null);
@@ -52,6 +54,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     }
   }
 
+  let outputNote: TaskOutputNote | null = null;
   try {
     // Task fields, dated journal values, time settlement and logs commit together.
     // The journal change tracker publishes these mutations only after this transaction commits.
@@ -204,6 +207,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         reviewPolicy.confirmedDeliveries.add(id);
       }
       const task = await tx.task.update({ where: { id }, data });
+      if (task.status === "done" && before.status !== "done") outputNote = createTaskOutputNote(task);
       await syncTaskNameToJournals(tx, before, task);
       if (body.completionHours !== undefined) await saveDay(tx, id, commentDate, body.completionHours * 3600, "manual");
       if (body.outputLocation !== undefined) {
@@ -242,7 +246,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return NextResponse.json({ ...task, reviewDate: responseReviewDate, reviewWorkflow });
     }, { timeout: 25000 });
   } catch (error) {
+    if (outputNote) {
+      try { rollbackTaskOutputNote(outputNote); }
+      catch (rollback) {
+        console.error("[tasks] 결과물 위치 TXT 복구 실패", rollback);
+        return NextResponse.json({ error: "완료 저장에 실패했습니다. 새로 만든 결과물 위치 TXT를 확인해주세요. 기존 업무 상태는 유지됩니다." }, { status: 500 });
+      }
+    }
     console.error("[tasks] 업무 저장 실패", error);
+    if (error instanceof TaskOutputNoteError) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ error: "업무를 저장하지 못했습니다. 잠시 후 다시 시도해주세요. 상태와 기존 기록은 유지됩니다." }, { status: 500 });
   }
 }

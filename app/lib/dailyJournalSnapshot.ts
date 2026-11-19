@@ -1,7 +1,8 @@
 import { prisma } from "./prisma";
 import type { Prisma } from "@prisma/client";
 import { toISODate } from "./dateHelpers";
-import { reviewedJournalTaskIds } from "./journalReviewWorkflow";
+import { dailyNoteText } from "./statusComments";
+import { reviewedJournalTaskIds, withJournalReviewState } from "./journalReviewWorkflow";
 
 function dayRangeFor(dateISO: string): { start: Date; end: Date } {
   const [y, m, d] = dateISO.split("-").map(Number);
@@ -70,6 +71,20 @@ export async function finalizeDay(dateISO: string): Promise<void> {
       return;
     }
     const taskIds = await eligibleTaskIdsForDate(dateISO, tx);
+    const reviewed = await tx.task.findMany({
+      where: { id: { in: taskIds }, reviewDate: { not: null } },
+      include: { project: { select: { name: true } }, journalDetails: { where: { dateISO }, select: { notes: true } } },
+    });
+    for (const task of await withJournalReviewState(reviewed, dateISO, tx)) {
+      const original = task.journalDetails[0]?.notes;
+      const notes = dailyNoteText(original, task.carryReviewNote);
+      if (task.carryReviewNote && notes !== original) {
+        await tx.dailyJournalDetail.upsert({
+          where: { dateISO_taskId: { dateISO, taskId: task.id } },
+          create: { taskId: task.id, dateISO, notes }, update: { notes },
+        });
+      }
+    }
     await tx.dailyJournal.create({
       data: { dateISO, entries: { create: taskIds.map((taskId) => ({ taskId })) } },
     });

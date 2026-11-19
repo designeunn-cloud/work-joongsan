@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activityLog";
 import { computeDefaultEndDate, toISODate } from "@/lib/dateHelpers";
 import { STATUS_ORDER, STATUS_LABELS, type TaskStatus } from "@/lib/statusConfig";
-import { getDefaultStatusCommentOption, recordsStatusComments } from "@/lib/statusComments";
+import { addStatusNote, getDefaultStatusCommentOption, recordsStatusComments, REVIEW_PENDING, withoutReviewPending } from "@/lib/statusComments";
 import { getDefaultWorkType, isWorkType } from "@/lib/workTypes";
 import { isProductionType } from "@/lib/productionTypes";
 import { syncMemoToToday, journalToday, appendCommentToJournal } from "@/lib/journalMemoSync";
@@ -128,11 +128,26 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (body.completionHours !== undefined && nextStatus !== "done") {
         return NextResponse.json({ error: "완료할 업무의 소요시간을 확인해주세요." }, { status: 400 });
       }
+      const reviewTime = body.reviewTime;
+      if (reviewTime !== undefined) {
+        if (!commentsEnabled || before.status !== "in_progress" || nextStatus !== "submitted") {
+          return NextResponse.json({ error: "업무 상태가 바뀌었습니다. 다시 열어 확인해주세요." }, { status: 409 });
+        }
+        const validHours = (value: unknown) => value === null || (typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 24);
+        if (!reviewTime || !validHours(reviewTime.hours) || !validHours(reviewTime.previousHours) || typeof reviewTime.timerActive !== "boolean" || reviewTime.date !== journalToday()) {
+          return NextResponse.json({ error: "검토 날짜와 소요시간을 다시 확인해주세요." }, { status: 400 });
+        }
+        const day = await tx.dailyJournalDetail.findUnique({ where: { dateISO_taskId: { dateISO: reviewTime.date, taskId: id } }, select: { hours: true } });
+        if ((day?.hours ?? null) !== reviewTime.previousHours) return NextResponse.json({ error: "오늘 소요시간이 변경되었습니다. 검토 창을 다시 열어주세요." }, { status: 409 });
+      }
       const stopsWork = body.status === "done" || (reviewWorkflow && nextStatus !== before.status && (nextStatus === "submitted" || nextStatus === "review"));
       if (stopsWork) {
         await tx.$executeRaw`INSERT OR IGNORE INTO WorkTimer (id) VALUES ('active')`;
         await tx.$executeRaw`UPDATE WorkTimer SET id = id WHERE id = 'active'`;
         const timer = await timerState(tx);
+        if (reviewTime && ((timer.taskId === id) !== reviewTime.timerActive || (timer.taskId === id && reviewTime.hours !== null))) {
+          return NextResponse.json({ error: "시간 측정 상태가 변경되었습니다. 검토 창을 다시 열어주세요." }, { status: 409 });
+        }
         if (timer.taskId === id) {
           if (body.completionHours !== undefined) return NextResponse.json({ error: "측정 중인 시간은 완료 시 자동 저장됩니다. 직접 입력한 시간을 비워주세요." }, { status: 409 });
           await settle(tx, timer, new Date());
@@ -193,13 +208,23 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         } });
       }
       const commentDate = journalToday();
-      const statusMemo = commentsEnabled ? body.statusComment?.trim() : undefined;
+      const statusMemo = commentsEnabled ? body.statusComment?.trim() ?? (nextStatus === "submitted" ? REVIEW_PENDING : undefined) : undefined;
       const recordedComment = statusMemo && (nextStatus !== before.status || commentOnly || resetWorkStart) ? statusMemo : null;
-      if (recordedComment) data.memo = [typeof data.memo === "string" ? data.memo.trim() : before.memo?.trim(), recordedComment].filter(Boolean).join("\n");
+      if (recordedComment) data.memo = addStatusNote(typeof data.memo === "string" ? data.memo : before.memo, recordedComment);
       if (recordedComment) {
         if (typeof body.memo === "string") await syncMemoToToday(tx, id, body.memo, commentDate);
-        await appendCommentToJournal(tx, id, recordedComment, commentDate);
+        await appendCommentToJournal(tx, id, recordedComment, commentDate, addStatusNote);
       } else if (typeof data.memo === "string" && data.memo !== before.memo) await syncMemoToToday(tx, id, data.memo, commentDate);
+      if (before.status === "submitted" && nextStatus === "done") {
+        const where = { dateISO_taskId: { dateISO: commentDate, taskId: id } };
+        const detail = await tx.dailyJournalDetail.findUnique({ where, select: { notes: true } });
+        if (detail?.notes) {
+          const notes = withoutReviewPending(detail.notes);
+          if (notes !== detail.notes) await syncMemoToToday(tx, id, notes, commentDate);
+        }
+        const memo = typeof data.memo === "string" ? data.memo : before.memo;
+        if (memo && withoutReviewPending(memo) !== memo) data.memo = withoutReviewPending(memo);
+      }
       if (confirmFirstDelivery) {
         // Confirmation distinguishes a chosen past delivery date from an old hold date.
         // Write only after every rejection guard, in the same transaction as the task edit.
@@ -209,6 +234,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       const task = await tx.task.update({ where: { id }, data });
       if (task.status === "done" && before.status !== "done") outputNote = createTaskOutputNote(task);
       await syncTaskNameToJournals(tx, before, task);
+      if (reviewTime?.hours != null && reviewTime.hours !== reviewTime.previousHours) await saveDay(tx, id, reviewTime.date, reviewTime.hours * 3600, "manual");
       if (body.completionHours !== undefined) await saveDay(tx, id, commentDate, body.completionHours * 3600, "manual");
       if (body.outputLocation !== undefined) {
         await tx.dailyJournalDetail.upsert({
@@ -219,7 +245,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }
 
       if (nextStatus !== before.status) {
-        const defaultComment = nextStatus === "in_progress" || (before.status === "in_progress" && nextStatus === "done")
+        const defaultComment = nextStatus === "submitted" || nextStatus === "in_progress" || (before.status === "in_progress" && nextStatus === "done")
           ? getDefaultStatusCommentOption(before.status as TaskStatus, nextStatus as TaskStatus) : null;
         await tx.activityLog.create({ data: {
           taskId: id, field: "status", fromStatus: before.status, toStatus: nextStatus,

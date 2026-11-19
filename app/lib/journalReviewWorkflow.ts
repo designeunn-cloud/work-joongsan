@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { reviewCarryNotes } from "./reviewCarryNotes";
 import { prisma } from "./prisma";
 import { getReviewWorkflowFirstDate, getReviewWorkflowPolicy, getReviewWorkflowStart } from "./reviewWorkflowServer";
 
@@ -102,7 +103,7 @@ export async function reviewedJournalTaskIds(
 /** Historical journal rows use that day's status; legacy task values are untouched. */
 export async function withJournalReviewState<T extends ReviewTask>(
   tasks: readonly T[], dateISO: string, db: Prisma.TransactionClient = prisma,
-): Promise<Array<T & { reviewWorkflow: boolean }>> {
+): Promise<Array<T & { reviewWorkflow: boolean; carryReviewNote: boolean }>> {
   const policy = await getReviewWorkflowPolicy(db);
   const { end } = reviewJournalDayRange(dateISO);
   const activeStarts = new Map(tasks.flatMap(task => {
@@ -110,13 +111,16 @@ export async function withJournalReviewState<T extends ReviewTask>(
     return activation && activation <= end ? [[task.id, activation] as const] : [];
   }));
   const byTask = await statusEvents([...activeStarts.keys()], db);
-  return tasks.map(task => {
+  const datedTasks = tasks.map(task => {
     const activation = activeStarts.get(task.id);
     if (!activation) {
       const legacySnapshot = policy.taskSnapshots.get(task.id);
       return { ...task, ...legacySnapshot, reviewWorkflow: false };
     }
     const activeTask = { ...task, reviewDate: getReviewWorkflowFirstDate(task, policy) };
-    return { ...activeTask, status: stateAt(activeTask, byTask.get(task.id) ?? [], end).status, reviewWorkflow: true };
+    const state = stateAt(activeTask, byTask.get(task.id) ?? [], end);
+    return { ...activeTask, status: state.status, statusChangedAt: state.changedAt ?? task.statusChangedAt, reviewWorkflow: true };
   });
+  const carry = await reviewCarryNotes(db, datedTasks, dateISO);
+  return datedTasks.map(task => ({ ...task, carryReviewNote: carry.has(task.id) }));
 }

@@ -22,6 +22,8 @@ export interface Task {
   platform: string | null;
   tags: string | null;
   memo: string | null;
+  todayNotes?: string;
+  todayWorkDate?: string;
   referenceMemo?: string | null;
   projectId: string | null;
   project: { name: string; department?: string | null } | null;

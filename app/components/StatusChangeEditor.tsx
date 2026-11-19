@@ -5,20 +5,22 @@ import { createPortal } from "react-dom";
 import { taskStatusOptions, needsFirstReview, FIRST_REVIEW_REQUIRED, STATUS_LABELS, STATUS_COLORS, type TaskStatus } from "@/lib/statusConfig";
 import { COMMENT_OPTIONS, composeStatusComment, getDefaultStatusCommentOption, type CommentOption } from "@/lib/statusComments";
 import { getDefaultWorkType, isWorkType, WORK_TYPE_LABELS, type WorkType } from "@/lib/workTypes";
+import ReviewTimeInput, { type ReviewTimeDraft } from "./ReviewTimeInput";
 import Modal from "./Modal";
 import { TaskCompletionContext } from "./TaskCompletionContext";
 
-export default function StatusChangeEditor({ taskId, status, workType, onSaved, showWorkTypeLabel = true, commentsEnabled = true, reviewWorkflow = false, reviewDate }: {
+export default function StatusChangeEditor({ taskId, status, workType, onSaved, showWorkTypeLabel = true, commentsEnabled = true, reviewWorkflow = false, reviewDate, openForReview }: {
   taskId: string; status: TaskStatus; workType?: WorkType | null; onSaved: (status: TaskStatus) => void;
+  openForReview?: () => void;
   showWorkTypeLabel?: boolean;
   commentsEnabled?: boolean;
   reviewWorkflow?: boolean;
   reviewDate?: string | null;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(Boolean(openForReview));
   const requestCompletion = useContext(TaskCompletionContext);
-  const [target, setTarget] = useState<TaskStatus | null>(null);
-  const [option, setOption] = useState<CommentOption | "">("");
+  const [target, setTarget] = useState<TaskStatus | null>(openForReview ? "submitted" : null);
+  const [option, setOption] = useState<CommentOption | "">(openForReview ? getDefaultStatusCommentOption(status, "submitted") : "");
   const [detail, setDetail] = useState("");
   const defaultWorkType = reviewWorkflow && reviewDate && status !== "in_progress" ? "revision" : getDefaultWorkType(status, workType);
   const [selectedWorkType, setSelectedWorkType] = useState<WorkType | "reset">(defaultWorkType);
@@ -27,12 +29,16 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
   const panel = useRef<HTMLDivElement>(null);
   const dialogId = useId();
   const colors = STATUS_COLORS[status];
-  const comment = commentsEnabled ? composeStatusComment(option, detail) : "";
+  const [reviewTime, setReviewTime] = useState<ReviewTimeDraft | null>(null);
+  const [commentDate, setCommentDate] = useState("");
+  const reviewComment = commentsEnabled && target === "submitted";
+  const reviewWithTime = reviewComment && status === "in_progress";
+  const comment = commentsEnabled ? composeStatusComment(option, detail, reviewComment ? commentDate : "") : "";
   const resetting = status === "in_progress" && target === "in_progress" && selectedWorkType === "reset";
   const commentOnly = target === status && !resetting;
   const reviewRequired = needsFirstReview({ reviewWorkflow, reviewDate }) && status !== "planned" && status !== "in_progress";
 
-  function close() { setOpen(false); setTarget(null); setOption(""); setDetail(""); setError(""); }
+  function close() { openForReview?.(); setReviewTime(null); setCommentDate(""); setOpen(false); setTarget(null); setOption(""); setDetail(""); setError(""); }
   function openEditor() {
     setSelectedWorkType(defaultWorkType);
     setOpen(true);
@@ -65,19 +71,20 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
   }, [open]);
 
   async function save() {
-    if (!target || saving || comment.length > 200 || (commentOnly && !comment)) return;
+    if (!target || saving || (reviewWithTime && !reviewTime) || comment.length > 200 || (commentOnly && !comment)) return;
     if (target === "done" && reviewRequired) { setError(FIRST_REVIEW_REQUIRED); return; }
     if (target === "done" && requestCompletion) { close(); requestCompletion(taskId); return; }
     setSaving(true); setError("");
     try {
       const res = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: target, ...(commentsEnabled ? { statusComment: comment } : {}),
+        body: JSON.stringify({ status: target, ...(reviewWithTime ? { reviewTime } : {}), ...(commentsEnabled ? { statusComment: comment } : {}),
           ...(resetting ? { resetWorkStart: true } : target === "in_progress" && target !== status ? { workType: selectedWorkType } : {}),
         }),
       });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "상태 변경에 실패했습니다.");
+      for (const event of ["journal-updated", "work-time-updated"]) window.dispatchEvent(new Event(event));
       close(); onSaved(target);
     } catch (e) { setError(e instanceof Error ? e.message : "상태 변경에 실패했습니다."); }
     finally { setSaving(false); }
@@ -85,8 +92,8 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
 
   return (
     <div className="relative flex shrink-0 items-center gap-1.5">
-      <button type="button" disabled={saving} aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? dialogId : undefined} onClick={() => open ? close() : openEditor()}
-        className={`rounded-lg px-2.5 py-1.5 text-xs font-medium ${colors.bg} ${colors.text} hover:opacity-80`}>{STATUS_LABELS[status]}</button>
+      {!openForReview && <button type="button" disabled={saving} aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? dialogId : undefined} onClick={() => open ? close() : openEditor()}
+        className={`rounded-lg px-2.5 py-1.5 text-xs font-medium ${colors.bg} ${colors.text} hover:opacity-80`}>{STATUS_LABELS[status]}</button>}
       {showWorkTypeLabel && status === "in_progress" && isWorkType(workType) && <span className="text-xs text-neutral-500">{WORK_TYPE_LABELS[workType]}</span>}
       {open && createPortal(<Modal onClose={() => { if (!saving) close(); }} closeOnBackdropClick={!saving} widthClassName="max-w-sm">
         <div ref={panel} id={dialogId} role="dialog" aria-modal="true" aria-labelledby={`${dialogId}-title`} tabIndex={-1} className="outline-none">
@@ -95,7 +102,7 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
           <button type="button" aria-label="상태 변경 창 닫기" disabled={saving} onClick={close} className="rounded-lg px-2 py-1 text-neutral-500 hover:bg-neutral-100 disabled:opacity-50">×</button>
         </div>
         <div className="flex flex-wrap gap-2">{taskStatusOptions(reviewWorkflow).filter((s) => s !== status || s === "in_progress").map((s) => <button type="button" key={s} disabled={saving || (s === "done" && reviewRequired)}
-          onClick={() => { if (s === "done" && requestCompletion) { close(); requestCompletion(taskId); return; } if (target !== s) { setOption(getDefaultStatusCommentOption(status, s)); setSelectedWorkType(defaultWorkType); } setTarget(s); setError(""); }} aria-pressed={target === s}
+          onClick={() => { if (s === "done" && requestCompletion) { close(); requestCompletion(taskId); return; } if (target !== s) { setReviewTime(null); setCommentDate(""); setOption(getDefaultStatusCommentOption(status, s)); setSelectedWorkType(defaultWorkType); } setTarget(s); setError(""); }} aria-pressed={target === s}
           className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-shadow disabled:opacity-50 ${STATUS_COLORS[s].bg} ${STATUS_COLORS[s].text} ${STATUS_COLORS[s].border} ${target === s ? "ring-2 ring-current ring-offset-1" : "hover:opacity-80"}`}>{STATUS_LABELS[s]}</button>)}</div>
         {reviewRequired && <p className="mt-2 text-xs leading-5 text-neutral-600">{FIRST_REVIEW_REQUIRED}</p>}
         {target && <form className="mt-3" onSubmit={(e) => { e.preventDefault(); void save(); }}>
@@ -114,18 +121,20 @@ export default function StatusChangeEditor({ taskId, status, workType, onSaved, 
             {!commentOnly && <p className="mb-2 text-xs leading-5 text-neutral-500">{resetting ? "저장하는 시각으로 시작일을 갱신합니다. 이전 기록은 남기고, 작업기간은 이 시점부터 다시 계산합니다." : "저장하면 작업 착수 시점이 이력에 기록됩니다."}</p>}
           </>}
           {commentOnly && <p className="mb-2 text-xs leading-5 text-neutral-500">진행중 상태를 유지하며 코멘트를 이력에 기록합니다.</p>}
+          {reviewWithTime && <ReviewTimeInput taskId={taskId} draft={reviewTime} onChange={setReviewTime} disabled={saving} />}
           {commentsEnabled && <><label className="mb-1 block text-xs text-neutral-500">{commentOnly ? "코멘트" : "코멘트 (선택)"}</label>
           <select aria-label="상태 변경 코멘트 유형" value={option} disabled={saving} onChange={(e) => setOption(e.target.value as CommentOption | "")}
             className="mb-2 w-full rounded-lg border border-neutral-200 bg-white px-2 py-1.5 text-sm">
             <option value="">선택 안 함</option>{COMMENT_OPTIONS.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
-          <input aria-label="상태 변경 코멘트" maxLength={200} disabled={saving} value={detail} onChange={(e) => setDetail(e.target.value)}
+          <div className="flex items-end gap-2"><input aria-label="상태 변경 코멘트" maxLength={200} disabled={saving} value={detail} onChange={(e) => setDetail(e.target.value)}
             required={option === "기타" || (commentOnly && !option)} placeholder={option === "기타" || (commentOnly && !option) ? "코멘트를 직접 입력해 주세요" : target === "in_progress" && !commentOnly && selectedWorkType === "revision" ? "수정 사유 (선택)" : "추가 설명 (선택)"}
-            className="w-full rounded-lg border border-neutral-200 px-2 py-1.5 text-sm" />
+            className="min-w-0 flex-1 rounded-lg border border-neutral-200 px-2 py-1.5 text-sm" />
+          {reviewComment && <label className="text-xs text-neutral-600">코멘트 날짜 (선택)<input type="date" aria-label="코멘트 날짜" disabled={saving} value={commentDate} onChange={e => setCommentDate(e.target.value)} className="mt-1 block rounded-lg border border-neutral-200 px-2 py-1.5 text-sm" /></label>}</div>
           <span className={`mt-1 block text-xs ${comment.length > 200 ? "text-red-600" : "text-neutral-400"}`}>{comment.length}/200</span></>}
           <div className="mt-2 flex justify-end gap-2 text-xs">
             <button type="button" disabled={saving} onClick={close} className="px-2 py-1.5 text-neutral-500">취소</button>
-            <button type="submit" disabled={saving || comment.length > 200 || (commentOnly && !comment)} className="rounded-lg bg-indigo-600 px-3 py-1.5 text-white disabled:opacity-50">{saving ? "저장 중…" : resetting ? "작업 날짜 갱신" : commentOnly ? "코멘트 저장" : "변경 저장"}</button>
+            <button type="submit" disabled={saving || (reviewWithTime && !reviewTime) || comment.length > 200 || (commentOnly && !comment)} className="rounded-lg bg-indigo-600 px-3 py-1.5 text-white disabled:opacity-50">{saving ? "저장 중…" : resetting ? "작업 날짜 갱신" : commentOnly ? "코멘트 저장" : "변경 저장"}</button>
           </div>
         </form>}
         {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}

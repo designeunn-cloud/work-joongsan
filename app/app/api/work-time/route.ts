@@ -12,13 +12,14 @@ export async function GET(request: Request) {
     const q = new URL(request.url).searchParams;
     const taskId = q.get("taskId"), date = q.get("date");
     const validDay = taskId && isValidJournalDate(date);
-    if (q.get("includeReviewTime") === "1" && !validDay) {
+    const pendingReview = q.get("includeReviewTime") === "pending";
+    if ((q.get("includeReviewTime") === "1" || pendingReview) && !validDay) {
       return NextResponse.json({ error: "시간을 계산할 업무와 날짜를 확인해주세요." }, { status: 400 });
     }
     return NextResponse.json({
       timer: await timerState(prisma),
       ...(validDay ? { day: await dayState(prisma, taskId, date) } : {}),
-      ...(validDay && q.get("includeReviewTime") === "1" ? { reviewTime: await getReviewElapsedTime(prisma, taskId, date) } : {}),
+      ...(validDay && (q.get("includeReviewTime") === "1" || pendingReview) ? { reviewTime: await getReviewElapsedTime(prisma, taskId, date, new Date(), pendingReview) } : {}),
     });
   } catch { return NextResponse.json({ error: "소요시간을 불러오지 못했습니다." }, { status: 500 }); }
 }

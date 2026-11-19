@@ -63,12 +63,19 @@ export function calculateReviewElapsedTime(
 
 /** A preview only: no work-time values, timers, task states or journals are changed. */
 export async function getReviewElapsedTime(
-  db: Pick<Prisma.TransactionClient, "activityLog">, taskId: string, dateISO: string, now = new Date(),
+  db: Pick<Prisma.TransactionClient, "activityLog">, taskId: string, dateISO: string, now = new Date(), pendingReview = false,
 ): Promise<ReviewElapsedTime> {
   const events = await db.activityLog.findMany({
     where: { taskId, toStatus: { not: null } },
     select: { id: true, field: true, fromStatus: true, toStatus: true, createdAt: true },
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   });
+  if (pendingReview) {
+    const latest = events.findLast(event => event.field !== "statusComment");
+    if (latest?.toStatus !== "in_progress") return unavailable("현재 진행 구간의 시작 기록이 없습니다. 시간을 직접 입력할 수 있습니다.");
+    return calculateReviewElapsedTime([...events, {
+      id: "preview", field: "status", fromStatus: "in_progress", toStatus: "submitted", createdAt: now,
+    }], dateISO, now);
+  }
   return calculateReviewElapsedTime(events, dateISO, now);
 }

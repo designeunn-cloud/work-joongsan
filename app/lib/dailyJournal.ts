@@ -40,7 +40,7 @@ export async function getDailyJournal(dateISO: string) {
     where: { dateISO },
     include: { entries: { include: { task: { include: { subtasks: true, project: { select: { name: true, department: true } } } } } } },
   });
-  const recorded = await prisma.dailyJournalDetail.findMany({ where: { dateISO, hours: { not: null } }, select: { taskId: true } });
+  const recorded = await prisma.dailyJournalDetail.findMany({ where: { dateISO, OR: [{ hours: { not: null } }, { notes: { not: null } }] }, select: { taskId: true } });
   const extra = await prisma.task.findMany({ where: { id: { in: [...recorded.map(row => row.taskId), ...includedTaskIds].filter(id => !journal?.entries.some(entry => entry.taskId === id)) } }, include: { subtasks: true, project: { select: { name: true, department: true } } } });
   const candidates = [...(journal?.entries.map(({ task }) => ({ ...task, workCategory: getTaskWorkCategory(task) })) ?? []), ...extra.map(task => ({ ...task, workCategory: getTaskWorkCategory(task) }))];
   const tasks = await withJournalReviewState(candidates.filter(task => !excluded.has(task.id)), dateISO);

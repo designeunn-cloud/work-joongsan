@@ -1,5 +1,5 @@
 import { getTaskDeadline } from "./taskDeadline";
-import { recordsStatusComments, visibleStatusNotes } from "./statusComments";
+import { dailyNoteText, recordsStatusComments, visibleStatusNotes } from "./statusComments";
 import { isProductionType, type ProductionType } from "./productionTypes";
 import { getTaskWorkCategory, normalizeWorkCategory } from "./workCategories";
 
@@ -32,6 +32,7 @@ export type JournalTableTask = {
   completedAt?: DateValue;
   reviewDate?: DateValue;
   reviewWorkflow?: boolean;
+  carryReviewNote?: boolean;
   endDate?: DateValue;
   rawExtractedText?: string | null;
   aiConfidenceNote?: string | null;
@@ -174,7 +175,7 @@ export function buildJournalTableRows(
       status: task.status === "done" ? "완료" : task.status === "planned" ? "대기"
         : task.status === "in_progress" || (task.reviewWorkflow && task.status === "submitted") ? "진행중" : task.status === "review" ? "보류" : "",
       productionType: isProductionType(task.productionType) ? task.productionType : null,
-      notes: visibleStatusNotes(detail?.notes, recordsStatusComments(task)),
+      notes: visibleStatusNotes(dailyNoteText(detail?.notes, task.carryReviewNote), recordsStatusComments(task)),
       outputLocation: detail?.outputLocation ?? task.outputLocation ?? "",
       selectedSubtaskIds: selected,
       subtasks,

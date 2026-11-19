@@ -117,6 +117,36 @@ test("review workflow isolates legacy tasks, supports explicit enrollment and pr
       assert.equal(await db.dailyJournalDetail.count({ where: { taskId: fresh.id } }), 0);
     });
 
+    await t.test("table notes, review hours and comment persist on the selected day, and completion removes only its pending label", async () => {
+      const task = await create("review-notes-hours", { memo: "이전 업무 메모" });
+      const date = journalToday();
+      const prior = "2020-08-20";
+      const notesRoute = load("app/api/tasks/[id]/daily-notes/route.ts");
+      const write = (dateISO, notes) => notesRoute.PUT(new Request("http://localhost/api/tasks/test/daily-notes", {
+        method: "PUT", body: JSON.stringify({ dateISO, notes }),
+      }), { params: Promise.resolve({ id: task.id }) });
+      const notes = dateISO => db.dailyJournalDetail.findUnique({ where: { dateISO_taskId: { dateISO, taskId: task.id } } });
+      const tableNotes = async () => (await (await listRoute.GET()).json()).find(row => row.id === task.id).todayNotes;
+      assert.equal((await write(prior, "어제 메모")).status, 200);
+      assert.equal(await tableNotes(), "");
+      assert.equal((await write(date, "직접 입력\n담당자 확인중")).status, 200);
+      const reviewTime = { date, previousHours: null, hours: 1.3, timerActive: false };
+      assert.equal((await patch(task.id, { status: "submitted", reviewTime: { ...reviewTime, previousHours: 2 } })).status, 409);
+      assert.equal((await notes(date)).hours, null);
+      const comment = load("lib/statusComments.ts").composeStatusComment("담당자 확인중", "시안 전달", "2026-11-19");
+      assert.equal(comment, "담당자 확인중 · 시안 전달 (11/19)");
+      assert.equal((await patch(task.id, { status: "submitted", statusComment: comment, reviewTime })).status, 200);
+      assert.equal((await notes(date)).hours, 1.3);
+      assert.equal(await tableNotes(), "직접 입력\n" + comment);
+      assert.equal((await patch(task.id, { status: "submitted", statusComment: comment, reviewTime })).status, 409);
+      assert.equal((await patch(task.id, { status: "done" })).status, 200);
+      assert.equal(await tableNotes(), "직접 입력\n시안 전달 (11/19)");
+      assert.equal((await notes(prior)).notes, "어제 메모");
+      const defaultTask = await create("review-default");
+      await patch(defaultTask.id, { status: "submitted" });
+      assert.equal((await db.dailyJournalDetail.findFirst({ where: { taskId: defaultTask.id } })).notes, "담당자 확인중");
+    });
+
     let firstDate;
     await t.test("first submission records actual completion and settles the active timer", async () => {
       const started = new Date(Date.now() - 12 * 60_000).toISOString();

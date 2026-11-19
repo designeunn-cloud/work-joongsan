@@ -938,7 +938,7 @@ function TaskTableRow({
       <DateEditor
         label={{ startDate: "시작일", plannedEndDate: "예정 종료일", endDate: "종료일", reviewDate: "검토일", requestDate: "요청일", dueDate: "요청일" }[field]}
         hideLabel
-        displayMode={field === "requestDate" || field === "dueDate" ? "offset" : "absolute"}
+        displayMode={["requestDate", "dueDate", "reviewDate", "endDate"].includes(field) ? "offset" : "absolute"}
         portal
         className={`min-h-8 whitespace-nowrap py-1 ${!valueISO || emphasize ? "!text-red-700" : "!text-neutral-600"}`}
         valueISO={valueISO}
@@ -1000,7 +1000,7 @@ function TaskTableRow({
           <span className="text-neutral-300">-</span>
         );
       case "memo":
-        return <TaskMemo taskId={task.id} memo={task.memo} label="비고" field="memo" cell onSaved={onTaskChanged} />;
+        return <TaskMemo key={`${task.id}-${task.todayWorkDate}`} taskId={task.id} memo={task.todayNotes ?? null} dateISO={task.todayWorkDate} label="비고" field="todayNotes" cell onSaved={onTaskChanged} />;
       case "referenceMemo":
         return <TaskMemo taskId={task.id} memo={task.referenceMemo ?? null} label="메모" field="referenceMemo" cell onSaved={onTaskChanged} />;
       case "outputLocation":

@@ -97,6 +97,23 @@ test("new reviews carry to the final day, retain the first review date and resto
   assert.equal((await db.task.findUnique({ where: { id: "new-review" } })).status, "done", "historical reads never change source state");
 }));
 
+test("review carry uses only the pending label, respects explicit edits and ends at completion", async () => fixture(async ({ db, load, task, status, at }) => {
+  const id = "carry-note";
+  await task(id, { requestContent: "상세페이지", status: "done", reviewDate: at("2099-01-03T15:00:00"), completedAt: at("2099-01-06T12:00:00") });
+  await status(id, "in_progress", "submitted", "2099-01-03T15:00:00");
+  await status(id, "submitted", "done", "2099-01-06T12:00:00");
+  await db.dailyJournalDetail.create({ data: { taskId: id, dateISO: "2099-01-03", notes: "담당자 확인중 · 첫 시안 (1/3)\n다른 메모" } });
+  const journal = load("lib/dailyJournal.ts").getDailyJournal;
+  const read = async date => (await journal(date)).rows.find(row => row.taskId === id)?.notes;
+  assert.equal(await read("2099-01-04"), "담당자 확인중");
+  await load("lib/dailyJournalSnapshot.ts").finalizeDay("2099-01-04");
+  assert.equal((await db.dailyJournalDetail.findFirst({ where: { taskId: id, dateISO: "2099-01-04" } })).notes, "담당자 확인중");
+  await db.dailyJournalDetail.create({ data: { taskId: id, dateISO: "2099-01-05", notes: "" } });
+  assert.equal(await read("2099-01-05"), "");
+  assert.equal(await read("2099-01-06"), "");
+  assert.equal(await read("2099-01-03"), "담당자 확인중 · 첫 시안 (1/3)\n다른 메모");
+}));
+
 test("Korean midnight boundaries, saved snapshots and manual exclusions keep the new review rules", async () => fixture(async ({ db, load, task, status, at }) => {
   const { finalizeDay, livePreviewTaskIds } = load("lib/dailyJournalSnapshot.ts");
   const { getDailyJournal } = load("lib/dailyJournal.ts");

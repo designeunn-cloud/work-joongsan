@@ -1,3 +1,4 @@
+import { withInitialDailyNotes } from "./journalMemoSync";
 import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "./prisma";
@@ -72,7 +73,7 @@ export async function createTaskFromInterpretResult(
   const project = await findOrCreateProjectByName(result.category);
 
   const task = await prisma.task.create({
-    data: {
+    data: withInitialDailyNotes({
       sourceFileName: fileName,
       folderPath,
       folderName: finalFolderName,
@@ -91,7 +92,7 @@ export async function createTaskFromInterpretResult(
       statusChangedAt: new Date(),
       rawExtractedText: flattenedText,
       aiConfidenceNote: result.confidenceNote,
-    },
+    }),
   });
 
   await logActivity(`${result.assignee} 담당 "${result.requestContent}" 업무를 등록했습니다.`, task.id);

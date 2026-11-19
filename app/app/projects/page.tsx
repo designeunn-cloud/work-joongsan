@@ -1,5 +1,7 @@
 "use client";
 
+import StatusChangeEditor from "@/components/StatusChangeEditor";
+import { recordsStatusComments } from "@/lib/statusComments";
 import { useEffect, useState, useCallback } from "react";
 import type { TaskStatus } from "@/lib/statusConfig";
 import type { Task, MasterData } from "@/lib/clientTypes";
@@ -38,6 +40,8 @@ const DATE_FIELD_BODY_KEY: Record<DateField, string> = {
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<ProjectWithCount[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [reviewId, setReviewId] = useState<string | null>(null);
+  const reviewTask = tasks.find(task => task.id === reviewId && task.status === "in_progress");
   const [master, setMaster] = useState<MasterData>({ assignees: [], products: [], platforms: [] });
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -150,6 +154,11 @@ export default function ProjectsPage() {
   }
 
   async function updateTaskStatus(id: string, status: TaskStatus) {
+    const task = tasks.find(item => item.id === id);
+    if (status === "submitted" && task?.status === "in_progress" && task.reviewWorkflow && recordsStatusComments(task)) {
+      setReviewId(id);
+      return;
+    }
     await fetch(`/api/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -191,6 +200,8 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen">
+      {reviewTask && <StatusChangeEditor key={reviewTask.id} taskId={reviewTask.id} status={reviewTask.status} reviewDate={reviewTask.reviewDate} reviewWorkflow={reviewTask.reviewWorkflow}
+        openForReview={() => setReviewId(null)} onSaved={() => { setReviewId(null); void load(); }} />}
       <div className="max-w-5xl mx-auto px-6 py-10 w-full">
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-neutral-900">프로젝트</h1>

@@ -2,10 +2,12 @@
 
 import { useRef, useState } from "react";
 
-export default function TaskMemo({ taskId, memo, onSaved, compact = false, inlineRow = false, cell = false, field = "memo", label = "비고" }: { taskId: string; memo: string | null; onSaved?: () => void; compact?: boolean; inlineRow?: boolean; cell?: boolean; field?: "memo" | "referenceMemo"; label?: string }) {
+export default function TaskMemo({ taskId, memo, onSaved, compact = false, inlineRow = false, cell = false, dateISO, field = "memo", label = "비고" }: { taskId: string; memo: string | null; onSaved?: () => void; compact?: boolean; inlineRow?: boolean; cell?: boolean; dateISO?: string; field?: "memo" | "referenceMemo" | "todayNotes"; label?: string }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [saved, setSaved] = useState<{ original: string | null; value: string } | null>(null);
+  const [lastMemo, setLastMemo] = useState(memo);
+  if (lastMemo !== memo) { setLastMemo(memo); setSaved(null); }
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
   const [error, setError] = useState("");
@@ -17,7 +19,11 @@ export default function TaskMemo({ taskId, memo, onSaved, compact = false, inlin
     savingRef.current = true;
     setSaving(true); setError("");
     try {
-      const response = await fetch(`/api/tasks/${taskId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ [field]: nextMemo }) });
+      const daily = field === "todayNotes";
+      const response = await fetch(`/api/tasks/${taskId}${daily ? "/daily-notes" : ""}`, {
+        method: daily ? "PUT" : "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(daily ? { dateISO, notes: nextMemo } : { [field]: nextMemo }),
+      });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || `${label}를 저장하지 못했습니다.`);
       setSaved({ original: memo, value: result[field] ?? "" }); setEditing(false); window.dispatchEvent(new Event("journal-updated")); onSaved?.();

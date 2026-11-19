@@ -102,6 +102,16 @@ test("sub-second precision survives without rounding before daily save", () => {
   assert.equal(result.seconds, 0.15);
 });
 
+test("pending review measures the current revision without borrowing the earlier submitted interval", async () => {
+  const { getReviewElapsedTime } = loader()("lib/reviewElapsedTime.ts");
+  const events = pair("2030-11-12T09:00:00", "2030-11-12T10:00:00");
+  const db = { activityLog: { findMany: async () => events } };
+  const end = new Date("2030-11-12T11:24:00+09:00");
+  assert.equal((await getReviewElapsedTime(db, "task", "2030-11-12", end, true)).available, false);
+  events.push({ id: "revision", field: "status", fromStatus: "submitted", toStatus: "in_progress", createdAt: new Date("2030-11-12T11:00:00+09:00") });
+  assert.equal((await getReviewElapsedTime(db, "task", "2030-11-12", end, true)).seconds, 24 * 60);
+});
+
 test("the opt-in GET preview reads only the selected task history and leaves normal GET untouched", async () => {
   const queries = [];
   const db = { activityLog: { findMany: async query => { queries.push(query); return pair("2020-11-12T09:00:00", "2020-11-12T10:00:00").map(value => ({ ...value, createdAt: new Date(value.createdAt) })); } } };

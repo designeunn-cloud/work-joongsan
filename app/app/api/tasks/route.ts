@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { withInitialDailyNotes } from "@/lib/journalMemoSync";
 import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "@/lib/prisma";
+import { taskJournalContent } from "@/lib/taskJournalContent";
 import { withReviewWorkflow } from "@/lib/reviewWorkflowServer";
 import { getProductIssues } from "@/lib/productPolicy";
 import { buildFolderName, resolveUniqueFolderPath } from "@/lib/folderNaming";
@@ -23,7 +25,8 @@ export async function GET() {
   });
   const products = await prisma.productCache.findMany({ select: { code: true } });
   const visibleTasks = await withReviewWorkflow(tasks);
-  return NextResponse.json(visibleTasks.map((task) => ({ ...task, productIssues: getProductIssues(task, products) })));
+  const journalContent = await taskJournalContent(prisma, visibleTasks);
+  return NextResponse.json(visibleTasks.map((task) => ({ ...task, ...journalContent.get(task.id), productIssues: getProductIssues(task, products) })));
 }
 
 export async function POST(request: Request) {
@@ -103,7 +106,7 @@ export async function POST(request: Request) {
     : null;
 
   const task = await prisma.task.create({
-    data: {
+    data: withInitialDailyNotes({
       source: "manual",
       sourceFileName: requestFileName,
       folderPath,
@@ -124,7 +127,7 @@ export async function POST(request: Request) {
       statusChangedAt: new Date(),
       rawExtractedText: "",
       relatedTaskId: relatedTask?.id ?? null,
-    },
+    }),
   });
 
   await logActivity(`${assignee} 담당 "${requestContent}" 업무를 등록했습니다.`, task.id);

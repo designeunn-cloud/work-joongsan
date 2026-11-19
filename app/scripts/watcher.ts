@@ -1,5 +1,5 @@
 import "dotenv/config";
-import chokidar from "chokidar";
+import { watchExcelInbox } from "../lib/excelInbox";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -74,17 +74,8 @@ process.on("exit", releaseLock);
 
 console.log(`[watcher] 감시 시작: ${WATCH_FOLDER}`);
 
-// 최상위 파일만 감시 (depth: 0) — 자동 생성된 하위 결과 폴더는 재귀 감시하지 않음
-const watcher = chokidar.watch(WATCH_FOLDER, {
-  depth: 0,
-  ignoreInitial: false,
-  awaitWriteFinish: {
-    stabilityThreshold: 1500,
-    pollInterval: 300,
-  },
-});
-
 const processing = new Set<string>();
+const watcher = watchExcelInbox(WATCH_FOLDER, filePath => { void handleNewFile(filePath); });
 
 // 자정이 지나 새 날짜가 시작되면 어제치 업무일지를 그 날짜의 오전 9시 기준으로 고정한다.
 // 오늘 것은 하루가 끝나야 고정되므로 여기서 다루지 않는다(실시간 조회는 API에서 처리).
@@ -94,12 +85,6 @@ setInterval(() => {
   void finalizePastDays().catch((err) => console.error("[watcher] 업무일지 고정 실패:", err));
 void queueReviewCarryDay().catch((err) => console.error("[watcher] 검토 업무 동기화 예약 실패:", err));
 }, 10 * 60 * 1000);
-
-watcher.on("add", (filePath) => {
-  if (!/\.(xlsx|xls|xlsm)$/i.test(filePath)) return;
-  if (path.basename(filePath).startsWith("~$")) return; // 엑셀 임시 잠금 파일 무시
-  void handleNewFile(filePath);
-});
 
 async function handleNewFile(filePath: string) {
   if (processing.has(filePath)) return;
